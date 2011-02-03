@@ -143,10 +143,10 @@ class CreepyUI(gtk.Window):
         hbox = gtk.HBox(False, 0)
         self.show_button = gtk.Button('Search for target')
         self.show_button.connect('clicked', self.thread_show_clicked)
-        cache_button = gtk.Button('Cache')
+       
         
-        hbox.pack_start(self.show_button)
-        hbox.pack_start(cache_button)
+        hbox.pack_start(self.show_button, True, False, 0)
+       
 
         tab1.pack_end(info, False)
         tab1.pack_end(hbox, False)
@@ -585,7 +585,6 @@ class CreepyUI(gtk.Window):
         store = gtk.ListStore(str, str, str, str)
         if locations:
             for loc in locations:
-                print loc
                 store.append([loc['context'], loc['latitude'], loc['longitude'], loc['time']])
             
         return store
@@ -622,8 +621,7 @@ class CreepyUI(gtk.Window):
 
     def print_tiles(self):
         if self.osm.props.tiles_queued != 0:
-            print self.osm.props.tiles_queued, 'tiles queued'
-        return True
+            return True
 
 
     def search_for_locations(self, twit, flickr):
