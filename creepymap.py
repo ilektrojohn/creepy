@@ -173,7 +173,7 @@ class CreepyUI(gtk.Window):
         clear_twitter_button = gtk.Button('Clear')
         clear_twitter_button.connect('clicked', self.clear_twitter_list)
         twitter_im = gtk.Image()
-        pixbuf = gtk.gdk.pixbuf_new_from_file('/home/ilektrojohn/programming/python/creepy/evil_twitter.png')
+        pixbuf = gtk.gdk.pixbuf_new_from_file('evil_twitter.png')
         scaled_buf = pixbuf.scale_simple(50,50,gtk.gdk.INTERP_BILINEAR)
         twitter_im.set_from_pixbuf(scaled_buf)
         
@@ -195,7 +195,7 @@ class CreepyUI(gtk.Window):
         
         #add flickr search
         flickr_im = gtk.Image()
-        pixbuf = gtk.gdk.pixbuf_new_from_file('/home/ilektrojohn/programming/python/creepy/flickr.png')
+        pixbuf = gtk.gdk.pixbuf_new_from_file('flickr.png')
         scaled_buf = pixbuf.scale_simple(50,50,gtk.gdk.INTERP_BILINEAR)
         flickr_im.set_from_pixbuf(scaled_buf)
         
@@ -611,7 +611,7 @@ class CreepyUI(gtk.Window):
         self.textbuffer.set_text(model[row][0])
     
     def draw_locations(self, locations):
-        pb = gtk.gdk.pixbuf_new_from_file_at_size ("/home/ilektrojohn/programming/python/creepy/index.png", 24,24)
+        pb = gtk.gdk.pixbuf_new_from_file_at_size ("index.png", 24,24)
         if locations:
             for l in locations:
                 self.osm.image_add(float(l['latitude']), float(l['longitude']), pb)
