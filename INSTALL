@@ -1,0 +1,37 @@
+Requirements : 
+** tweepy 	https://github.com/joshthecoder/tweepy
+** osmgpsmap 0.7 	https://github.com/nzjrs/osm-gps-map
+** python-flickrapi 	http://stuvel.eu/flickrapi
+** BeautifulSoup 	http://www.crummy.com/software/BeautifulSoup/
+** pyexiv2 	http://tilloy.net/dev/pyexiv2/
+** python-configobj
+
+
+Ubuntu 10.10
+---------------------
+Tested and works. To install the requirements: 
+
+osmgpsmap:
+#apt-get install python osmgpsmap
+
+
+tweepy:
+Follow the instructions here :
+https://github.com/joshthecoder/tweepy/blob/master/INSTALL
+
+For the impatient amongst you try:
+#apt-get install python-setuptools
+#easy_install tweepy
+
+flickrapi
+#apt-get install python-flickrapi
+
+BeautifulSoup
+#apt-get install python-beautifulsoup
+
+pyexiv2
+#apt-get install python-pyexiv2
+
+python-configobj
+#apt-get install python-configobj
+
