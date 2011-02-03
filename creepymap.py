@@ -354,6 +354,7 @@ class CreepyUI(gtk.Window):
         self.config.write()    
         self.settings_table.remove(self.twitbox)
         self.set_twit_options(authorized=False)
+      
     def set_button_active(self, button):
         self.auth_finalize_button.set_sensitive(1)
         
@@ -374,6 +375,7 @@ class CreepyUI(gtk.Window):
             self.config.write()
             self.settings_table.remove(self.twitbox)
             self.set_twit_options(authorized=True)
+            self.set_auth(self.config)
         except Exception, err:
             message = "Authentication failed with error %s" % (err)
         dialog = gtk.MessageDialog(
