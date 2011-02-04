@@ -520,7 +520,7 @@ class CreepyUI(gtk.Window):
                     file = '%sprofile_pic_%s' % (self.profilepics_dir, user['id'])
                     profile_pic = gtk.gdk.pixbuf_new_from_file(file)
                 except Exception:
-                    file = '%sdefault.jpg' % (self.profilepics_dir)
+                    file = 'include/default.jpg'
                     profile_pic = gtk.gdk.pixbuf_new_from_file(file)
                 store.append([str(user['id']), str(user['username']), str(user['realname']), str(user['location']), profile_pic])
         return store
