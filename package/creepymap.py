@@ -51,9 +51,8 @@ class CreepyUI(gtk.Window):
         
         #Try to load the options file
         try:
-            config_file = 'creepy.conf'
+            config_file = 'include/creepy.conf'
             self.config = ConfigObj(infile=config_file)
-            self.config.filename = 'creepy.conf'
             self.config.create_empty=True
             self.config.write_empty_values=True
             self.set_auth(self.config)
@@ -173,7 +172,7 @@ class CreepyUI(gtk.Window):
         clear_twitter_button = gtk.Button('Clear')
         clear_twitter_button.connect('clicked', self.clear_twitter_list)
         twitter_im = gtk.Image()
-        pixbuf = gtk.gdk.pixbuf_new_from_file('evil_twitter.png')
+        pixbuf = gtk.gdk.pixbuf_new_from_file('include/evil_twitter.png')
         scaled_buf = pixbuf.scale_simple(50,50,gtk.gdk.INTERP_BILINEAR)
         twitter_im.set_from_pixbuf(scaled_buf)
         
@@ -195,7 +194,7 @@ class CreepyUI(gtk.Window):
         
         #add flickr search
         flickr_im = gtk.Image()
-        pixbuf = gtk.gdk.pixbuf_new_from_file('flickr.png')
+        pixbuf = gtk.gdk.pixbuf_new_from_file('include/flickr.png')
         scaled_buf = pixbuf.scale_simple(50,50,gtk.gdk.INTERP_BILINEAR)
         flickr_im.set_from_pixbuf(scaled_buf)
         
@@ -612,7 +611,7 @@ class CreepyUI(gtk.Window):
         self.textbuffer.set_text(model[row][0])
     
     def draw_locations(self, locations):
-        pb = gtk.gdk.pixbuf_new_from_file_at_size ("index.png", 24,24)
+        pb = gtk.gdk.pixbuf_new_from_file_at_size ("include/index.png", 24,24)
         if locations:
             for l in locations:
                 self.osm.image_add(float(l['latitude']), float(l['longitude']), pb)
@@ -683,11 +682,11 @@ class CreepyUI(gtk.Window):
         dialog.connect('response', lambda dialog, response: dialog.destroy())
         dialog.show()
 
+    def start_map(self):
+        u = CreepyUI()
+        u.show_all()
+        if os.name == "nt": gtk.gdk.threads_enter()
+        gtk.main()
+        if os.name == "nt": gtk.gdk.threads_leave()
 
-if __name__ == "__main__":
-    u = CreepyUI()
-    u.show_all()
-    if os.name == "nt": gtk.gdk.threads_enter()
-    gtk.main()
-    if os.name == "nt": gtk.gdk.threads_leave()
 
