@@ -682,11 +682,11 @@ class CreepyUI(gtk.Window):
         dialog.connect('response', lambda dialog, response: dialog.destroy())
         dialog.show()
 
-    def start_map(self):
-        u = CreepyUI()
-        u.show_all()
-        if os.name == "nt": gtk.gdk.threads_enter()
-        gtk.main()
-        if os.name == "nt": gtk.gdk.threads_leave()
+if __name__ == '__main__':
+    u = CreepyUI()
+    u.show_all()
+    if os.name == "nt": gtk.gdk.threads_enter()
+    gtk.main()
+    if os.name == "nt": gtk.gdk.threads_leave()
 
 
