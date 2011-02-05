@@ -51,19 +51,90 @@
     <div class="description">
       A geolocation information aggregator.
     </div>
-      creepy is an application that allows you to gather geolocation related information 
+      <p>creepy is an application that allows you to gather geolocation related information 
       about users from social networking platforms and image hosting services. The information
       is presented in a map inside the application where all the retrieved data is shown
       accompanied with relevant information (i.e. what was posted from that specific location) to 
-      provide context to the presentation. 
+      provide context to the presentation.</p>
+<h2>Screenshots</h2>
+<p><img src="creepy_mapview.png"/>
+<p><img src="creepy_settings.png"/>
+<p><img src="creepy_targets.png"/>
+
+<h2>Features</h2>
+<br/>
+Location information retieval from :
+-Twitter's tweet location 
+   -Coordinates when tweet was posted from mobile device
+   -Place (geographical name) derived from users ip when posting on twitter's
+    web interface. Place gets translated into coordinates using geonames.com
+   -Bounding Box derived from users ip when posting on twitter's
+    web interface.The less accurate source , a corner of the bounding box is 
+    selected randomly.
+-Geolocation information accessible through image hosting services API
+-EXIF tags from the photos posted.
+<br/>
+Social networking platforms currently supported :
+<ul>
+<li> Twitter </li>
+<li> Foursquare (only checkins that are posted to twitter)</li>
+</ul>
+<br/>
+Image hosting services currently supported : 
+<ul>
+<li>flickr - information retrieved from API</li>
+<li>twitpic.com - information retrieved from API and photo exif tags</li>
+<li>yfrog.com - information retrieved from photo exif tags</li>
+<li>img.ly - information retrieved from photo exif tags</li>
+<li>plixi.com - information retrieved from photo exif tags</li>
+<li>twitrpix.com - information retrieved from photo exif tags</li>
+<li>foleext.com - information retrieved from photo exif tags</li>
+<li>shozu.com - information retrieved from photo exif tags</li>
+<li>pickhur.com - information retrieved from photo exif tags</li>
+<li>moby.to - information retrieved from API and photo exif tags</li>
+<li>twitsnaps.com - information retrieved from photo exif tags</li>
+<li>twitgoo.com - information retrieved from photo exif tags</li>
+</ul>
+<br/>
+Automatic caching of retrieved information in order to reduce API calls
+and the possibility of hiting limit rates.
+<br/>
+GUI with navigateable map for better overview of the accumulated information
+<br/>
+Handling twitter authentication in an easy way using oAuth. User credentials
+are not shared with the application.
+<br/>
+User/target search for twitter and flickr. 
+<br/>
+
+<h2>Install Instructions</h2>
+Before using creepy there are a number of depencencies that must be resolved
+The packages needed are :
+ tweepy https://github.com/joshthecoder/tweepy
+ osmgpsmap v0.7 https://github.com/nzjrs/osm-gps-map
+ python-flickrapi http://stuvel.eu/flickrapi
+ BeautifulSoup http://www.crummy.com/software/BeautifulSoup/
+ pyexiv2 v0.2 http://tilloy.net/dev/pyexiv2/
+ python-configobj
+</br>
+On Ubuntu 10.10 :
+Add ppa for pyexiv2 0.2 version 
+<pre># add-apt-repository ppa:pyexiv2-developers/ppa</pre>
+</br>
+Install packages :
+<pre># apt-get install python-osmgpsmap python-flickrapi python-beautifulsoup python-configobj python-setuptools</pre>
+</br>
+Install tweepy :
+<pre># easy_install tweepy</pre>
+
     <h2>License</h2>
-<p>GPLv3</p>
+<p>creepy is available under GPLv3</p>
 <h2>Authors</h2>
-<p>Yiannis Kakavas (jkakavas@gmail.com)
+<p>Yiannis Kakavas (jkakavas_AT_gmail_DOT_com)
 <br/>
 <br/>      </p>
 <h2>Contact</h2>
-<p>Yiannis Kakavas (jkakavas@gmail.com)
+<p>Yiannis Kakavas (jkakavas_AT_gmail_DOT_com)
 <br/>      </p>
 
 
