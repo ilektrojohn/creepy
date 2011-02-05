@@ -12,7 +12,7 @@ Ubuntu 10.10
 Tested and works. To install the requirements: 
 
 osmgpsmap:
-#apt-get install python osmgpsmap
+#apt-get install python-osmgpsmap
 
 
 tweepy:
