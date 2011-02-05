@@ -63,16 +63,21 @@
 
 <h2>Features</h2>
 <br/>
+
 Location information retieval from :
--Twitter's tweet location 
-   -Coordinates when tweet was posted from mobile device
-   -Place (geographical name) derived from users ip when posting on twitter's
-    web interface. Place gets translated into coordinates using geonames.com
-   -Bounding Box derived from users ip when posting on twitter's
+<ul><li>Twitter's tweet location</li>
+<ul> 
+   <li>Coordinates when tweet was posted from mobile device</li>
+   <li>Place (geographical name) derived from users ip when posting on twitter's
+    web interface. Place gets translated into coordinates using geonames.com</li>
+   <li>Bounding Box derived from users ip when posting on twitter's
     web interface.The less accurate source , a corner of the bounding box is 
-    selected randomly.
--Geolocation information accessible through image hosting services API
--EXIF tags from the photos posted.
+    selected randomly.</li>
+</ul>
+
+<li>Geolocation information accessible through image hosting services API</li>
+<li>EXIF tags from the photos posted.</li>
+</ul>
 <br/>
 Social networking platforms currently supported :
 <ul>
@@ -96,28 +101,28 @@ Image hosting services currently supported :
 <li>twitgoo.com - information retrieved from photo exif tags</li>
 </ul>
 <br/>
-Automatic caching of retrieved information in order to reduce API calls
+<p>Automatic caching of retrieved information in order to reduce API calls
 and the possibility of hiting limit rates.
 <br/>
-GUI with navigateable map for better overview of the accumulated information
+<p>GUI with navigateable map for better overview of the accumulated information
 <br/>
-Handling twitter authentication in an easy way using oAuth. User credentials
+<p>Handling twitter authentication in an easy way using oAuth. User credentials
 are not shared with the application.
 <br/>
-User/target search for twitter and flickr. 
+<p>User/target search for twitter and flickr. 
 <br/>
 
 <h2>Install Instructions</h2>
 Before using creepy there are a number of depencencies that must be resolved
-The packages needed are :
- tweepy https://github.com/joshthecoder/tweepy
- osmgpsmap v0.7 https://github.com/nzjrs/osm-gps-map
- python-flickrapi http://stuvel.eu/flickrapi
- BeautifulSoup http://www.crummy.com/software/BeautifulSoup/
- pyexiv2 v0.2 http://tilloy.net/dev/pyexiv2/
- python-configobj
+<p>The packages needed are :
+ <p>tweepy             https://github.com/joshthecoder/tweepy
+ <p>osmgpsmap v0.7     https://github.com/nzjrs/osm-gps-map
+ <p>python-flickrapi   http://stuvel.eu/flickrapi
+ <p>BeautifulSoup      http://www.crummy.com/software/BeautifulSoup/
+ <p>pyexiv2 v0.2       http://tilloy.net/dev/pyexiv2/
+ <p>python-configobj
 </br>
-On Ubuntu 10.10 :
+<p>On Ubuntu 10.10 :
 Add ppa for pyexiv2 0.2 version 
 <pre># add-apt-repository ppa:pyexiv2-developers/ppa</pre>
 </br>
@@ -126,6 +131,9 @@ Install packages :
 </br>
 Install tweepy :
 <pre># easy_install tweepy</pre>
+</br>
+cd to where creepymap.py resides and run with :
+<pre>python creepymap.py</pre>
 
     <h2>License</h2>
 <p>creepy is available under GPLv3</p>
