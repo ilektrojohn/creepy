@@ -53,7 +53,7 @@ class Twitter():
             self.authed = True
         else:
             self.authed = False
-            self.api = tweepy.API
+            self.api = tweepy.API()
         
     def authorize_for_twitter(self, key, secret):
         """

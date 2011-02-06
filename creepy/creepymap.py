@@ -178,16 +178,15 @@ class CreepyUI(gtk.Window):
         
 
         self.twitter_list = gtk.VBox(False, 0)
-        search_table.attach(t_label0, 0, 1, 0, 1)
+        search_table.attach(t_label0, 0, 2, 0, 1)
         search_table.attach(twitter_target_label, 0, 2, 1, 2)
         search_table.attach(self.twitter_target, 2, 4 , 1, 2)
-        search_table.attach(flickr_target_label, 5, 7, 1, 2)
+        search_table.attach(flickr_target_label, 4, 6, 1, 2)
         search_table.attach(self.flickr_target, 7, 9, 1, 2)
-        #search_table.attach(t_label_twitter, 2, 4, 3, 4)
         search_table.attach(twitter_im, 0, 1, 2, 4)
         search_table.attach(t_label1, 0, 1, 4, 5)
         search_table.attach(self.twitter_username, 1, 4, 4, 5)
-        search_table.attach(search_twitter_button, 6, 8, 4, 5)
+        search_table.attach(search_twitter_button, 5, 7, 4, 5)
         search_table.attach(clear_twitter_button, 8, 10, 4, 5)
         search_table.attach(self.twitter_list, 0, 10, 5, 10)
         self.update_twitterusername_list([])
@@ -212,8 +211,8 @@ class CreepyUI(gtk.Window):
         search_table.attach(flickr_im, 0, 1, 10, 12)
         search_table.attach(t_label2, 0, 1, 12, 13)
         search_table.attach(self.flickr_username, 1, 4, 12, 13)
-        search_table.attach(search_flickr_button, 4, 6, 12, 13)
-        search_table.attach(search_flickrreal_button, 6, 8, 12, 13)
+        search_table.attach(search_flickr_button, 4, 5, 12, 13)
+        search_table.attach(search_flickrreal_button, 5, 8, 12, 13)
         search_table.attach(clear_flickr_button, 8, 10, 12, 13)
 
         
@@ -267,10 +266,10 @@ class CreepyUI(gtk.Window):
         prof_options_button = gtk.Button('Save')
         prof_options_button.connect('clicked', self.save_prof_options)
         img_options.pack_start(img_options_label, False, False, 5)
-        img_options.pack_start(self.img_options_entry, False, False, 10)
+        img_options.pack_start(self.img_options_entry, True, True, 10)
         img_options.pack_end(img_options_button, False, False, 5)
         prof_options.pack_start(prof_options_label, False, False, 5)
-        prof_options.pack_start(self.prof_options_entry, False, False, 10)
+        prof_options.pack_start(self.prof_options_entry, True, True, 10)
         prof_options.pack_end(prof_options_button, False, False, 5)
         clear_cache_button = gtk.Button('Clear photos cache')
         clear_cache_button.connect('clicked', self.clear_photo_cache)
@@ -278,12 +277,14 @@ class CreepyUI(gtk.Window):
         self.settings_table.attach(flabel, 0, 1, 3, 4)
         self.settings_table.attach(flickr_options, 0, 10, 4, 5)
         
-        self.settings_table.attach(dir_label, 0, 1, 6, 7)
+        self.settings_table.attach(dir_label, 0, 2, 6, 7)
         self.settings_table.attach(img_options, 0, 10, 7, 8)
         self.settings_table.attach(prof_options, 0, 10, 8, 9)
         self.settings_table.attach(clear_cache_button, 8,10, 9, 10)
         
         tab3.pack_start(self.settings_table)
+        
+    
     
     def clear_photo_cache(self, button):
         folders = (self.config['directories']['img_dir'], self.config['directories']['profilepics_dir'])
@@ -336,11 +337,11 @@ class CreepyUI(gtk.Window):
             self.settings_table.show_all()
 
         else:
-            authorized_label = gtk.Label('Creepy is already authorized for Twitter. Hit reset to reset auth settings')
-            reset_button = gtk.Button('reset')
+            authorized_label = gtk.Label('Creepy is already authorized for Twitter.')
+            reset_button = gtk.Button('reset auth settings')
             reset_button.connect('clicked', self.reset_auth_settings)
-            self.twitbox.pack_start(authorized_label, False, False, 10)
-            self.twitbox.pack_end(reset_button, False, False, 5)
+            self.twitbox.pack_start(authorized_label, False, False, 0)
+            self.twitbox.pack_end(reset_button, False, False, 0)
             self.settings_table.attach(self.twitbox, 0, 10, 1, 2)
             self.settings_table.show_all()
             
