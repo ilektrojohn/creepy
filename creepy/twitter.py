@@ -60,9 +60,9 @@ class Twitter():
         Returns the authorization URL that the user needs to follow
         in order to 'sign in with twitter'
         """
-        auth = tweepy.OAuthHandler(key, secret)
+	auth = tweepy.OAuthHandler(key, secret)
         url = auth.get_authorization_url(True)
-        return (auth, url)
+       	return (auth, url)
         
     def search_user(self, name):
         """

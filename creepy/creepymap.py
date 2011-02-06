@@ -361,6 +361,8 @@ class CreepyUI(gtk.Window):
     def button_authorize_twitter(self, button):
         self.oauth = oauth(self.config['twitter_auth']['consumer_key'], self.config['twitter_auth']['consumer_secret'])
         url = self.oauth.get_authorization_url(True)
+        print 'copy this to your browser'
+        print url
         webbrowser.open(url)
     
     def fin_authorize_twitter(self, button):
