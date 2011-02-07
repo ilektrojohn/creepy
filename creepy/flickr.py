@@ -73,7 +73,7 @@ class Flickr():
                 temp_file = '%sprofile_pic_%s' % (self.photo_dir, user[0])
                 urllib.urlretrieve(user[3], temp_file)
             except Exception, err:
-                print 'Error retrieving %s profile picture' % (user[1]), err
+                #print 'Error retrieving %s profile picture' % (user[1]), err
             users.append({'id':user[0], 'username': user[1], 'realname':user[2], 'location':'' })
         
         return users
@@ -96,11 +96,11 @@ class Flickr():
             try:
                 results = self.api.people_findByUsername(username=input)
             except FlickrError, err:
-                print 'Error from flickr api ', err
+                #print 'Error from flickr api ', err
                 return
         if results.attrib['stat'] == "ok":
             user_list = []
-            print results.find('user')
+            #print results.find('user')
             for i in results.find('user').items():
                 user_list.append(self.get_user_info(i[1]))
             return user_list
@@ -115,7 +115,7 @@ class Flickr():
             result = self.api.people_findByUsername(username=username)
             return result.find('user').attrib['nsid']
         except FlickrError, err:
-            print 'Error from flickr api ', err
+            #print 'Error from flickr api ', err
             return
         
     def get_user_info(self, id):
@@ -184,7 +184,7 @@ class Flickr():
             res = results.find('photos')
             total_photos = res.attrib['total']
             pages = int(res.attrib['pages'])
-            print "pages :" + str(pages) + " , total :" + total_photos
+            #print "pages :" + str(pages) + " , total :" + total_photos
             if pages > 1:
                 for i in range(1, pages + 1, 1):
                     locations_list.extend(self.get_locations(self.get_user_photos(id, i)))

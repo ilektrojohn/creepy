@@ -79,7 +79,7 @@ class Twitter():
                     temp_file = '%sprofile_pic_%s' % (self.profilepics_dir, user.screen_name)
                     urllib.urlretrieve(user.profile_image_url, temp_file)
                 except Exception, err:
-                    print 'Error retrieving %s profile picture' % (user.screen_name), err
+                    #print 'Error retrieving %s profile picture' % (user.screen_name), err
             return users
         else:
             users.append('auth_error')
@@ -105,7 +105,7 @@ class Twitter():
                 data = pickle.load(file)
                 return data
             except Exception, err:
-                print 'Malformed data, or file does not exist .Error :',err
+                #print 'Malformed data, or file does not exist .Error :',err
                 return
         else :
             return None
@@ -133,7 +133,7 @@ class Twitter():
     
         except tweepy.TweepError, err:
             conn_err = {'from':'twitter_connection', 'tweetid':'', 'url': 'twitter' ,'error':err}
-            print 'Connection to twitter failed with error :', err
+            #print 'Connection to twitter failed with error :', err
         return (timeline, conn_err)
     
     def get_older_tweets(self, username, oldest_id):
@@ -147,7 +147,7 @@ class Twitter():
                 older.append(i)
         except tweepy.TweepError, err:
             conn_err = {'from':'twitter_connection', 'tweetid':'', 'url': 'twitter' ,'error':err}
-            print 'Connection to twitter failed with error :', err
+            #print 'Connection to twitter failed with error :', err
         return (older, conn_err)
         
     def get_latest_tweets(self, username, latest_id):
@@ -160,7 +160,7 @@ class Twitter():
             for i in Cursor(self.api.user_timeline, screen_name=username, since_id=latest_id).items():
                 latest.append(i)
         except tweepy.TweepError, err:
-            print 'Connection to twitter failed with error :', err
+            #print 'Connection to twitter failed with error :', err
             conn_err = {'from':'twitter_connection', 'tweetid':'', 'url': 'twitter' ,'error':err}
         return (latest, conn_err)
     
@@ -186,7 +186,7 @@ class Twitter():
                     return [json['geonames'][0]['lat'], json['geonames'][0]['lng']]
                 else: return
             except Exception, err:
-                print "error getting info from geonames ", err
+                #print "error getting info from geonames ", err
                 return
         
          
@@ -303,7 +303,7 @@ class Twitter():
                 self.pickle_data(locations, identifier_loc)
              
             except Exception, err:
-                print 'Exception ',err
+                #print 'Exception ',err
         else:
             results_params['tweets_count'] = 0
         return (locations, results_params)
