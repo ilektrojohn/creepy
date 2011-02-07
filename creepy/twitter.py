@@ -79,6 +79,7 @@ class Twitter():
                     temp_file = '%sprofile_pic_%s' % (self.profilepics_dir, user.screen_name)
                     urllib.urlretrieve(user.profile_image_url, temp_file)
                 except Exception, err:
+                    pass
                     #print 'Error retrieving %s profile picture' % (user.screen_name), err
             return users
         else:
@@ -303,6 +304,7 @@ class Twitter():
                 self.pickle_data(locations, identifier_loc)
              
             except Exception, err:
+                pass
                 #print 'Exception ',err
         else:
             results_params['tweets_count'] = 0

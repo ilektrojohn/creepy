@@ -133,9 +133,11 @@ class URLAnalyzer():
         try:
             ip = bs(urllib.urlopen("http://yfrog.com/api/xmlInfo?path="+url.path[1:])).find('ip')
             if ip:
+		pass
                 #print ip.string
         except Exception, err:
-            #print 'Exception ', err
+            pass
+	    #print 'Exception ', err
         
         try:
             soup = bs(urllib.urlopen(url.geturl()))

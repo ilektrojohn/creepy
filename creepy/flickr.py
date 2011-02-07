@@ -73,6 +73,7 @@ class Flickr():
                 temp_file = '%sprofile_pic_%s' % (self.photo_dir, user[0])
                 urllib.urlretrieve(user[3], temp_file)
             except Exception, err:
+                pass
                 #print 'Error retrieving %s profile picture' % (user[1]), err
             users.append({'id':user[0], 'username': user[1], 'realname':user[2], 'location':'' })
         
