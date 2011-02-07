@@ -45,7 +45,7 @@ class CreepyUI(gtk.Window):
     def __init__(self):
         gtk.Window.__init__(self, gtk.WINDOW_TOPLEVEL)
 
-        self.set_default_size(1000, 800)
+        self.set_default_size(800, 600)
         self.connect('destroy', lambda x: gtk.main_quit())
         self.set_title('Cree.py location creeper')
         
