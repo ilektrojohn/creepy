@@ -11,7 +11,11 @@
 ##Description: 
 geolocation information aggregator.
 
-creepy is an application that allows you to gather geolocation related information about users from social networking platforms and image hosting services. The information is presented in a map inside the application where all the retrieved data is shown accompanied with relevant information (i.e. what was posted from that specific location) to provide context to the presentation.
+creepy is an application that allows you to gather geolocation related information 
+about users from social networking platforms and image hosting services. 
+The information is presented in a map inside the application where all the 
+retrieved data is shown accompanied with relevant information (i.e. what 
+was posted from that specific location) to provide context to the presentation.
 
 
 
