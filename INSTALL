@@ -10,7 +10,34 @@ Requirements :
 
 Ubuntu 10.10
 ---------------------
-Tested and works. To install the requirements: 
+
+Semi-Automatic way (Recommended):
+
+
+Install tweepy :
+
+# easy_install tweepy
+
+Download and install the .deb package from https://github.com/ilektrojohn/creepy/downloads .
+
+Alternatively add creepy's ppa with :
+
+$ sudo add-apt-repository ppa:jkakavas/creepy
+
+update the package list :
+
+$ sudo apt-get update
+
+and install creepy with :
+
+$ sudo apt-get install creepy
+
+creepy is now on the main menu, under Applications -> Internet
+
+
+Manual way (Deprecated - not recommended:)
+
+Install dependenies first 
 
 osmgpsmap:
 #apt-get install python-osmgpsmap
@@ -31,8 +58,7 @@ BeautifulSoup
 #apt-get install python-beautifulsoup
 
 pyexiv2
-pyexiv2 v0.2 is needed . If not on Ubuntu 10.10 , grab it from :
-https://launchpad.net/~pyexiv2-developers/+archive/ppa .
+# apt-get install python-pyexiv2
 
 python-configobj
 #apt-get install python-configobj
