@@ -24,12 +24,12 @@ from threading import Thread
 import cree
 import gobject
 import gtk.gdk
-import os.path
+import os
 import osmgpsmap
 from tweepy import OAuthHandler as oauth
 import webbrowser
 from configobj import ConfigObj
-
+import shutil
 
 
 gobject.threads_init()
@@ -42,16 +42,41 @@ class CreepyUI(gtk.Window):
     
     Provides all the GUI functionality for creepy. 
     """
+
     def __init__(self):
+        self.CONF_DIR = os.path.join(os.path.expanduser('~'), '.creepy')
+
         gtk.Window.__init__(self, gtk.WINDOW_TOPLEVEL)
 
         self.set_default_size(800, 600)
         self.connect('destroy', lambda x: gtk.main_quit())
         self.set_title('Cree.py location creeper')
         
+	#If it is the first time creepy is run copy the config file and necessary images to .creepy
+	if not os.path.exists(self.CONF_DIR):
+	    os.mkdir(self.CONF_DIR)
+            shutil.copy('/usr/share/pyshared/creepy/include/creepy.conf', os.path.join(self.CONF_DIR, 'creepy.conf'))
+	    shutil.copy('/usr/share/pyshared/creepy/include/evil_twitter.png', os.path.join(self.CONF_DIR, 'evil_twitter.png'))
+	    shutil.copy('/usr/share/pyshared/creepy/include/flickr.png', os.path.join(self.CONF_DIR, 'flickr.png'))
+	    shutil.copy('/usr/share/pyshared/creepy/include/index.png', os.path.join(self.CONF_DIR, 'index.png'))
+	    shutil.copy('/usr/share/pyshared/creepy/include/default.jpg', os.path.join(self.CONF_DIR, 'default.jpg'))	 
+	    #create the temp folders
+            os.makedirs(os.path.join(self.CONF_DIR, 'cache'))
+	    os.makedirs(os.path.join(self.CONF_DIR, 'images'))
+            os.makedirs(os.path.join(self.CONF_DIR, 'images', 'profilepics'))  
+            #write to the initial configuration file
+            config_file = os.path.join(self.CONF_DIR, 'creepy.conf')
+            tmp_conf = ConfigObj(infile=config_file)
+            tmp_conf.create_empty=True
+            tmp_conf.write_empty_values=True 
+            tmp_conf['directories']['img_dir'] = os.path.join(self.CONF_DIR, 'images')
+            tmp_conf['directories']['cache_dir'] = os.path.join(self.CONF_DIR, 'cache')
+            tmp_conf['directories']['profilepics_dir'] = os.path.join(self.CONF_DIR, 'images', 'profilepics')
+            tmp_conf.write()
+	
         #Try to load the options file
         try:
-            config_file = 'include/creepy.conf'
+            config_file = os.path.join(self.CONF_DIR, 'creepy.conf')
             self.config = ConfigObj(infile=config_file)
             self.config.create_empty=True
             self.config.write_empty_values=True
@@ -171,7 +196,7 @@ class CreepyUI(gtk.Window):
         clear_twitter_button = gtk.Button('Clear')
         clear_twitter_button.connect('clicked', self.clear_twitter_list)
         twitter_im = gtk.Image()
-        pixbuf = gtk.gdk.pixbuf_new_from_file('include/evil_twitter.png')
+        pixbuf = gtk.gdk.pixbuf_new_from_file(os.path.join(self.CONF_DIR, 'evil_twitter.png'))
         scaled_buf = pixbuf.scale_simple(50,50,gtk.gdk.INTERP_BILINEAR)
         twitter_im.set_from_pixbuf(scaled_buf)
         
@@ -192,7 +217,7 @@ class CreepyUI(gtk.Window):
         
         #add flickr search
         flickr_im = gtk.Image()
-        pixbuf = gtk.gdk.pixbuf_new_from_file('include/flickr.png')
+        pixbuf = gtk.gdk.pixbuf_new_from_file(os.path.join(self.CONF_DIR, 'flickr.png'))
         scaled_buf = pixbuf.scale_simple(50,50,gtk.gdk.INTERP_BILINEAR)
         flickr_im.set_from_pixbuf(scaled_buf)
         
@@ -520,7 +545,7 @@ class CreepyUI(gtk.Window):
                     file = '%sprofile_pic_%s' % (self.profilepics_dir, user['id'])
                     profile_pic = gtk.gdk.pixbuf_new_from_file(file)
                 except Exception:
-                    file = 'include/default.jpg'
+                    file = os.path.join(self.CONF_DIR, 'default.jpg')
                     profile_pic = gtk.gdk.pixbuf_new_from_file(file)
                 store.append([str(user['id']), str(user['username']), str(user['realname']), str(user['location']), profile_pic])
         return store
@@ -611,7 +636,7 @@ class CreepyUI(gtk.Window):
         self.textbuffer.set_text(model[row][0])
     
     def draw_locations(self, locations):
-        pb = gtk.gdk.pixbuf_new_from_file_at_size ("include/index.png", 24,24)
+        pb = gtk.gdk.pixbuf_new_from_file_at_size (os.path.join(self.CONF_DIR, 'index.png'), 24,24)
         if locations:
             for l in locations:
                 self.osm.image_add(float(l['latitude']), float(l['longitude']), pb)
@@ -656,7 +681,7 @@ class CreepyUI(gtk.Window):
     
     def create_directory(self, dir):
         try:
-            os.mkdir(dir)
+            os.makedirs(dir)
         except Exception, err:
             text = 'Could not create the directories for temporary data. Please check your settings. \
             Error was ' % err
@@ -681,12 +706,13 @@ class CreepyUI(gtk.Window):
         dialog.set_title(title)
         dialog.connect('response', lambda dialog, response: dialog.destroy())
         dialog.show()
+    def main(self):
+	self.show_all()
+        if os.name == "nt": gtk.gdk.threads_enter()
+        gtk.main()
+        if os.name == "nt": gtk.gdk.threads_leave()
 
 if __name__ == '__main__':
     u = CreepyUI()
-    u.show_all()
-    if os.name == "nt": gtk.gdk.threads_enter()
-    gtk.main()
-    if os.name == "nt": gtk.gdk.threads_leave()
-
+    u.main()
 
