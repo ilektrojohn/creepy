@@ -26,8 +26,10 @@ was posted from that specific location) to provide context to the presentation.
 
     *Twitter's tweet location
         **Coordinates when tweet was posted from mobile device
-        **Place (geographical name) derived from users ip when posting on twitter's web interface. Place gets translated into coordinates using geonames.com
-        **Bounding Box derived from users ip when posting on twitter's web interface.The less accurate source , a corner of the bounding box is selected randomly.
+        **Place (geographical name) derived from users ip when posting on twitter's web interface. 
+           Place gets translated into coordinates using geonames.com
+        **Bounding Box derived from users ip when posting on twitter's web interface.
+           The less accurate source , a corner of the bounding box is selected randomly.
     *Geolocation information accessible through image hosting services API
     *EXIF tags from the photos posted.
 
