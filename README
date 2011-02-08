@@ -1,19 +1,24 @@
-creepy
+#creepy
 
-Version : 0.1
+##Version : 0.1
 
-Description: 
-------------------------------------------
-A geolocation information aggregator.
+##Author : Yiannis Kakavas <jkakavas__AT__gmail__dot__com>
+
+##Homepage : http://ilektrojohn.github.com/creepy/
+
+##Installation Instructions : See INSTALL file
+
+##Description: 
+geolocation information aggregator.
 
 creepy is an application that allows you to gather geolocation related information about users from social networking platforms and image hosting services. The information is presented in a map inside the application where all the retrieved data is shown accompanied with relevant information (i.e. what was posted from that specific location) to provide context to the presentation.
 
 
 
-Features
--------------------------------------------
+##Features
 
-Location information retieval from :
+
+1)Location information retrieval from :
 
     *Twitter's tweet location
         **Coordinates when tweet was posted from mobile device
@@ -23,13 +28,13 @@ Location information retieval from :
     *EXIF tags from the photos posted.
 
 
-Social networking platforms currently supported :
+2)Social networking platforms currently supported :
 
     *Twitter
     *Foursquare (only checkins that are posted to twitter)
 
 
-Image hosting services currently supported :
+3)Image hosting services currently supported :
 
     *flickr - information retrieved from API
     *twitpic.com - information retrieved from API and photo exif tags
@@ -45,10 +50,16 @@ Image hosting services currently supported :
     *twitgoo.com - information retrieved from photo exif tags
 
 
-Automatic caching of retrieved information in order to reduce API calls and the possibility of hiting limit rates.
+4)Automatic caching of retrieved information in order to reduce API calls and the possibility of hiting limit rates.
 
-GUI with navigate-able map for better overview of the accumulated information
+5)GUI with navigate-able map for better overview of the accumulated information
 
-Handling twitter authentication in an easy way using oAuth. User credentials are not shared with the application.
+6)Handling twitter authentication in an easy way using oAuth. User credentials are not shared with the application.
 
-User/target search for twitter and flickr. 
+7)User/target search for twitter and flickr. 
+
+
+Inspired by 
+-- Johannes B. Ullrich (see original post about exif gps metadata on twitpic http://isc.sans.edu/diary.html?storyid=8203)
+-- icanstalkyou.com
+-- pleaserobme.com
