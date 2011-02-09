@@ -55,11 +55,26 @@ class CreepyUI(gtk.Window):
 	#If it is the first time creepy is run copy the config file and necessary images to .creepy
 	if not os.path.exists(self.CONF_DIR):
 	    os.mkdir(self.CONF_DIR)
-            shutil.copy('/usr/share/pyshared/creepy/include/creepy.conf', os.path.join(self.CONF_DIR, 'creepy.conf'))
-	    shutil.copy('/usr/share/pyshared/creepy/include/evil_twitter.png', os.path.join(self.CONF_DIR, 'evil_twitter.png'))
-	    shutil.copy('/usr/share/pyshared/creepy/include/flickr.png', os.path.join(self.CONF_DIR, 'flickr.png'))
-	    shutil.copy('/usr/share/pyshared/creepy/include/index.png', os.path.join(self.CONF_DIR, 'index.png'))
-	    shutil.copy('/usr/share/pyshared/creepy/include/default.jpg', os.path.join(self.CONF_DIR, 'default.jpg'))	 
+	    #If creepy was installed through the .deb package in ubuntu , the files needed would be in /usr/share/pyshared/creepy
+            if os.path.exists('/usr/share/pyshared/creepy'):
+                try:
+            	    shutil.copy('/usr/share/pyshared/creepy/include/creepy.conf', os.path.join(self.CONF_DIR, 'creepy.conf'))
+	    	    shutil.copy('/usr/share/pyshared/creepy/include/evil_twitter.png', os.path.join(self.CONF_DIR, 'evil_twitter.png'))
+	    	    shutil.copy('/usr/share/pyshared/creepy/include/flickr.png', os.path.join(self.CONF_DIR, 'flickr.png'))
+	            shutil.copy('/usr/share/pyshared/creepy/include/index.png', os.path.join(self.CONF_DIR, 'index.png'))
+	    	    shutil.copy('/usr/share/pyshared/creepy/include/default.jpg', os.path.join(self.CONF_DIR, 'default.jpg'))
+                except Exception, err:
+                    print err
+	    #If creepy is run from source folder (i.e. in Backtrack) with 'python creepymap.py' , needed files are in current dir
+	    else:
+                try:
+                    shutil.copy('include/creepy.conf', os.path.join(self.CONF_DIR, 'creepy.conf'))
+	    	    shutil.copy('include/evil_twitter.png', os.path.join(self.CONF_DIR, 'evil_twitter.png'))
+	    	    shutil.copy('include/flickr.png', os.path.join(self.CONF_DIR, 'flickr.png'))
+	            shutil.copy('include/index.png', os.path.join(self.CONF_DIR, 'index.png'))
+	    	    shutil.copy('include/default.jpg', os.path.join(self.CONF_DIR, 'default.jpg'))
+		except Exception, err:
+                    print err	 
 	    #create the temp folders
             os.makedirs(os.path.join(self.CONF_DIR, 'cache'))
 	    os.makedirs(os.path.join(self.CONF_DIR, 'images'))
