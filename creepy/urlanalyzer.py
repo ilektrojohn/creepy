@@ -23,6 +23,7 @@ import re
 import urllib, simplejson
 import pyexiv2
 import time
+import os.path
 from datetime import datetime
 from time import  mktime
 from urlparse import urlparse
@@ -117,7 +118,7 @@ class URLAnalyzer():
             html = html.replace('</sc"+"ript>','')
             soup = bs(html)
             #Grabs the photo from Amazon cloud 
-            temp_file = self.photo_dir+url.path[1:]
+            temp_file = os.path.join(self.photo_dir,url.path[1:])
             photo_url = soup.find(attrs={"class": "photo", "id": "photo-display"})['src']
             urllib.urlretrieve(photo_url , temp_file)
             return [self.exif_extract(temp_file, tweet.text)] 
@@ -133,15 +134,15 @@ class URLAnalyzer():
         try:
             ip = bs(urllib.urlopen("http://yfrog.com/api/xmlInfo?path="+url.path[1:])).find('ip')
             if ip:
-		pass
+                pass
                 #print ip.string
         except Exception, err:
             pass
-	    #print 'Exception ', err
+            #print 'Exception ', err
         
         try:
             soup = bs(urllib.urlopen(url.geturl()))
-            temp_file = self.photo_dir+url.path[1:]
+            temp_file = os.path.join(self.photo_dir,url.path[1:])
             photo_url = soup.find(attrs={"rel": "image_src"})['href'] 
             urllib.urlretrieve(photo_url, temp_file)
             return [self.exif_extract(temp_file, tweet.text)]
@@ -153,7 +154,7 @@ class URLAnalyzer():
     def imgly(self, url, tweet):
         try:
             soup = bs(urllib.urlopen(url.geturl()))
-            temp_file = self.photo_dir+url.path[1:]
+            temp_file = os.path.join(self.photo_dir,url.path[1:])
             photo_url = "http://img.ly"+soup.find(attrs={"id": "the-image"})['src']
             urllib.urlretrieve(photo_url, temp_file)
             return [self.exif_extract(temp_file, tweet.text)]
@@ -172,7 +173,7 @@ class URLAnalyzer():
             api_location['longitude'] = json_reply['Location']['Longitude']
             api_location['time'] = datetime.fromtimestamp(json_reply['UploadDate'])
             ''' html = urllib.urlopen("http://plixi.com/photos/original/"+url.path[3:]).read()
-            temp_file = self.photo_dir+url.path[3:]
+            temp_file = os.path.join(self.photo_dir,url.path[3:])
             #print re.findall("http://[\S]+cloudfiles[\S]+", html)
             urllib.urlretrieve(re.findall("http://[\S]+cloudfiles[\S]+", html), temp_file)
             '''
@@ -182,7 +183,7 @@ class URLAnalyzer():
     
     def twitrpix(self, url, tweet):
         try:
-            temp_file = self.photo_dir+url.path[1:]
+            temp_file = os.path.join(self.photo_dir, url.path[1:])
             photo_url = "http://img.twitrpix.com"+url.path
             urllib.urlretrieve(photo_url, temp_file)
             return [self.exif_extract(temp_file, tweet.text)]
@@ -193,7 +194,7 @@ class URLAnalyzer():
          
     def folext(self, url, tweet):
         try:
-            temp_file = self.photo_dir+url.path[1:]
+            temp_file = os.path.join(self.photo_dir,url.path[1:])
             photo_url = "http://img.folext.com"+url.path+".jpg"    
             urllib.urlretrieve(photo_url, temp_file)
             return [self.exif_extract(temp_file, tweet.text)]
@@ -205,7 +206,7 @@ class URLAnalyzer():
     def shozu(self, url, tweet):
         try:
             soup = bs(urllib.urlopen(url.geturl()))
-            temp_file = self.photo_dir+url.path[3:]
+            temp_file = os.path.join(self.photo_dir, url.path[3:])
             photo_url = soup.find(attrs={"class": "cls"})['src']
             urllib.urlretrieve(photo_url, temp_file)
             return [self.exif_extract(temp_file, tweet.text)]
@@ -219,7 +220,7 @@ class URLAnalyzer():
         Original photo not available so not much info to come from edited/resized pics. Discard? 
         '''
         try:
-            temp_file = self.photo_dir+url.path[1:]
+            temp_file = od.path.join(self.photo_dir,url.path[1:])
             photo_url = "http://img.pikchur.com/pic_"+url.path[1:]+"_l.jpg"
             urllib.urlretrieve(photo_url, temp_file)
             return [self.exif_extract(temp_file, tweet.text)]
@@ -239,7 +240,7 @@ class URLAnalyzer():
                 api_loc['longitude'] = json_reply['post']['location_latlong'][1]
                 api_loc['time'] = datetime.fromtimestamp(json_reply['created_on_epoch'])
         
-            temp_file = self.photo_dir+url.path[1:]
+            temp_file = os.path.join(self.photo_dir, url.path[1:])
             photo_url = str(json_reply['post']['media']['url_full']).replace('large', 'full')
             urllib.urlretrieve(photo_url, temp_file)
             return [api_loc, self.exif_extract(temp_file, tweet.text)]
@@ -250,7 +251,7 @@ class URLAnalyzer():
     
     def twitsnaps(self, url, tweet):
         try:
-            temp_file = self.photo_dir+url.path[1:]
+            temp_file = os.path.join(self.photo_dir, url.path[1:])
             photo_url = "http://twitsnaps.com/snap"+url.path
             urllib.urlretrieve(photo_url, temp_file)
             return [self.exif_extract(temp_file, tweet.text)]
@@ -262,7 +263,7 @@ class URLAnalyzer():
     def twitgoo(self, url, tweet):
         try:
             img_url = bs(urllib.urlopen("http://twitgoo.com/api/message/info"+url.path)).find('imageurl').string
-            temp_file = self.photo_dir+url.path[1:]
+            temp_file = os.path.join(self.photo_dir,url.path[1:])
             urllib.urlretrieve(img_url, temp_file)
             return [self.exif_extract(temp_file, tweet.text)]
         except Exception, err:
@@ -286,11 +287,15 @@ class URLAnalyzer():
                    'twitgoo.com':self.twitgoo}
         
         final_locations_list=[]
-        for i in re.findall("(https?://[\S]+)", tweet.text):  
+        for i in re.findall("(https?://[\S]+)", tweet.text):
+            print 'found link'  
             url = urlparse(i)
             try:
+                print 'trying to see if it has locations'
                 for loc in service.get(url.netloc, self.default_action)(url, tweet):
+                    print 'finished'
                     if loc:
+                        print 'added location to list'
                         final_locations_list.append(loc)
             except Exception, err:
                 self.errors.append({'from':'creepy', 'tweetid':0, 'url':'', 'error':err})

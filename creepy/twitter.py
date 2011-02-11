@@ -76,7 +76,8 @@ class Twitter():
             users = self.api.search_users(name)
             for user in users:
                 try:
-                    temp_file = '%sprofile_pic_%s' % (self.profilepics_dir, user.screen_name)
+                    filename = 'profile_pic_%s' % user.screen_name
+                    temp_file = os.path.join(self.profilepics_dir, filename)
                     urllib.urlretrieve(user.profile_image_url, temp_file)
                 except Exception, err:
                     pass
@@ -237,12 +238,14 @@ class Twitter():
         location = []
         errors = []
         for tweet in tweets:
+            print 'looking for locations in tweet nr %s' % tweet.id
             loc1 = self.get_status_location(tweet)
             if loc1:    
                 location.append(loc1)
             loc2, errors = self.urlanalyzer.get_photo_location(tweet)
             if loc2:
                 location.extend(loc2)
+            print 'done'
         return (location, errors)
         
              
@@ -255,17 +258,20 @@ class Twitter():
         """ 
         identifier_tweet ='tweets_'+username
         identifier_loc ='locations_'+username
-        
+        print 'getting tweets'
         results_params = {}
         #Check to see if we have saved tweets and locations for the current user
         tweets_old = self.unpickle_data(identifier_tweet)
         if tweets_old:
+            print 'had old tweets'
             latest_id = tweets_old['latest_id']
             oldest_id = tweets_old['oldest_id']
             latest, err = self.get_latest_tweets(username, latest_id)
+            print 'finished new tweets'
             if len(latest) > 0:
                 latest_id = latest[0].id
             older, err2 = self.get_older_tweets(username, oldest_id)
+            print 'finished old tweets'
             if len(older):
                 oldest_id = older[-1].id
             conn_err = dict(err, **err2)
@@ -273,17 +279,21 @@ class Twitter():
             tweets = self.sort_tweet_list(tweets)
             results_params['tweets'] = tweets_old['total']+len(latest)+len(older)
             locations_old = self.unpickle_data(identifier_loc)
+            print 'trying to get locations'
             locations_new, errors = self.get_tweets_locations(tweets)
+            print 'got locations'
             locations = locations_old+locations_new    
         else:
             tweets, conn_err = self.get_all_tweets(username)
-            locations, errors = self.get_tweets_locations(tweets)  
+            print 'received tweets'
+            locations, errors = self.get_tweets_locations(tweets)
+            print 'received locations' 
             if len(tweets) > 0:
                 latest_id = tweets[0].id
                 oldest_id = tweets[-1].id
             results_params['tweets'] = len(tweets)
             
-        
+        print 'received tweets'
         if conn_err:
             errors.append(conn_err)
             
@@ -304,8 +314,7 @@ class Twitter():
                 self.pickle_data(locations, identifier_loc)
              
             except Exception, err:
-                pass
-                #print 'Exception ',err
+                print 'Exception ',err
         else:
             results_params['tweets_count'] = 0
         return (locations, results_params)

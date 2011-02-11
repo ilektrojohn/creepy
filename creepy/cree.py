@@ -46,7 +46,9 @@ class Cree():
         twitparams = {}
         flickrparams={}
         if twittername != '':
+            print 'started looking for locations'
             twitlocs, twitparams = self.t.get_twitter_locations(twittername)
+            print 'and now i finished'
             if twitlocs:
                 location_list.extend(twitlocs)
         if flickrid != '':
@@ -54,6 +56,7 @@ class Cree():
             if flickrlocs:
                 location_list.extend(flickrlocs)
         params = dict(twitparams, **flickrparams)
+        print 'sent to gui'
         return (location_list, params)
 
     def search_for_users(self, service, query, param=''):

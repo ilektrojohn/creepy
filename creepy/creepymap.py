@@ -536,8 +536,13 @@ the pin to the box below, and hit OK')
         store = gtk.ListStore(str, str, str, gtk.gdk.Pixbuf)
         if users:
             for user in users:
-                file = '%sprofile_pic_%s' % (self.profilepics_dir, user.screen_name)
-                profile_pic = gtk.gdk.pixbuf_new_from_file(file)
+                filename = 'profile_pic_%s' % user.screen_name
+                file = os.path.join(self.profilepics_dir, filename)
+                try:
+                    profile_pic = gtk.gdk.pixbuf_new_from_file(file)
+                except Exception:
+                    default_file = os.path.join(self.CONF_DIR, 'default.jpg')
+                    profile_pic = gtk.gdk.pixbuf_new_from_file(default_file)
                 store.append([str(user.id), str(user.screen_name), str(user.name), profile_pic])
         return store
     
