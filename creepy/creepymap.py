@@ -749,7 +749,7 @@ the pin to the box below, and hit OK')
             self.draw_locations(self.locations)
     
     def draw_locations(self, locations):
-        pb = gtk.gdk.pixbuf_new_from_file_at_size (os.path.join(self.CONF_DIR, 'index.png'), 24,24)
+        pb = gtk.gdk.pixbuf_new_from_file_at_size(os.path.join(self.CONF_DIR, 'index.png'), 24,24)
         if locations:
             for l in locations:
                 self.osm.image_add(float(l['latitude']), float(l['longitude']), pb)
@@ -763,12 +763,13 @@ the pin to the box below, and hit OK')
 
     def search_for_locations(self, twit, flickr):
         self.locations, params = self.creepy.get_locations(self.twitter_target.get_text(), self.flickr_target.get_text())
+        print self.locations
         #gobject.idle_add(self.textbuffer.set_text, 'DONE !')
         if params:
             text = ''
             for err in params['errors']:
                 if err['from'] == 'twitter_connection':
-                    self.create_dialog('Twitter error', 'There some failwhale issues. We were not able to retrieve all \
+                    self.create_nonmodal_dialog('Twitter error', 'There some failwhale issues. We were not able to retrieve all \
                     of the users tweets. \n ')
                 text += 'Error while accessing %s .The problem was : %s \n ' % (err['url'], err['error'])
                 
@@ -777,7 +778,7 @@ the pin to the box below, and hit OK')
                                                                                                                       params['tweets_count'], 
                                                                                                                       params['locations'], 
                                                                                                                       len(params['errors']))
-            gobject.idle_add(self.textbuffer.insert, self.textbuffer.get_end_iter(), text)       
+            gobject.idle_add(self.textbuffer.insert, self.textbuffer.get_end_iter(), text)     
         gobject.idle_add(self.update_location_list, self.locations)
         gobject.idle_add(self.draw_locations, self.locations)
         gobject.idle_add(self.activate_search_button)
@@ -819,6 +820,17 @@ the pin to the box below, and hit OK')
         dialog.set_title(title)
         dialog.run()
         dialog.destroy()
+    
+    def create_nonmodal_dialog (self, title, text):
+        dialog = gtk.MessageDialog(
+                                   parent         = None,
+                                   flags          = gtk.DIALOG_DESTROY_WITH_PARENT,
+                                   type           = gtk.MESSAGE_INFO,
+                                   buttons        = gtk.BUTTONS_OK,
+                                   message_format = text)
+        dialog.set_title(title)
+        dialog.connect('response', lambda dialog, response: dialog.destroy())
+        dialog.show()
         
     def main(self):
         self.show_all()

@@ -220,7 +220,7 @@ class URLAnalyzer():
         Original photo not available so not much info to come from edited/resized pics. Discard? 
         '''
         try:
-            temp_file = od.path.join(self.photo_dir,url.path[1:])
+            temp_file = os.path.join(self.photo_dir,url.path[1:])
             photo_url = "http://img.pikchur.com/pic_"+url.path[1:]+"_l.jpg"
             urllib.urlretrieve(photo_url, temp_file)
             return [self.exif_extract(temp_file, tweet.text)]
@@ -287,15 +287,11 @@ class URLAnalyzer():
                    'twitgoo.com':self.twitgoo}
         
         final_locations_list=[]
-        for i in re.findall("(https?://[\S]+)", tweet.text):
-            print 'found link'  
+        for i in re.findall("(https?://[\S]+)", tweet.text):  
             url = urlparse(i)
             try:
-                print 'trying to see if it has locations'
                 for loc in service.get(url.netloc, self.default_action)(url, tweet):
-                    print 'finished'
                     if loc:
-                        print 'added location to list'
                         final_locations_list.append(loc)
             except Exception, err:
                 self.errors.append({'from':'creepy', 'tweetid':0, 'url':'', 'error':err})
