@@ -45,39 +45,39 @@ class CreepyUI(gtk.Window):
 
     def __init__(self):
         self.CONF_DIR = os.path.join(os.path.expanduser('~'), '.creepy')
-
+        self.locations = []
         gtk.Window.__init__(self, gtk.WINDOW_TOPLEVEL)
 
         self.set_default_size(800, 600)
         self.connect('destroy', lambda x: gtk.main_quit())
         self.set_title('Cree.py location creeper')
         
-	#If it is the first time creepy is run copy the config file and necessary images to .creepy
-	if not os.path.exists(self.CONF_DIR):
-	    os.mkdir(self.CONF_DIR)
-	    #If creepy was installed through the .deb package in ubuntu , the files needed would be in /usr/share/pyshared/creepy
+        #If it is the first time creepy is run copy the config file and necessary images to .creepy
+        if not os.path.exists(self.CONF_DIR):
+            os.mkdir(self.CONF_DIR)
+            #If creepy was installed through the .deb package in ubuntu , the files needed would be in /usr/share/pyshared/creepy
             if os.path.exists('/usr/share/pyshared/creepy'):
                 try:
-            	    shutil.copy('/usr/share/pyshared/creepy/include/creepy.conf', os.path.join(self.CONF_DIR, 'creepy.conf'))
-	    	    shutil.copy('/usr/share/pyshared/creepy/include/evil_twitter.png', os.path.join(self.CONF_DIR, 'evil_twitter.png'))
-	    	    shutil.copy('/usr/share/pyshared/creepy/include/flickr.png', os.path.join(self.CONF_DIR, 'flickr.png'))
-	            shutil.copy('/usr/share/pyshared/creepy/include/index.png', os.path.join(self.CONF_DIR, 'index.png'))
-	    	    shutil.copy('/usr/share/pyshared/creepy/include/default.jpg', os.path.join(self.CONF_DIR, 'default.jpg'))
+                    shutil.copy('/usr/share/pyshared/creepy/include/creepy.conf', os.path.join(self.CONF_DIR, 'creepy.conf'))
+                    shutil.copy('/usr/share/pyshared/creepy/include/evil_twitter.png', os.path.join(self.CONF_DIR, 'evil_twitter.png'))
+                    shutil.copy('/usr/share/pyshared/creepy/include/flickr.png', os.path.join(self.CONF_DIR, 'flickr.png'))
+                    shutil.copy('/usr/share/pyshared/creepy/include/index.png', os.path.join(self.CONF_DIR, 'index.png'))
+                    shutil.copy('/usr/share/pyshared/creepy/include/default.jpg', os.path.join(self.CONF_DIR, 'default.jpg'))
                 except Exception, err:
                     print err
-	    #If creepy is run from source folder (i.e. in Backtrack) with 'python creepymap.py' , needed files are in current dir
-	    else:
+            #If creepy is run from source folder (i.e. in Backtrack) with 'python creepymap.py' , needed files are in current dir
+            else:
                 try:
                     shutil.copy('include/creepy.conf', os.path.join(self.CONF_DIR, 'creepy.conf'))
-	    	    shutil.copy('include/evil_twitter.png', os.path.join(self.CONF_DIR, 'evil_twitter.png'))
-	    	    shutil.copy('include/flickr.png', os.path.join(self.CONF_DIR, 'flickr.png'))
-	            shutil.copy('include/index.png', os.path.join(self.CONF_DIR, 'index.png'))
-	    	    shutil.copy('include/default.jpg', os.path.join(self.CONF_DIR, 'default.jpg'))
-		except Exception, err:
+                    shutil.copy('include/evil_twitter.png', os.path.join(self.CONF_DIR, 'evil_twitter.png'))
+                    shutil.copy('include/flickr.png', os.path.join(self.CONF_DIR, 'flickr.png'))
+                    shutil.copy('include/index.png', os.path.join(self.CONF_DIR, 'index.png'))
+                    shutil.copy('include/default.jpg', os.path.join(self.CONF_DIR, 'default.jpg'))
+                except Exception, err:
                     print err	 
-	    #create the temp folders
+            #create the temp folders
             os.makedirs(os.path.join(self.CONF_DIR, 'cache'))
-	    os.makedirs(os.path.join(self.CONF_DIR, 'images'))
+            os.makedirs(os.path.join(self.CONF_DIR, 'images'))
             os.makedirs(os.path.join(self.CONF_DIR, 'images', 'profilepics'))  
             #write to the initial configuration file
             config_file = os.path.join(self.CONF_DIR, 'creepy.conf')
@@ -88,7 +88,7 @@ class CreepyUI(gtk.Window):
             tmp_conf['directories']['cache_dir'] = os.path.join(self.CONF_DIR, 'cache')
             tmp_conf['directories']['profilepics_dir'] = os.path.join(self.CONF_DIR, 'images', 'profilepics')
             tmp_conf.write()
-	
+            
         #Try to load the options file
         try:
             config_file = os.path.join(self.CONF_DIR, 'creepy.conf')
@@ -120,11 +120,53 @@ class CreepyUI(gtk.Window):
         file = gtk.MenuItem("File")
         file.set_submenu(filemenu)
         
+        
+        select_source_menu = gtk.Menu()
+        select_source = gtk.MenuItem("Map Source")
+        select_source.set_submenu(select_source_menu)
+        google_sat = gtk.MenuItem('Google Satellite ( Default )')
+        google_sat.connect('activate', self.reload_map, osmgpsmap.SOURCE_GOOGLE_SATELLITE)
+        select_source_menu.append(google_sat)
+        google_str = gtk.MenuItem('Google Street')
+        google_str.connect('activate', self.reload_map, osmgpsmap.SOURCE_GOOGLE_STREET)
+        select_source_menu.append(google_str)
+        google_hyb = gtk.MenuItem('Google Hybrid')
+        google_hyb.connect('activate', self.reload_map, osmgpsmap.SOURCE_GOOGLE_HYBRID)
+        select_source_menu.append(google_hyb)
+        openstreet = gtk.MenuItem('OpenStreetMap')
+        openstreet.connect('activate', self.reload_map, osmgpsmap.SOURCE_OPENSTREETMAP)
+        select_source_menu.append(openstreet)
+        mapsforfree = gtk.MenuItem('Maps For Free')
+        mapsforfree.connect('activate', self.reload_map, osmgpsmap.SOURCE_MAPS_FOR_FREE)
+        select_source_menu.append(mapsforfree)
+        virtualearth_sat = gtk.MenuItem('Virtual Earth Satellite')
+        virtualearth_sat.connect('activate', self.reload_map, osmgpsmap.SOURCE_VIRTUAL_EARTH_SATELLITE)
+        select_source_menu.append(virtualearth_sat)
+        virtualearth_str = gtk.MenuItem('Virtual Earth Street')
+        virtualearth_str.connect('activate', self.reload_map, osmgpsmap.SOURCE_VIRTUAL_EARTH_STREET)
+        select_source_menu.append(virtualearth_str)
+        virtualearth_hyb = gtk.MenuItem('Virtual Earth Hybrid')
+        virtualearth_hyb.connect('activate', self.reload_map, osmgpsmap.SOURCE_VIRTUAL_EARTH_HYBRID)
+        select_source_menu.append(virtualearth_hyb)
+        openaerial = gtk.MenuItem('OpenAerialMap')
+        openaerial.connect('activate', self.reload_map, osmgpsmap.SOURCE_OPENAERIALMAP)
+        select_source_menu.append(openaerial)
+        filemenu.append(select_source)
         exit = gtk.MenuItem("Exit")
         exit.connect("activate", gtk.main_quit)
         filemenu.append(exit)
         
+        editmenu = gtk.Menu()
+        edit = gtk.MenuItem("Edit")
+        edit.set_submenu(editmenu)
+        
+        settings = gtk.MenuItem('Settings')
+        settings.connect('activate', self.settings_dialog)
+        editmenu.append(settings)
+        
+        
         mb.append(file)
+        mb.append(edit)
         menubox = gtk.VBox(False, 2)
         menubox.pack_start(mb, False, False, 0)
         outer_box.pack_start(menubox, False, False, 0)
@@ -140,12 +182,13 @@ class CreepyUI(gtk.Window):
         notebook.append_page(tab1, label1)
         
         #Load the map
-        self.osm = osmgpsmap.GpsMap()
+        self.osm = osmgpsmap.GpsMap(map_source=osmgpsmap.SOURCE_GOOGLE_SATELLITE)
         self.osm.layer_add(
                     osmgpsmap.GpsMapOsd(
                         show_dpad=True,
                         show_zoom=True))
-        
+        #Added because default zoom level in google maps shows a white screen
+        self.osm.set_zoom(self.osm.props.zoom + 1)
         #connect keyboard shortcuts for the map
         self.osm.set_keyboard_shortcut(osmgpsmap.KEY_FULLSCREEN, gtk.gdk.keyval_from_name("F11"))
         self.osm.set_keyboard_shortcut(osmgpsmap.KEY_UP, gtk.gdk.keyval_from_name("Up"))
@@ -166,7 +209,9 @@ class CreepyUI(gtk.Window):
     
         maploc.attach(self.loc_list, 0, 2, 0, 5)
         self.update_location_list([])
-        maploc.attach(self.osm, 2, 5, 0, 5)
+        self.mapVBox = gtk.VBox(False, 0)
+        self.mapVBox.pack_start(self.osm)
+        maploc.attach(self.mapVBox, 2, 5, 0, 5)
 
         self.textview = gtk.TextView()
         self.textbuffer = self.textview.get_buffer()
@@ -179,7 +224,7 @@ class CreepyUI(gtk.Window):
         
         #Create the horizontal box that holds the buttons and the buttons themselves
         hbox = gtk.HBox(False, 0)
-        self.show_button = gtk.Button('Search for target')
+        self.show_button = gtk.Button('Get target\'s locations')
         self.show_button.connect('clicked', self.thread_show_clicked)
        
         
@@ -260,71 +305,58 @@ class CreepyUI(gtk.Window):
         
         tab2.pack_start(search_table)
         
-        #Create the settings tab
-        tab3 = gtk.VBox(False, 0)
-        label3 = gtk.Label('Settings')
-        notebook.append_page(tab3, label3)
-        
-        self.settings_table = gtk.Table(20, 10, True)
-        twit_label = gtk.Label('Twitter')
-        self.settings_table.attach(twit_label, 0, 1, 0, 1)
-        
-        
-        
-        self.twitbox = gtk.HBox(False, 0)
+    def settings_dialog(self, button):
+        settings = gtk.Dialog('Creepy Settings', None, 0, (gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL, gtk.STOCK_OK, gtk.RESPONSE_OK))
+        settings.set_default_size(400, 200)
+        self.settings_notebook = gtk.Notebook()
+        self.twitbox = gtk.VBox(False, 0)
+      
         #If creepy is already authorized, hide the option
         if self.config['twitter_auth']['access_key'] !='' and self.config['twitter_auth']['access_secret'] != '':
             self.set_twit_options(authorized=True)
         else:
             self.set_twit_options(authorized=False)
             
-        flickr_options = gtk.HBox(False, 0)
+        flickr_options = gtk.VBox(False, 0)
         flabel = gtk.Label('Flickr')
         flickr_key_label = gtk.Label('Flickr API key')
+        flickr_key_label.set_alignment(0,0.5)
         self.flickr_key = gtk.Entry()
         if self.config['flickr']['api_key'] != '':
             self.flickr_key.set_text(self.config['flickr']['api_key'])
-        flickr_key_button = gtk.Button('Save')
-        flickr_key_button.connect('clicked', self.save_flickr_config)
-        flickr_options.pack_start(flickr_key_label, False, False, 5)
-        flickr_options.pack_start(self.flickr_key, 20)
-        flickr_options.pack_end(flickr_key_button, False, False, 2)
+        flickr_options.pack_start(flickr_key_label)
+        flickr_options.pack_start(self.flickr_key)
         
         
         dir_label = gtk.Label('Photo locations')
-        img_options = gtk.HBox(False, 0)
-        prof_options = gtk.HBox(False, 0)
-        img_options_label = gtk.Label('Path for temporarily saved images')
-        prof_options_label = gtk.Label('Path for saved profile pictures')
+        img_options = gtk.VBox(False, 0)
+        img_options_label = gtk.Label('Saved images')
+        img_options_label.set_alignment(0,1)
+        prof_options_label = gtk.Label('Saved profile pictures')
+        prof_options_label.set_alignment(0,1)
         self.img_options_entry = gtk.Entry()
         self.prof_options_entry = gtk.Entry()
         self.img_options_entry.set_text(self.config['directories']['img_dir'])
         self.prof_options_entry.set_text(self.config['directories']['profilepics_dir'])
-        img_options_button = gtk.Button('Save')
-        img_options_button.connect('clicked', self.save_img_options)
-        prof_options_button = gtk.Button('Save')
-        prof_options_button.connect('clicked', self.save_prof_options)
-        img_options.pack_start(img_options_label, False, False, 5)
-        img_options.pack_start(self.img_options_entry, True, True, 10)
-        img_options.pack_end(img_options_button, False, False, 5)
-        prof_options.pack_start(prof_options_label, False, False, 5)
-        prof_options.pack_start(self.prof_options_entry, True, True, 10)
-        prof_options.pack_end(prof_options_button, False, False, 5)
+        img_options.pack_start(img_options_label)
+        img_options.pack_start(self.img_options_entry)
+        img_options.pack_start(prof_options_label)
+        img_options.pack_start(self.prof_options_entry)
         clear_cache_button = gtk.Button('Clear photos cache')
         clear_cache_button.connect('clicked', self.clear_photo_cache)
+        img_options.pack_start(clear_cache_button)
+        self.settings_notebook.append_page(flickr_options, flabel)
+        self.settings_notebook.append_page(img_options, dir_label)
+        settings.vbox.pack_start(self.settings_notebook)
         
-        self.settings_table.attach(flabel, 0, 1, 3, 4)
-        self.settings_table.attach(flickr_options, 0, 10, 4, 5)
+        settings.show_all()
+        response = settings.run()
+        if response == gtk.RESPONSE_OK:
+            self.save_img_options()
+            self.save_prof_options()
+            self.save_flickr_config()
+        settings.destroy()
         
-        self.settings_table.attach(dir_label, 0, 2, 6, 7)
-        self.settings_table.attach(img_options, 0, 10, 7, 8)
-        self.settings_table.attach(prof_options, 0, 10, 8, 9)
-        self.settings_table.attach(clear_cache_button, 8,10, 9, 10)
-        
-        tab3.pack_start(self.settings_table)
-        
-    
-    
     def clear_photo_cache(self, button):
         folders = (self.config['directories']['img_dir'], self.config['directories']['profilepics_dir'])
         for folder in folders:
@@ -334,23 +366,22 @@ class CreepyUI(gtk.Window):
                     if os.path.isfile(file_path):
                         os.unlink(file_path)
                 except Exception, err:
-                    self.create_dialog('Error ', 'Error deleting folders, please do it manually')
-        text = 'Contents of folder %s were successfully deleted' % folder
+                    error_text = 'Error deleting folders, please do it manually. Error was : %s' % err
+                    self.create_dialog('Error ', error_text)
+        text = 'Contents of folder were successfully deleted' 
         self.create_dialog('Success', text)
         
-    def save_img_options(self, button):
+    def save_img_options(self):
         self.config['directories']['img_dir'] = self.img_options_entry.get_text()
         self.config.write()
-        self.create_dialog('Success', 'Changes successfully saved')
-    def save_prof_options(self, button):
+    def save_prof_options(self):
         self.config['directories']['profilepics_dir'] = self.prof_options_entry.get_text()
         self.config.write()
-        self.create_dialog('Success', 'Changes successfully saved')
-    def save_flickr_config(self, button):
+    def save_flickr_config(self):
         self.config['flickr']['api_key'] = self.flickr_key.get_text()
         self.config.write()
-        self.create_dialog('Success', 'Flickr API key successfully saved')
     def set_twit_options(self, authorized):
+        twit_label = gtk.Label('Twitter')
         if self.twitbox:
             for i in self.twitbox.get_children():
                 self.twitbox.remove(i)
@@ -359,21 +390,24 @@ class CreepyUI(gtk.Window):
         
         if authorized == False :   
             auth_button = gtk.Button('Authorize Creepy')
-            auth_button.set_tooltip_text('Clicking this will open your browser to access twitter and get an authorization pin')
+            auth_button.set_tooltip_text('Clicking this will open your browser to access twitter and get an authorization pin. Copy paste \
+the pin to the box below, and hit OK')
             auth_button.connect('clicked', self.button_authorize_twitter)
             self.auth_pin = gtk.Entry()
             auth_pin_label = gtk.Label('Pin :')
+            auth_pin_label.set_alignment(0,1)
             self.auth_finalize_button = gtk.Button('OK')
             self.auth_finalize_button.set_sensitive(0)
             self.auth_pin.connect('changed', self.set_button_active)
             self.auth_finalize_button.connect('clicked', self.fin_authorize_twitter)
         
-            self.twitbox.pack_start(auth_button, False, False, 0)
+            self.twitbox.pack_start(auth_button, False, False, 15)
             self.twitbox.pack_end(self.auth_finalize_button, False, False, 5)
-            self.twitbox.pack_end(self.auth_pin, False, False, 20)
-            self.twitbox.pack_end(auth_pin_label, False, False, 20)
-            self.settings_table.attach(self.twitbox, 0, 10, 1, 2)
-            self.settings_table.show_all()
+            self.twitbox.pack_end(self.auth_pin, False, False, 0)
+            self.twitbox.pack_end(auth_pin_label, False, False, 5)
+            self.settings_notebook.prepend_page(self.twitbox, twit_label)
+            self.settings_notebook.set_current_page(0)
+            self.settings_notebook.show_all()
 
         else:
             authorized_label = gtk.Label('Creepy is already authorized for Twitter.')
@@ -381,8 +415,9 @@ class CreepyUI(gtk.Window):
             reset_button.connect('clicked', self.reset_auth_settings)
             self.twitbox.pack_start(authorized_label, False, False, 0)
             self.twitbox.pack_end(reset_button, False, False, 0)
-            self.settings_table.attach(self.twitbox, 0, 10, 1, 2)
-            self.settings_table.show_all()
+            self.settings_notebook.prepend_page(self.twitbox, twit_label)
+            self.settings_notebook.set_current_page(0)
+            self.settings_notebook.show_all()
             
     def set_auth(self, conf_file):    
         self.creepy = cree.Cree(conf_file)   
@@ -390,8 +425,9 @@ class CreepyUI(gtk.Window):
     def reset_auth_settings(self, button):
         self.config['twitter_auth']['access_key'] = ''
         self.config['twitter_auth']['access_secret'] = ''
-        self.config.write()    
-        self.settings_table.remove(self.twitbox)
+        self.config.write()
+        self.settings_notebook.remove_page(0)    
+        #self.settings_table.remove(self.twitbox)
         self.set_twit_options(authorized=False)
       
     def set_button_active(self, button):
@@ -412,7 +448,8 @@ class CreepyUI(gtk.Window):
             self.config['twitter_auth']['access_key'] = key
             self.config['twitter_auth']['access_secret'] = secret
             self.config.write()
-            self.settings_table.remove(self.twitbox)
+            self.settings_notebook.remove_page(0)
+            #self.settings_table.remove(self.twitbox)
             self.set_twit_options(authorized=True)
             self.set_auth(self.config)
         except Exception, err:
@@ -424,8 +461,8 @@ class CreepyUI(gtk.Window):
                                    buttons        = gtk.BUTTONS_OK,
                                    message_format = message)
         dialog.set_title('Twitter authentication')
-        dialog.connect('response', lambda dialog, response: dialog.destroy())
-        dialog.show()
+        dialog.run()
+        dialog.destroy()
         
         
     def search_twitter(self, username):
@@ -470,8 +507,6 @@ class CreepyUI(gtk.Window):
             Thread(target=lambda : self.search_flickr_realname(name)).start()
         else :
             self.create_dialog('error', 'Did you forget something ?? \n The search query maybe ??')
-    def select_target(self, button):
-        username = self.twitter_username.get_text()
         
     def clear_flickr_list(self, button):    
         self.update_flickrusername_list([])
@@ -614,6 +649,7 @@ class CreepyUI(gtk.Window):
         
         treeView = gtk.TreeView(store)
         treeView.connect("row-activated", self.location_activated)
+        treeView.connect('button-press-event' , self.on_button_press_event)
         treeView.set_rules_hint(True)
         sw.add(treeView)
         
@@ -642,6 +678,43 @@ class CreepyUI(gtk.Window):
         col = gtk.TreeViewColumn("Time", rendererText, text=3)
         col.set_sort_column_id(3)
         treeView.append_column(col)
+        
+    def copy_to_clipboard(self, obj, coord):
+        string = '%s, %s' % (float(coord[0]), float(coord[1]))
+        clipboard = gtk.Clipboard(gtk.gdk.display_manager_get().get_default_display(), "CLIPBOARD")
+        clipboard.set_text(string)
+    
+    def open_googlemaps(self, button, coord):
+        url = 'http://maps.google.com/maps?q=%s,%s' % (float(coord[0]), float(coord[1]))
+        webbrowser.open(url)
+        
+    def on_button_press_event(self, treeview, event):
+        if event.button == 3:
+            x = int(event.x)
+            y = int(event.y)
+            time = event.time
+            pthinfo = treeview.get_path_at_pos(x, y)
+            if pthinfo is not None:
+                path, col, cellx, celly = pthinfo
+                treeview.grab_focus()
+                treeview.set_cursor( path, col, 0)
+                
+                model = treeview.get_model()
+                
+                location_popup = gtk.Menu()
+                copy_clipboard = gtk.MenuItem("Copy to clipboard")
+                open_googlemap = gtk.MenuItem("Open in browser (google maps)")
+                location_popup.append(copy_clipboard)
+                location_popup.append(open_googlemap)
+                copy_clipboard.connect('activate', self.copy_to_clipboard, (model[path[0]][1], model[path[0]][2]))
+                open_googlemap.connect('activate', self.open_googlemaps, (model[path[0]][1], model[path[0]][2]))
+                copy_clipboard.show()
+                open_googlemap.show()
+                location_popup.popup( None, None, None, event.button, time)
+            return True
+    
+        
+        
     
     def location_activated(self, widget, row, col):
         
@@ -649,6 +722,26 @@ class CreepyUI(gtk.Window):
         self.osm.set_center_and_zoom(float(model[row][1]), float(model[row][2]), 12)
         self.osm.set_zoom(self.osm.props.zoom + 3)
         self.textbuffer.set_text(model[row][0])
+    
+    def reload_map(self, button, source):
+        #remove old map 
+        if self.osm:
+            self.mapVBox.remove(self.osm)
+        try:
+            self.osm = osmgpsmap.GpsMap(map_source=source)
+        except Exception, e:
+            print "ERROR:", e
+            self.osm = osmgpsmap.GpsMap()
+        self.osm.layer_add(
+                    osmgpsmap.GpsMapOsd(
+                        show_dpad=True,
+                        show_zoom=True))
+        #Added because default zoom level in google maps shows a white screen
+        self.osm.set_zoom(self.osm.props.zoom + 1)
+        self.mapVBox.pack_start(self.osm)
+        self.osm.show()
+        if self.locations:
+            self.draw_locations(self.locations)
     
     def draw_locations(self, locations):
         pb = gtk.gdk.pixbuf_new_from_file_at_size (os.path.join(self.CONF_DIR, 'index.png'), 24,24)
@@ -664,7 +757,7 @@ class CreepyUI(gtk.Window):
 
 
     def search_for_locations(self, twit, flickr):
-        locations, params = self.creepy.get_locations(self.twitter_target.get_text(), self.flickr_target.get_text())
+        self.locations, params = self.creepy.get_locations(self.twitter_target.get_text(), self.flickr_target.get_text())
         #gobject.idle_add(self.textbuffer.set_text, 'DONE !')
         if params:
             text = ''
@@ -680,8 +773,8 @@ class CreepyUI(gtk.Window):
                                                                                                                       params['locations'], 
                                                                                                                       len(params['errors']))
             gobject.idle_add(self.textbuffer.insert, self.textbuffer.get_end_iter(), text)       
-        gobject.idle_add(self.update_location_list, locations)
-        gobject.idle_add(self.draw_locations, locations)
+        gobject.idle_add(self.update_location_list, self.locations)
+        gobject.idle_add(self.draw_locations, self.locations)
         gobject.idle_add(self.activate_search_button)
         
     def thread_show_clicked(self, button):
@@ -719,10 +812,11 @@ class CreepyUI(gtk.Window):
                                    buttons        = gtk.BUTTONS_OK,
                                    message_format = text)
         dialog.set_title(title)
-        dialog.connect('response', lambda dialog, response: dialog.destroy())
-        dialog.show()
+        dialog.run()
+        dialog.destroy()
+        
     def main(self):
-	self.show_all()
+        self.show_all()
         if os.name == "nt": gtk.gdk.threads_enter()
         gtk.main()
         if os.name == "nt": gtk.gdk.threads_leave()

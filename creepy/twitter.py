@@ -90,8 +90,8 @@ class Twitter():
         """
         Serializes data
         """
-        filename = '%screepy_%s.pcl' % (self.cache_dir, identifier)
-        file = open(filename, 'w')
+        filename = 'creepy_%s.pcl' % (identifier)
+        file = open(os.path.join(self.cache_dir, filename), 'w')
         pickle.dump(data, file)
         file.close()
     
@@ -99,9 +99,9 @@ class Twitter():
         """
         Unserializes data
         """
-        filename = '%screepy_%s.pcl' % (self.cache_dir, identifier)
-        if os.path.exists(filename):
-            file = open(filename, 'r')
+        filename = 'creepy_%s.pcl' % (identifier)
+        if os.path.exists(os.path.join(self.cache_dir, filename)):
+            file = open(os.path.join(self.cache_dir, filename), 'r')
             try:
                 data = pickle.load(file)
                 return data
