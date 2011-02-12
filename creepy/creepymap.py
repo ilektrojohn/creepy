@@ -763,7 +763,6 @@ the pin to the box below, and hit OK')
 
     def search_for_locations(self, twit, flickr):
         self.locations, params = self.creepy.get_locations(self.twitter_target.get_text(), self.flickr_target.get_text())
-        print self.locations
         #gobject.idle_add(self.textbuffer.set_text, 'DONE !')
         if params:
             text = ''

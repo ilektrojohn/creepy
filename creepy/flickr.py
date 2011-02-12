@@ -180,6 +180,7 @@ class Flickr():
         Returns all the locations detected from the user's photos
         """
         locations_list = []
+        result_params = {}
         results = self.api.people_getPublicPhotos(user_id=id, extras="geo, date_taken", per_page=500)
         if results.attrib['stat'] == 'ok':
             res = results.find('photos')
@@ -191,4 +192,4 @@ class Flickr():
                     locations_list.extend(self.get_locations(self.get_user_photos(id, i)))
             else:
                 locations_list.extend(self.get_locations(results.find('photos').findall('photo')))
-        return locations_list
+        return (locations_list, result_params)
