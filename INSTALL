@@ -9,7 +9,7 @@ Requirements :
 
 
 Ubuntu 10.10
----------------------
+-----------------------------------------------------------------
 
 Semi-Automatic way (Recommended):
 
@@ -117,3 +117,16 @@ Install python modules needed :
 
 Download creepy from github, unpack and run 
 # python creepymap.py
+
+
+
+
+MS Windows
+----------------------------------------------------------------------------------------
+
+Download the installer from  https://github.com/downloads/ilektrojohn/creepy/Creepy_Setup.exe 
+
+Run it, Done. 
+
+All dependencies are included in the exe. 
+ 
