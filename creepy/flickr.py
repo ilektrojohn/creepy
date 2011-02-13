@@ -36,6 +36,7 @@ class Flickr():
     
         self.api = flickrapi.FlickrAPI(conf_file['flickr']['api_key'])
         self.photo_dir = conf_file['directories']['profilepics_dir']
+        
 
     def search_real_name(self, input):
         """
@@ -116,7 +117,6 @@ class Flickr():
             result = self.api.people_findByUsername(username=username)
             return result.find('user').attrib['nsid']
         except FlickrError, err:
-            #print 'Error from flickr api ', err
             return
         
     def get_user_info(self, id):
@@ -145,10 +145,13 @@ class Flickr():
         Authentication and retrieval of protected photos is not yet implemented
         Returns a list with all the photos 
         """
-        results = self.api.people_getPublicPhotos(user_id=id, extras="geo, date_taken", per_page=500, page=page_nr)
-        if results.attrib['stat'] == 'ok':
-            return results.find('photos').findall('photo')
-        
+        try:
+            results = self.api.people_getPublicPhotos(user_id=id, extras="geo, date_taken", per_page=500, page=page_nr)
+            if results.attrib['stat'] == 'ok':
+                return results.find('photos').findall('photo')
+        except Exception , err:
+            conn_err = {'from':'flickr', 'tweetid':'', 'url': 'flickr' ,'error':err.message}
+            self.errors.append(conn_err)
     
  
     def get_locations(self, photos):
@@ -179,17 +182,25 @@ class Flickr():
         
         Returns all the locations detected from the user's photos
         """
+        self.errors = []
         locations_list = []
         result_params = {}
-        results = self.api.people_getPublicPhotos(user_id=id, extras="geo, date_taken", per_page=500)
-        if results.attrib['stat'] == 'ok':
-            res = results.find('photos')
-            total_photos = res.attrib['total']
-            pages = int(res.attrib['pages'])
-            #print "pages :" + str(pages) + " , total :" + total_photos
-            if pages > 1:
-                for i in range(1, pages + 1, 1):
-                    locations_list.extend(self.get_locations(self.get_user_photos(id, i)))
-            else:
-                locations_list.extend(self.get_locations(results.find('photos').findall('photo')))
+        try:
+            results = self.api.people_getPublicPhotos(user_id=id, extras="geo, date_taken", per_page=500)
+        
+            if results.attrib['stat'] == 'ok':
+                res = results.find('photos')
+                total_photos = res.attrib['total']
+                pages = int(res.attrib['pages'])
+                #print "pages :" + str(pages) + " , total :" + total_photos
+                if pages > 1:
+                    for i in range(1, pages + 1, 1):
+                        locations_list.extend(self.get_locations(self.get_user_photos(id, i)))
+                else:
+                    locations_list.extend(self.get_locations(results.find('photos').findall('photo')))
+                
+        except FlickrError, err:
+            conn_err = {'from':'flickr_photos', 'tweetid':'', 'url': 'flickr' ,'error':err.message}
+            self.errors.append(conn_err)
+            result_params['flickr_errors'] = self.errors
         return (locations_list, result_params)

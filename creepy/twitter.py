@@ -60,9 +60,9 @@ class Twitter():
         Returns the authorization URL that the user needs to follow
         in order to 'sign in with twitter'
         """
-	auth = tweepy.OAuthHandler(key, secret)
+        auth = tweepy.OAuthHandler(key, secret)
         url = auth.get_authorization_url(True)
-       	return (auth, url)
+        return (auth, url)
         
     def search_user(self, name):
         """
@@ -134,7 +134,7 @@ class Twitter():
                 timeline.append(i)
     
         except tweepy.TweepError, err:
-            conn_err = {'from':'twitter_connection', 'tweetid':'', 'url': 'twitter' ,'error':err}
+            conn_err = {'from':'twitter_connection', 'tweetid':'', 'url': 'twitter' ,'error':err.reason}
             #print 'Connection to twitter failed with error :', err
         return (timeline, conn_err)
     
@@ -287,7 +287,7 @@ class Twitter():
             errors.append(conn_err)
             
         results_params['locations'] = len(locations)
-        results_params['errors'] = errors
+        results_params['twitter_errors'] = errors
         
         
         

@@ -467,10 +467,10 @@ the pin to the box below, and hit OK')
         
     def search_twitter(self, username):
         users = self.creepy.search_for_users('twitter', username)
-        if len(users) == 0 :
-            self.create_dialog('Error', 'No results for the search query')
+        if not users or len(users) == 0 :
+            self.create_nonmodal_dialog('Error', 'No results for the search query')
         elif users[0] == 'auth_error':
-            self.create_dialog('Error', 'Only authenticated users can search for users. Check your settings')
+            self.create_nonmodal_dialog('Error', 'Only authenticated users can search for users. Check your settings')
         else:
             gobject.idle_add(self.update_twitterusername_list, users)
     
@@ -482,8 +482,8 @@ the pin to the box below, and hit OK')
             self.create_dialog('error', 'Did you forget something ?? \n The search query maybe ??')
     def search_flickr(self, username):
         users = self.creepy.search_for_users('flickr', username, 'username')
-        if len(users) == 0 :
-            self.create_dialog('Error', 'No results for the search query')
+        if not users or len(users) == 0 :
+            self.create_nonmodal_dialog('Error', 'No results for the search query')
         else:
             gobject.idle_add(self.update_flickrusername_list, users)
     
@@ -495,8 +495,8 @@ the pin to the box below, and hit OK')
             self.create_dialog('error', 'Did you forget something ?? \n The search query maybe ??')
     def search_flickr_realname(self, name):
         users = self.creepy.search_for_users('flickr', name, 'realname')
-        if len(users) == 0 :
-            self.create_dialog('Error', 'No results for the search query')
+        if not users or len(users) == 0 :
+            self.create_nonmodal_dialog('Error', 'No results for the search query')
         else:
             gobject.idle_add(self.update_flickrusername_list, users)
        
@@ -765,19 +765,31 @@ the pin to the box below, and hit OK')
         self.locations, params = self.creepy.get_locations(self.twitter_target.get_text(), self.flickr_target.get_text())
         #gobject.idle_add(self.textbuffer.set_text, 'DONE !')
         if params:
-            text = ''
-            for err in params['errors']:
-                if err['from'] == 'twitter_connection':
-                    self.create_nonmodal_dialog('Twitter error', 'There some failwhale issues. We were not able to retrieve all \
-                    of the users tweets. \n ')
-                text += 'Error while accessing %s .The problem was : %s \n ' % (err['url'], err['error'])
-                
-            text += ' \n %s tweets have been retrieved out of a total of %s. \n From them, we were able to extract %s locations. \n \
-            We encountered %s errors in total accessing various services. \n '                                     % (params['tweets'], 
-                                                                                                                      params['tweets_count'], 
-                                                                                                                      params['locations'], 
-                                                                                                                      len(params['errors']))
-            gobject.idle_add(self.textbuffer.insert, self.textbuffer.get_end_iter(), text)     
+            if 'flickr_errors' in params:
+                for err in params['flickr_errors']:
+                    if err['from'] == 'flickr_photos':
+                        textfl = 'Error was %s' % err['error']
+                        self.create_nonmodal_dialog('Error connecting to flickr', textfl)
+            if 'twitter_errors' in params:
+                text = ''
+                for err in params['twitter_errors']:
+                    if err['from'] == 'twitter_connection':
+                        if err['error'] == 'Not found':
+                            self.create_nonmodal_dialog('Wrong username', 'The selected target does not correspond to a twitter username. Please \
+    try the search function if you are unsure ')
+                        elif err['error'] == 'Failed to send request: [Errno -2] Name or service not known':
+                            self.create_nonmodal_dialog('Connection Error', 'Could not connect to twitter, please check your connection settings and try again')
+                        else:
+                            self.create_nonmodal_dialog('Twitter error', 'There some failwhale issues. We were not able to retrieve all \
+    of the users tweets. \n ')
+                    text += 'Error while accessing %s .The problem was : %s \n ' % (err['url'], err['error'])
+      
+                text += ' \n %s tweets have been retrieved out of a total of %s. \n From them, we were able to extract %s locations. \n \
+                We encountered %s errors in total accessing various services. \n '                                     % (params['tweets'], 
+                                                                                                                              params['tweets_count'], 
+                                                                                                                              params['locations'], 
+                                                                                                                              len(params['twitter_errors']))
+                gobject.idle_add(self.textbuffer.insert, self.textbuffer.get_end_iter(), text)     
         gobject.idle_add(self.update_location_list, self.locations)
         gobject.idle_add(self.draw_locations, self.locations)
         gobject.idle_add(self.activate_search_button)
