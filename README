@@ -1,6 +1,6 @@
 #creepy
 
-##Version : 0.1
+##Current Version : 0.1.3
 
 ##Author : Yiannis Kakavas <jkakavas__AT__gmail__dot__com>
 
@@ -21,8 +21,12 @@ was posted from that specific location) to provide context to the presentation.
 
 ##Features
 
+1)Available map providers
+    *Google Maps
+    *Virtual Maps
+    *OpenStreetMaps
 
-1)Location information retrieval from :
+2)Location information retrieval from :
 
     *Twitter's tweet location
         **Coordinates when tweet was posted from mobile device
@@ -34,13 +38,13 @@ was posted from that specific location) to provide context to the presentation.
     *EXIF tags from the photos posted.
 
 
-2)Social networking platforms currently supported :
+3)Social networking platforms currently supported :
 
     *Twitter
     *Foursquare (only checkins that are posted to twitter)
 
 
-3)Image hosting services currently supported :
+4)Image hosting services currently supported :
 
     *flickr - information retrieved from API
     *twitpic.com - information retrieved from API and photo exif tags
@@ -56,13 +60,13 @@ was posted from that specific location) to provide context to the presentation.
     *twitgoo.com - information retrieved from photo exif tags
 
 
-4)Automatic caching of retrieved information in order to reduce API calls and the possibility of hiting limit rates.
+5)Automatic caching of retrieved information in order to reduce API calls and the possibility of hiting limit rates.
 
-5)GUI with navigate-able map for better overview of the accumulated information
+6)GUI with navigate-able map for better overview of the accumulated information
 
-6)Handling twitter authentication in an easy way using oAuth. User credentials are not shared with the application.
+7)Handling twitter authentication in an easy way using oAuth. User credentials are not shared with the application.
 
-7)User/target search for twitter and flickr. 
+8)User/target search for twitter and flickr. 
 
 
 Inspired by 
