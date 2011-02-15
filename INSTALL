@@ -18,6 +18,11 @@ Install tweepy :
 
 # easy_install tweepy
 
+Add pyexiv2 PPA to your repositories list :
+
+`# add-apt-repository ppa:pyexiv2-developers/ppa`
+`# apt-get update`
+
 Download and install the .deb package from https://github.com/ilektrojohn/creepy/downloads .
 
 Alternatively add creepy's ppa with :
