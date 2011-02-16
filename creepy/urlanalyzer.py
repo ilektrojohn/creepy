@@ -22,6 +22,8 @@ This file is part of creepy.
 import re
 import urllib, simplejson
 import pyexiv2
+from PIL import Image
+from PIL.ExifTags import TAGS
 import time
 import os.path
 from datetime import datetime
@@ -70,6 +72,7 @@ class URLAnalyzer():
             self.errors.append({'from':'foursqare', 'tweetid':tweet.id, 'url': url.geturl() ,'error':err})
             return []
     
+   
     def exif_extract(self, temp_file, context):
         def calc(k): return [(float(n)/float(d)) for n,d in [k.split("/")]][0]
         def degtodec(a): return a[0]+a[1]/60+a[2]/3600
@@ -86,16 +89,20 @@ class URLAnalyzer():
                 coordinates['context'] = 'Location retrieved from image exif metadata .Tweet was %s' % (context)
                 coordinates['time'] = datetime.fromtimestamp(mktime(time.strptime(exif_data['Exif.Image.DateTime'].raw_value, "%Y:%m:%d %H:%M:%S")))
                 coordinates['latitude'] = format_coordinates(exif_data['Exif.GPSInfo.GPSLatitude'].raw_value)
-                coordinates['lat_ref'] = exif_data['Exif.GPSInfo.GPSLatitudeRef'].raw_value
+                lat_ref = exif_data['Exif.GPSInfo.GPSLatitudeRef'].raw_value
+                if lat_ref == 'S':
+                    coordinates['latitude'] = -coordinates['latitude']
                 coordinates['longitude'] = format_coordinates(exif_data['Exif.GPSInfo.GPSLongitude'].raw_value)
-                coordinates['long_ref'] = exif_data['Exif.GPSInfo.GPSLongitudeRef'].raw_value
+                long_ref = exif_data['Exif.GPSInfo.GPSLongitudeRef'].raw_value
+                if long_ref == 'W':
+                    coordinates['longitude'] = -coordinates['longitude']
                 return coordinates
             else:
                 return []
         except Exception, err:
             self.errors.append({'from':'exif', 'tweetid':0, 'url':'', 'error':err})
             #print 'Exception  ' , err
-            
+     
             
             
     def tp(self, url, tweet):
