@@ -124,7 +124,7 @@ class CreepyUI(gtk.Window):
         select_source_menu = gtk.Menu()
         select_source = gtk.MenuItem("Map Source")
         select_source.set_submenu(select_source_menu)
-        google_sat = gtk.MenuItem('Google Satellite ( Default )')
+        google_sat = gtk.MenuItem('Google Satellite')
         google_sat.connect('activate', self.reload_map, osmgpsmap.SOURCE_GOOGLE_SATELLITE)
         select_source_menu.append(google_sat)
         google_str = gtk.MenuItem('Google Street')
@@ -139,13 +139,13 @@ class CreepyUI(gtk.Window):
         mapsforfree = gtk.MenuItem('Maps For Free')
         mapsforfree.connect('activate', self.reload_map, osmgpsmap.SOURCE_MAPS_FOR_FREE)
         select_source_menu.append(mapsforfree)
-        virtualearth_sat = gtk.MenuItem('Virtual Earth Satellite')
+        virtualearth_sat = gtk.MenuItem('Virtual Earth Satellite ')
         virtualearth_sat.connect('activate', self.reload_map, osmgpsmap.SOURCE_VIRTUAL_EARTH_SATELLITE)
         select_source_menu.append(virtualearth_sat)
         virtualearth_str = gtk.MenuItem('Virtual Earth Street')
         virtualearth_str.connect('activate', self.reload_map, osmgpsmap.SOURCE_VIRTUAL_EARTH_STREET)
         select_source_menu.append(virtualearth_str)
-        virtualearth_hyb = gtk.MenuItem('Virtual Earth Hybrid')
+        virtualearth_hyb = gtk.MenuItem('Virtual Earth Hybrid ( Default )')
         virtualearth_hyb.connect('activate', self.reload_map, osmgpsmap.SOURCE_VIRTUAL_EARTH_HYBRID)
         select_source_menu.append(virtualearth_hyb)
         openaerial = gtk.MenuItem('OpenAerialMap')
@@ -182,7 +182,7 @@ class CreepyUI(gtk.Window):
         notebook.append_page(tab1, label1)
         
         #Load the map
-        self.osm = osmgpsmap.GpsMap(map_source=osmgpsmap.SOURCE_GOOGLE_SATELLITE)
+        self.osm = osmgpsmap.GpsMap(map_source=osmgpsmap.SOURCE_VIRTUAL_EARTH_HYBRID)
         self.osm.layer_add(
                     osmgpsmap.GpsMapOsd(
                         show_dpad=True,
@@ -243,6 +243,7 @@ class CreepyUI(gtk.Window):
         #Create a table to hold all stuff here
         search_table = gtk.Table(20, 10, True)
         t_label0 = gtk.Label('Selected Targets')
+        targets_instructions = gtk.Label('Fill in the details for your targets or use the search function below')
         twitter_target_label = gtk.Label('Twitter Username')
         self.twitter_target = gtk.Entry()
         flickr_target_label = gtk.Label('Flickr UserID')
@@ -250,6 +251,8 @@ class CreepyUI(gtk.Window):
         
         
         self.twitter_username = gtk.Entry()
+        tsearchtext = gtk.Label('Use the form below to search for twitter users if necessary')
+        fsearchtext = gtk.Label('Use the form below to search for flickr users if necessary')
         t_label1 = gtk.Label('Search for:')
         search_twitter_button = gtk.Button('Search')
         search_twitter_button.connect('clicked', self.thread_search_twitter)
@@ -262,17 +265,19 @@ class CreepyUI(gtk.Window):
         
 
         self.twitter_list = gtk.VBox(False, 0)
-        search_table.attach(t_label0, 0, 2, 0, 1)
-        search_table.attach(twitter_target_label, 0, 2, 1, 2)
-        search_table.attach(self.twitter_target, 2, 4 , 1, 2)
-        search_table.attach(flickr_target_label, 4, 6, 1, 2)
-        search_table.attach(self.flickr_target, 7, 9, 1, 2)
-        search_table.attach(twitter_im, 0, 1, 2, 4)
-        search_table.attach(t_label1, 0, 1, 4, 5)
-        search_table.attach(self.twitter_username, 1, 4, 4, 5)
-        search_table.attach(search_twitter_button, 5, 7, 4, 5)
-        search_table.attach(clear_twitter_button, 8, 10, 4, 5)
-        search_table.attach(self.twitter_list, 0, 10, 5, 10)
+        search_table.attach(t_label0, 4, 6, 0, 1)
+        search_table.attach(targets_instructions, 0, 10, 1, 2)
+        search_table.attach(twitter_target_label, 0, 2, 2, 3)
+        search_table.attach(self.twitter_target, 2, 4 , 2, 3)
+        search_table.attach(flickr_target_label, 6, 8, 2, 3)
+        search_table.attach(self.flickr_target, 8, 10, 2, 3)
+        search_table.attach(tsearchtext, 2, 8, 4, 5)
+        search_table.attach(twitter_im, 0, 1, 3, 5)
+        search_table.attach(t_label1, 0, 1, 5, 6)
+        search_table.attach(self.twitter_username, 1, 4, 5, 6)
+        search_table.attach(search_twitter_button, 5, 7, 5, 6)
+        search_table.attach(clear_twitter_button, 8, 10, 5, 6)
+        search_table.attach(self.twitter_list, 0, 10, 6, 11)
         self.update_twitterusername_list([])
         
         #add flickr search
@@ -291,16 +296,16 @@ class CreepyUI(gtk.Window):
         search_flickrreal_button.connect('clicked', self.thread_search_flickr_realname)
         clear_flickr_button = gtk.Button('Clear')
         clear_flickr_button.connect('clicked', self.clear_flickr_list)
-        #search_table.attach(t_label_twitter, 2, 4, 3, 4)
-        search_table.attach(flickr_im, 0, 1, 10, 12)
-        search_table.attach(t_label2, 0, 1, 12, 13)
-        search_table.attach(self.flickr_username, 1, 4, 12, 13)
-        search_table.attach(search_flickr_button, 4, 5, 12, 13)
-        search_table.attach(search_flickrreal_button, 5, 8, 12, 13)
-        search_table.attach(clear_flickr_button, 8, 10, 12, 13)
+        search_table.attach(fsearchtext, 2, 8, 12, 13)
+        search_table.attach(flickr_im, 0, 1, 11, 13)
+        search_table.attach(t_label2, 0, 1, 13, 14)
+        search_table.attach(self.flickr_username, 1, 4, 13, 14)
+        search_table.attach(search_flickr_button, 4, 5, 13, 14)
+        search_table.attach(search_flickrreal_button, 5, 8, 13, 14)
+        search_table.attach(clear_flickr_button, 8, 10, 13, 14)
 
         
-        search_table.attach(self.flickr_list, 0, 10, 13, 18)
+        search_table.attach(self.flickr_list, 0, 10, 14, 19)
         self.update_flickrusername_list([])
         
         tab2.pack_start(search_table)
@@ -470,7 +475,7 @@ the pin to the box below, and hit OK')
         if not users or len(users) == 0 :
             self.create_nonmodal_dialog('Error', 'No results for the search query')
         elif users[0] == 'auth_error':
-            self.create_nonmodal_dialog('Error', 'Only authenticated users can search for users. Check your settings')
+            self.create_nonmodal_dialog('Error', 'Only authenticated users can search for users. Go to Edit->Settings->Twitter to authorize creepy to use your account')
         else:
             gobject.idle_add(self.update_twitterusername_list, users)
     
@@ -479,7 +484,7 @@ the pin to the box below, and hit OK')
         if username:
             Thread(target=lambda : self.search_twitter(username)).start()
         else :
-            self.create_dialog('error', 'Did you forget something ?? \n The search query maybe ??')
+            self.create_dialog('error', 'You didn\'t specify a search query')
     def search_flickr(self, username):
         users = self.creepy.search_for_users('flickr', username, 'username')
         if not users or len(users) == 0 :
@@ -492,7 +497,7 @@ the pin to the box below, and hit OK')
         if name:
             Thread(target=lambda : self.search_flickr(name)).start()
         else :
-            self.create_dialog('error', 'Did you forget something ?? \n The search query maybe ??')
+            self.create_dialog('error', 'You didn\'t specify a search query')
     def search_flickr_realname(self, name):
         users = self.creepy.search_for_users('flickr', name, 'realname')
         if not users or len(users) == 0 :
@@ -776,12 +781,12 @@ the pin to the box below, and hit OK')
                     if err['from'] == 'twitter_connection':
                         if err['error'] == 'Not found':
                             self.create_nonmodal_dialog('Wrong username', 'The selected target does not correspond to a twitter username. Please \
-    try the search function if you are unsure ')
+try the search function if you are unsure ')
                         elif err['error'] == 'Failed to send request: [Errno -2] Name or service not known':
                             self.create_nonmodal_dialog('Connection Error', 'Could not connect to twitter, please check your connection settings and try again')
                         else:
-                            self.create_nonmodal_dialog('Twitter error', 'There some failwhale issues. We were not able to retrieve all \
-    of the users tweets. \n ')
+                            self.create_nonmodal_dialog('Twitter error', 'We experienced some problems connecting to twitter. We were not able to retrieve all \
+of the users tweets. \n ')
                     text += 'Error while accessing %s .The problem was : %s \n ' % (err['url'], err['error'])
       
                 text += ' \n %s tweets have been retrieved out of a total of %s. \n From them, we were able to extract %s locations. \n \

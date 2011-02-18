@@ -22,8 +22,6 @@ This file is part of creepy.
 import re
 import urllib, simplejson
 import pyexiv2
-from PIL import Image
-from PIL.ExifTags import TAGS
 import time
 import os.path
 from datetime import datetime
@@ -78,30 +76,55 @@ class URLAnalyzer():
         def degtodec(a): return a[0]+a[1]/60+a[2]/3600
         def format_coordinates(string):
             return degtodec([(calc(i)) for i in (string.split(' ')) if ("/" in i)])
-                
+        def format_coordinates_alter(tuple):
+            return degtodec(((float(tuple[0].numerator)/float(tuple[0].denominator)), (float(tuple[1].numerator)/float(tuple[1].denominator)), (float(tuple[2].numerator)/float(tuple[2].denominator))))
+            
         
-        exif_data = pyexiv2.ImageMetadata(temp_file)
         try:
-            exif_data.read()
-            if "Exif.GPSInfo.GPSLatitude" in exif_data.exif_keys :
-                coordinates = {}
-                coordinates['from'] = 'exif'
-                coordinates['context'] = 'Location retrieved from image exif metadata .Tweet was %s' % (context)
-                coordinates['time'] = datetime.fromtimestamp(mktime(time.strptime(exif_data['Exif.Image.DateTime'].raw_value, "%Y:%m:%d %H:%M:%S")))
-                coordinates['latitude'] = format_coordinates(exif_data['Exif.GPSInfo.GPSLatitude'].raw_value)
-                lat_ref = exif_data['Exif.GPSInfo.GPSLatitudeRef'].raw_value
-                if lat_ref == 'S':
-                    coordinates['latitude'] = -coordinates['latitude']
-                coordinates['longitude'] = format_coordinates(exif_data['Exif.GPSInfo.GPSLongitude'].raw_value)
-                long_ref = exif_data['Exif.GPSInfo.GPSLongitudeRef'].raw_value
-                if long_ref == 'W':
-                    coordinates['longitude'] = -coordinates['longitude']
-                return coordinates
+            #Check if pyexiv2 v0.3 is installed
+            if 'ImageMetadata' in dir(pyexiv2):
+                exif_data = pyexiv2.ImageMetadata(temp_file)
+                exif_data.read()
+                keys = exif_data.exif_keys
+                if "Exif.GPSInfo.GPSLatitude" in keys :
+                    coordinates = {}
+                    coordinates['from'] = 'exif'
+                    coordinates['context'] = 'Location retrieved from image exif metadata .Tweet was %s' % (context)
+                    coordinates['time'] = datetime.fromtimestamp(mktime(time.strptime(exif_data['Exif.Image.DateTime'].raw_value, "%Y:%m:%d %H:%M:%S")))
+                    coordinates['latitude'] = format_coordinates(exif_data['Exif.GPSInfo.GPSLatitude'].raw_value)
+                    lat_ref = exif_data['Exif.GPSInfo.GPSLatitudeRef'].raw_value
+                    if lat_ref == 'S':
+                        coordinates['latitude'] = -coordinates['latitude']
+                    coordinates['longitude'] = format_coordinates(exif_data['Exif.GPSInfo.GPSLongitude'].raw_value)
+                    long_ref = exif_data['Exif.GPSInfo.GPSLongitudeRef'].raw_value
+                    if long_ref == 'W':
+                        coordinates['longitude'] = -coordinates['longitude']
+                    return coordinates
+                else:
+                    return []
             else:
-                return []
+                exif_data = pyexiv2.Image(temp_file)
+                exif_data.readMetadata()
+                keys = exif_data.exifKeys
+                if 'Exif.GPSInfo.GPSLatitude' in exif_data.exifKeys():
+                    coordinates = {}
+                    coordinates['from'] = 'exif'
+                    coordinates['time'] = exif_data['Exif.Image.DateTime']
+                    coordinates['context'] = 'Location retrieved from image exif metadata .Tweet was %s' % (context)
+                    coordinates['latitude'] = format_coordinates_alter(exif_data['Exif.GPSInfo.GPSLatitude'])
+                    lat_ref = exif_data['Exif.GPSInfo.GPSLatitudeRef']
+                    if lat_ref == 'S':
+                        coordinates['latitude'] = -coordinates['latitude']
+                    coordinates['longitude'] = format_coordinates_alter(exif_data['Exif.GPSInfo.GPSLongitude'])
+                    long_ref = exif_data['Exif.GPSInfo.GPSLongitudeRef']
+                    if long_ref == 'W':
+                        coordinates['longitude'] = -coordinates['longitude']
+                    return coordinates
+                else:
+                    return []   
         except Exception, err:
             self.errors.append({'from':'exif', 'tweetid':0, 'url':'', 'error':err})
-            #print 'Exception  ' , err
+           
      
             
             
