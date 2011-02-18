@@ -3,7 +3,7 @@ Requirements :
 ** osmgpsmap 0.7 	https://github.com/nzjrs/osm-gps-map
 ** python-flickrapi 	http://stuvel.eu/flickrapi
 ** BeautifulSoup 	http://www.crummy.com/software/BeautifulSoup/
-** pyexiv2 >=0.2.2	http://tilloy.net/dev/pyexiv2/
+** pyexiv2          	http://tilloy.net/dev/pyexiv2/
 ** python-configobj
 ** python-simplejson
 
@@ -18,10 +18,6 @@ Install tweepy :
 
 # easy_install tweepy
 
-Add pyexiv2 PPA to your repositories list :
-
-`# add-apt-repository ppa:pyexiv2-developers/ppa`
-`# apt-get update`
 
 Download and install the .deb package from https://github.com/ilektrojohn/creepy/downloads .
 
@@ -40,88 +36,20 @@ $ sudo apt-get install creepy
 creepy is now on the main menu, under Applications -> Internet
 
 
-Manual way (Deprecated - not recommended:)
-
-Install dependenies first 
-
-osmgpsmap:
-#apt-get install python-osmgpsmap
-
-
-tweepy:
-Follow the instructions here :
-https://github.com/joshthecoder/tweepy/blob/master/INSTALL
-
-For the impatient amongst you try:
-#apt-get install python-setuptools
-#easy_install tweepy
-
-flickrapi
-#apt-get install python-flickrapi
-
-BeautifulSoup
-#apt-get install python-beautifulsoup
-
-pyexiv2
-# apt-get install python-pyexiv2
-
-python-configobj
-#apt-get install python-configobj
-
-python-configobj
-#apt-get install python-simplejson
 
 
 
 
 Backtrack 4 ( R2 ) 
 --------------------------------------------------------------------------------
-The situation for backtrack is not as plug and play but it can be resolved. The major problems
-were with pyexiv2 and python-osmgpsmap . python-osmgpsmap is not in the repositores, and for pyexiv2 
-version that exists is incompatible with creepy. To cut a long story short these are the detailed instructions 
-to make it work :
 
-### Install necessary packages from repositories
+1) add `deb http://people.dsv.su.se/~kakavas/creepy binary/` to your /etc/apt/sources.list
 
-# apt-get install python-gtk2-dev libsoup2.4-dev libboost-python1.35-dev scons
+2)`# apt-get update`
 
-Download ,compile and install exiv2 from source ( only v0.20 tested and working , maybe 0.19 also but not sure )
-# wget http://exiv2.org/exiv2-0.20.tar.gz
-# tar xvfz exiv2-0.20.tar.gz
-# cd exiv2-0.20/
-# ./configure
-# make && make install
+3)`# apt-get install creepy`
 
-Download, compile and install pyexiv2 ( again only v0.2.2 tested and working, maybe v0.2.5 also but not sure )
-# wget http://launchpad.net/pyexiv2/0.2.x/0.2.2/+download/pyexiv2-0.2.2.tar.bz2
-# tar jxf pyexiv2-0.2.2.tar.bz2
-# cd pyexiv2-0.2.2/
-# scons
-# scons install
-
-I have no idea how to pass arguments to scons , so after that we must add /us/local/lib to our ld.so.conf
-# echo 'include /usr/local/lib' >> /etc/ld.so.conf
-# ldconfig
-
-Download compile and install osmgpsmap and the python bindings
-# wget http://www.johnstowers.co.nz/files/osm-gps-map/osm-gps-map-0.7.2.tar.gz
-# tar xvfz osm-gps-map-0.7.2.tar.gz
-# cd osm-gps-map-0.7.2/
-# ./configure --prefix=/usr
-# make && make install
-
-# wget http://www.johnstowers.co.nz/files/osm-gps-map/python-osmgpsmap-0.7.2.tar.gz
-# tar xvfz osm-gps-map/python-osmgpsmap-0.7.2.tar.gz
-# cd osm-gps-map/python-osmgpsmap-0.7.2/
-# ./configure --prefix=/usr
-# make && make install
-
-
-Install python modules needed : 
-# easy_install flickrapi beautifulsoup configobj tweepy simplejson
-
-Download creepy from github, unpack and run 
-# python creepymap.py
+Off creepying you go!!!
 
 
 
