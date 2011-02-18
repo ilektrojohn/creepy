@@ -71,7 +71,7 @@ class URLAnalyzer():
             return []
     
    
-    def exif_extract(self, temp_file, context):
+    def exif_extract(self, temp_file, tweet):
         def calc(k): return [(float(n)/float(d)) for n,d in [k.split("/")]][0]
         def degtodec(a): return a[0]+a[1]/60+a[2]/3600
         def format_coordinates(string):
@@ -89,7 +89,7 @@ class URLAnalyzer():
                 if "Exif.GPSInfo.GPSLatitude" in keys :
                     coordinates = {}
                     coordinates['from'] = 'exif'
-                    coordinates['context'] = 'Location retrieved from image exif metadata .Tweet was %s' % (context)
+                    coordinates['context'] = ('https://twitter.com/%s/status/%s' % (tweet.user.screen_name, tweet.id) , 'Location retrieved from image exif metadata .Tweet was %s \n ' % (tweet.text))
                     coordinates['time'] = datetime.fromtimestamp(mktime(time.strptime(exif_data['Exif.Image.DateTime'].raw_value, "%Y:%m:%d %H:%M:%S")))
                     coordinates['latitude'] = format_coordinates(exif_data['Exif.GPSInfo.GPSLatitude'].raw_value)
                     lat_ref = exif_data['Exif.GPSInfo.GPSLatitudeRef'].raw_value
@@ -110,7 +110,7 @@ class URLAnalyzer():
                     coordinates = {}
                     coordinates['from'] = 'exif'
                     coordinates['time'] = exif_data['Exif.Image.DateTime']
-                    coordinates['context'] = 'Location retrieved from image exif metadata .Tweet was %s' % (context)
+                    coordinates['context'] = ('https://twitter.com/%s/status/%s' % (tweet.user.screen_name, tweet.id) , 'Location retrieved from image exif metadata .Tweet was %s \n ' % (tweet.text))
                     coordinates['latitude'] = format_coordinates_alter(exif_data['Exif.GPSInfo.GPSLatitude'])
                     lat_ref = exif_data['Exif.GPSInfo.GPSLatitudeRef']
                     if lat_ref == 'S':
@@ -151,7 +151,7 @@ class URLAnalyzer():
             temp_file = os.path.join(self.photo_dir,url.path[1:])
             photo_url = soup.find(attrs={"class": "photo", "id": "photo-display"})['src']
             urllib.urlretrieve(photo_url , temp_file)
-            return [self.exif_extract(temp_file, tweet.text)] 
+            return [self.exif_extract(temp_file, tweet)] 
         except Exception, err: 
             #print 'Error trying to download %s ' % (url.geturl()),err
             self.errors.append({'from':'twitpic', 'tweetid':tweet.id, 'url': url.geturl(), 'error':err})
@@ -198,7 +198,7 @@ class URLAnalyzer():
         try:
             json_reply= simplejson.load(urllib.urlopen("http://api.plixi.com/api/tpapi.svc/json/photos/"+url.path[3:]))
             api_location['from'] = 'plixi_api'
-            api_location['context'] = 'Location retrieved from plixi API. Original tweet was %s' % (tweet.text)
+            api_location['context'] = ('https://twitter.com/%s/status/%s' % (tweet.user.screen_name, tweet.id) , 'Location retrieved from plixi API .Tweet was %s \n ' % (tweet.text))
             api_location['latitude'] = json_reply['Location']['Latitude'] 
             api_location['longitude'] = json_reply['Location']['Longitude']
             api_location['time'] = datetime.fromtimestamp(json_reply['UploadDate'])
@@ -265,7 +265,7 @@ class URLAnalyzer():
             json_reply = simplejson.load(urllib.urlopen("http://api.mobypicture.com/?t="+url.path[1:]+"&action=getMediaInfo&k="+self.moby_key+"&format=json"))
             if json_reply['post']['location_latlong']:
                 api_loc['from'] = "moby_api"
-                api_loc['context'] = 'Location retrieved from moby.to API. Original tweet was %s' % (tweet.text)
+                api_loc['context'] = ('https://twitter.com/%s/status/%s' % (tweet.user.screen_name, tweet.id) , 'Location retrieved from moby.to API .Tweet was %s \n ' % (tweet.text))
                 api_loc['latitude'] = json_reply['post']['location_latlong'][0]
                 api_loc['longitude'] = json_reply['post']['location_latlong'][1]
                 api_loc['time'] = datetime.fromtimestamp(json_reply['created_on_epoch'])

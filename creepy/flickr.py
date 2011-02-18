@@ -166,9 +166,7 @@ class Flickr():
             for photo in photos:
                 if photo.attrib['latitude'] != '0':
                     loc = {}
-                    loc['context'] = 'Photo from flickr  \n \
-                            Title : %s \n \
-                            See photo at http://www.flickr.com/photos/%s/%s' % (photo.attrib['title'], photo.attrib['owner'], photo.attrib['id'])
+                    loc['context'] = ('http://www.flickr.com/photos/%s/%s' % (photo.attrib['owner'], photo.attrib['id']), 'Photo from flickr  \n Title : %s \n ' % (photo.attrib['title']))      
                     loc['time'] = photo.attrib['datetaken']
                     loc['latitude'] = photo.attrib['latitude']
                     loc['longitude'] = photo.attrib['longitude']

@@ -200,14 +200,14 @@ class Twitter():
         """
         data = {}
         if tweet.coordinates:
-            data['from'] = 'twitter' 
-            data['context'] = 'Information retrieved from twitter. \n Tweet was : %s ' % (tweet.text)
+            data['from'] = 'twitter'
+            data['context'] = ('https://twitter.com/%s/status/%s' % (tweet.user.screen_name, tweet.id) , 'Information retrieved from twitter. \n Tweet was : %s \n ' % (tweet.text))
             data['time'] = tweet.created_at
             data['latitude'] = tweet.coordinates['coordinates'][1]
             data['longitude'] = tweet.coordinates['coordinates'][0]
         elif tweet.geo is not None:
             data['from'] = 'twitter' 
-            data['context'] = 'Information retrieved from twitter.. \n Tweet was : %s ' % (tweet.text)
+            data['context'] = ('https://twitter.com/%s/status/%s' % (tweet.user.screen_name, tweet.id) , 'Information retrieved from twitter.. \n Tweet was : %s \n ' % (tweet.text))
             data['time'] = tweet.created_at 
             data['latitude'] = tweet.geo['coordinates'][0]
             data['longitude'] = tweet.geo['coordinates'][1]
@@ -216,14 +216,14 @@ class Twitter():
             c = self.get_location_fromplace(name)
             if c:
                 data['from'] = 'twitter_place' 
-                data['context'] = 'Information retrieved from twitter place using GeoNames service. \n Tweet was : %s ' % (tweet.text)
+                data['context'] = ('https://twitter.com/%s/status/%s' % (tweet.user.screen_name, tweet.id) , 'Information retrieved from twitter place using GeoNames service. \n Tweet was : %s \n ' % (tweet.text))
                 data['time'] = tweet.created_at 
                 data['latitude'] = c[0]
                 data['longitude'] = c[1]
             else :
                 a = tweet.place['bounding_box']['coordinates']
-                data['from'] = 'twitter_bounding_box' 
-                data['context'] = 'Information retrieved from twitter bounding box. Really NOT accurate. \n Tweet was : %s ' % (tweet.text)
+                data['from'] = 'twitter_bounding_box'
+                data['context'] = ('https://twitter.com/%s/status/%s' % (tweet.user.screen_name, tweet.id) , 'Information retrieved from twitter bounding box. Really NOT accurate. \n Tweet was : %s \n ' % (tweet.text))
                 data['time'] = tweet.created_at 
                 data['latitude'] = a[0][0][1]
                 data['longitude'] = a[0][0][0]

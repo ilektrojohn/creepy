@@ -30,6 +30,7 @@ from tweepy import OAuthHandler as oauth
 import webbrowser
 from configobj import ConfigObj
 import shutil
+import pango
 
 
 gobject.threads_init()
@@ -172,14 +173,14 @@ class CreepyUI(gtk.Window):
         outer_box.pack_start(menubox, False, False, 0)
         
         # Creates the notebook layout
-        notebook = gtk.Notebook()
-        notebook.set_tab_pos(gtk.POS_TOP)
-        outer_box.pack_start(notebook)
+        self.notebook = gtk.Notebook()
+        self.notebook.set_tab_pos(gtk.POS_TOP)
+        outer_box.pack_start(self.notebook)
         
         #Creates the Map overview tab and adds it to the notebook
         tab1 = gtk.VBox(False, 0)
         label1 = gtk.Label("Map View")
-        notebook.append_page(tab1, label1)
+        self.notebook.append_page(tab1, label1)
         
         #Load the map
         self.osm = osmgpsmap.GpsMap(map_source=osmgpsmap.SOURCE_VIRTUAL_EARTH_HYBRID)
@@ -215,6 +216,7 @@ class CreepyUI(gtk.Window):
 
         self.textview = gtk.TextView()
         self.textbuffer = self.textview.get_buffer()
+        self.textview.connect("button-release-event", self.on_mouseovertextview_motion)
         self.textview.set_editable(False)
         self.textview.set_cursor_visible(False)
         info = gtk.ScrolledWindow()
@@ -224,11 +226,14 @@ class CreepyUI(gtk.Window):
         
         #Create the horizontal box that holds the buttons and the buttons themselves
         hbox = gtk.HBox(False, 0)
-        self.show_button = gtk.Button('Get target\'s locations')
+        
+        showbuttontext = '<b>Geolocate \n    Target</b>'
+        self.show_button = gtk.Button(showbuttontext)
+        self.show_button.child.set_use_markup(True)
         self.show_button.connect('clicked', self.thread_show_clicked)
        
         
-        hbox.pack_start(self.show_button, True, False, 0)
+        #hbox.pack_start(self.show_button, True, False, 0)
        
 
         tab1.pack_end(info, False)
@@ -238,21 +243,29 @@ class CreepyUI(gtk.Window):
         #Create the targets tab
         tab2 = gtk.VBox(False, 0)
         label2 = gtk.Label('Targets')
-        notebook.append_page(tab2, label2)
+        self.notebook.prepend_page(tab2, label2)
+        
         
         #Create a table to hold all stuff here
         search_table = gtk.Table(20, 10, True)
-        t_label0 = gtk.Label('Selected Targets')
         targets_instructions = gtk.Label('Fill in the details for your targets or use the search function below')
-        twitter_target_label = gtk.Label('Twitter Username')
+        twitter_target_label = gtk.Label()
+        twitter_target_label.set_markup('<b><i>Twitter Username</i></b>')
         self.twitter_target = gtk.Entry()
-        flickr_target_label = gtk.Label('Flickr UserID')
+        flickr_target_label = gtk.Label()
+        flickr_target_label.set_markup('<b><i>Flickr UserID</i></b>')
+        flickr_example_label = gtk.Label()
+        flickr_example_label.set_markup('<i>( XXXXXXXX@XXX )</i>')
         self.flickr_target = gtk.Entry()
         
         
         self.twitter_username = gtk.Entry()
-        tsearchtext = gtk.Label('Use the form below to search for twitter users if necessary')
-        fsearchtext = gtk.Label('Use the form below to search for flickr users if necessary')
+        tsearchtext = gtk.Label()
+        stext = "<i>Use the form below to search for twitter users if necessary</i>"
+        tsearchtext.set_markup(stext)
+        fsearchtext = gtk.Label()
+        ftext = "<i>Use the form below to search for flickr users if necessary</i>"
+        fsearchtext.set_markup(ftext)
         t_label1 = gtk.Label('Search for:')
         search_twitter_button = gtk.Button('Search')
         search_twitter_button.connect('clicked', self.thread_search_twitter)
@@ -265,19 +278,20 @@ class CreepyUI(gtk.Window):
         
 
         self.twitter_list = gtk.VBox(False, 0)
-        search_table.attach(t_label0, 4, 6, 0, 1)
-        search_table.attach(targets_instructions, 0, 10, 1, 2)
-        search_table.attach(twitter_target_label, 0, 2, 2, 3)
-        search_table.attach(self.twitter_target, 2, 4 , 2, 3)
-        search_table.attach(flickr_target_label, 6, 8, 2, 3)
-        search_table.attach(self.flickr_target, 8, 10, 2, 3)
-        search_table.attach(tsearchtext, 2, 8, 4, 5)
-        search_table.attach(twitter_im, 0, 1, 3, 5)
-        search_table.attach(t_label1, 0, 1, 5, 6)
-        search_table.attach(self.twitter_username, 1, 4, 5, 6)
-        search_table.attach(search_twitter_button, 5, 7, 5, 6)
-        search_table.attach(clear_twitter_button, 8, 10, 5, 6)
-        search_table.attach(self.twitter_list, 0, 10, 6, 11)
+        search_table.attach(targets_instructions, 0, 6, 0, 1)
+        search_table.attach(twitter_target_label, 0, 2, 1, 2)
+        search_table.attach(self.twitter_target, 2, 4 , 1, 2)
+        search_table.attach(flickr_target_label, 0, 2, 2, 3)
+        search_table.attach(self.flickr_target, 2, 4, 2, 3)
+        search_table.attach(flickr_example_label, 4, 6, 2, 3)
+        search_table.attach(self.show_button, 8, 10, 1, 3)
+        search_table.attach(tsearchtext, 2, 8, 5, 6)
+        search_table.attach(twitter_im, 0, 1, 4, 6)
+        search_table.attach(t_label1, 0, 1, 6, 7)
+        search_table.attach(self.twitter_username, 1, 4, 6, 7)
+        search_table.attach(search_twitter_button, 5, 7, 6, 7)
+        search_table.attach(clear_twitter_button, 8, 10, 6, 7)
+        search_table.attach(self.twitter_list, 0, 10, 7, 12)
         self.update_twitterusername_list([])
         
         #add flickr search
@@ -296,20 +310,20 @@ class CreepyUI(gtk.Window):
         search_flickrreal_button.connect('clicked', self.thread_search_flickr_realname)
         clear_flickr_button = gtk.Button('Clear')
         clear_flickr_button.connect('clicked', self.clear_flickr_list)
-        search_table.attach(fsearchtext, 2, 8, 12, 13)
-        search_table.attach(flickr_im, 0, 1, 11, 13)
-        search_table.attach(t_label2, 0, 1, 13, 14)
-        search_table.attach(self.flickr_username, 1, 4, 13, 14)
-        search_table.attach(search_flickr_button, 4, 5, 13, 14)
-        search_table.attach(search_flickrreal_button, 5, 8, 13, 14)
-        search_table.attach(clear_flickr_button, 8, 10, 13, 14)
+        search_table.attach(fsearchtext, 2, 8, 13, 14)
+        search_table.attach(flickr_im, 0, 1, 12, 14)
+        search_table.attach(t_label2, 0, 1, 14, 15)
+        search_table.attach(self.flickr_username, 1, 4, 14, 15)
+        search_table.attach(search_flickr_button, 4, 5, 14, 15)
+        search_table.attach(search_flickrreal_button, 5, 8, 14, 15)
+        search_table.attach(clear_flickr_button, 8, 10, 14, 15)
 
         
-        search_table.attach(self.flickr_list, 0, 10, 14, 19)
+        search_table.attach(self.flickr_list, 0, 10, 15, 20)
         self.update_flickrusername_list([])
         
         tab2.pack_start(search_table)
-        
+        self.notebook.set_current_page(0)
     def settings_dialog(self, button):
         settings = gtk.Dialog('Creepy Settings', None, 0, (gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL, gtk.STOCK_OK, gtk.RESPONSE_OK))
         settings.set_default_size(400, 200)
@@ -667,26 +681,26 @@ the pin to the box below, and hit OK')
         self.show_all()
     
     def location_list_model(self, locations):
-        store = gtk.ListStore(str, str, str, str)
+        store = gtk.ListStore(str, str, str, str, str)
         if locations:
             for loc in locations:
-                store.append([loc['context'], loc['latitude'], loc['longitude'], loc['time']])
+                store.append([loc['context'][0], loc['context'][1], loc['latitude'], loc['longitude'], loc['time']])
             
         return store
     
     def location_columns(self, treeView):
        
         rendererText = gtk.CellRendererText()
-        col = gtk.TreeViewColumn("Latitude", rendererText, text=1)
+        col = gtk.TreeViewColumn("Latitude", rendererText, text=2)
         treeView.append_column(col)
         
         rendererText = gtk.CellRendererText()
-        col = gtk.TreeViewColumn("Longitude", rendererText, text=2)
+        col = gtk.TreeViewColumn("Longitude", rendererText, text=3)
         treeView.append_column(col)
         
         rendererText = gtk.CellRendererText()
-        col = gtk.TreeViewColumn("Time", rendererText, text=3)
-        col.set_sort_column_id(3)
+        col = gtk.TreeViewColumn("Time", rendererText, text=4)
+        col.set_sort_column_id(4)
         treeView.append_column(col)
         
     def copy_to_clipboard(self, obj, coord):
@@ -697,7 +711,32 @@ the pin to the box below, and hit OK')
     def open_googlemaps(self, button, coord):
         url = 'http://maps.google.com/maps?q=%s,%s' % (float(coord[0]), float(coord[1]))
         webbrowser.open(url)
-        
+    def open_url(self, url):
+        webbrowser.open_new_tab(url)
+           
+    def on_mouseovertextview_motion(self, widget, event, data = None):
+        def check_if_link(iter):
+            tags = iter.get_tags()
+            for tag in tags:
+                page = tag.get_data("page")
+                if page != 0:
+                    self.open_url(page)
+                    break
+            
+            
+        if event.button == 1:
+            try:
+                start, end = self.textbuffer.get_selection_bounds()
+            except ValueError:
+                # If there is nothing selected, None is return
+                pass
+            else:
+                if start.get_offset() != end.get_offset():
+                    return False
+            x, y = widget.window_to_buffer_coords(gtk.TEXT_WINDOW_WIDGET,int(event.x), int(event.y))
+            iter = widget.get_iter_at_location(x, y)
+            check_if_link(iter)
+            
     def on_button_press_event(self, treeview, event):
         if event.button == 3:
             x = int(event.x)
@@ -729,9 +768,15 @@ the pin to the box below, and hit OK')
     def location_activated(self, widget, row, col):
         
         model = widget.get_model()
-        self.osm.set_center_and_zoom(float(model[row][1]), float(model[row][2]), 12)
+        self.osm.set_center_and_zoom(float(model[row][2]), float(model[row][3]), 12)
         self.osm.set_zoom(self.osm.props.zoom + 3)
-        self.textbuffer.set_text(model[row][0])
+        self.textbuffer.set_text(model[row][1])
+        
+        tag = self.textbuffer.create_tag(None,
+            foreground="blue", underline=pango.UNDERLINE_SINGLE)
+        tag.set_data("page", model[row][0])
+        it = self.textbuffer.get_end_iter()
+        self.textbuffer.insert_with_tags(it, model[row][0], tag)
     
     def reload_map(self, button, source):
         #remove old map 
@@ -759,7 +804,7 @@ the pin to the box below, and hit OK')
             for l in locations:
                 self.osm.image_add(float(l['latitude']), float(l['longitude']), pb)
             self.osm.set_center_and_zoom(float(locations[0]['latitude']), float(locations[0]['longitude']), 12)
-
+        self.notebook.set_current_page(-1)
 
     def print_tiles(self):
         if self.osm.props.tiles_queued != 0:
@@ -803,6 +848,7 @@ of the users tweets. \n ')
         if not self.twitter_target.get_text() and not self.flickr_target.get_text():
             self.create_dialog('error', 'No targets selected. Please select at least one in targets tab')
         else:
+            self.notebook.set_current_page(-1)
             self.textbuffer.set_text('Searching for locations .. Be patient, I am doing my best. \n This can take a while, please hold ... \n')
             Thread(target=lambda : self.search_for_locations(self.twitter_target.get_text(),  self.flickr_target.get_text())).start()
             self.show_button.set_sensitive(0)
