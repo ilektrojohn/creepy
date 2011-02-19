@@ -89,7 +89,20 @@ class CreepyUI(gtk.Window):
             tmp_conf['directories']['cache_dir'] = os.path.join(self.CONF_DIR, 'cache')
             tmp_conf['directories']['profilepics_dir'] = os.path.join(self.CONF_DIR, 'images', 'profilepics')
             tmp_conf.write()
-            
+        
+        #Fix only for version 0.1.73 to copy the creepy32.png to the config folder
+        if os.path.exists('/usr/share/pyshared/creepy'):
+            try:
+                shutil.copy('/usr/share/pyshared/creepy/include/creepy32.png', os.path.join(self.CONF_DIR, 'creepy32.png'))
+            except  Exception, err:
+                print err
+        else:
+            try:
+                shutil.copy('include/creepy32.png', os.path.join(self.CONF_DIR, 'creepy32.png'))
+            except Exception, err:
+                print err
+                
+                
         #Try to load the options file
         try:
             config_file = os.path.join(self.CONF_DIR, 'creepy.conf')
@@ -118,7 +131,7 @@ class CreepyUI(gtk.Window):
         #Create a menu bar
         mb = gtk.MenuBar()
         filemenu = gtk.Menu()
-        file = gtk.MenuItem("File")
+        file = gtk.MenuItem("Creepy")
         file.set_submenu(filemenu)
         
         
@@ -165,9 +178,24 @@ class CreepyUI(gtk.Window):
         settings.connect('activate', self.settings_dialog)
         editmenu.append(settings)
         
+        helpmenu = gtk.Menu()
+        help = gtk.MenuItem("Help")
+        help.set_submenu(helpmenu)
         
+        report = gtk.MenuItem('Report a bug/problem')
+        report.connect('activate', self.open_url, 'https://github.com/ilektrojohn/creepy/issues')
+        helpmenu.append(report)
+        
+        sep = gtk.SeparatorMenuItem()
+        helpmenu.append(sep)
+        
+        about = gtk.MenuItem('About')
+        about.connect('activate', self.show_about_dialog)
+        helpmenu.append(about)
+                
         mb.append(file)
         mb.append(edit)
+        mb.append(help)
         menubox = gtk.VBox(False, 2)
         menubox.pack_start(mb, False, False, 0)
         outer_box.pack_start(menubox, False, False, 0)
@@ -525,7 +553,7 @@ the pin to the box below, and hit OK')
         if name:
             Thread(target=lambda : self.search_flickr_realname(name)).start()
         else :
-            self.create_dialog('Error', 'No results for the search query')
+            self.create_dialog('error', 'You didn\'t specify a search query')
         
     def clear_flickr_list(self, button):    
         self.update_flickrusername_list([])
@@ -711,7 +739,7 @@ the pin to the box below, and hit OK')
     def open_googlemaps(self, button, coord):
         url = 'http://maps.google.com/maps?q=%s,%s' % (float(coord[0]), float(coord[1]))
         webbrowser.open(url)
-    def open_url(self, url):
+    def open_url(self, button, url):
         webbrowser.open_new_tab(url)
            
     def on_mouseovertextview_motion(self, widget, event, data = None):
@@ -720,7 +748,7 @@ the pin to the box below, and hit OK')
             for tag in tags:
                 page = tag.get_data("page")
                 if page != 0:
-                    self.open_url(page)
+                    self.open_url(False, page)
                     break
             
             
@@ -829,6 +857,8 @@ the pin to the box below, and hit OK')
 try the search function if you are unsure ')
                         elif err['error'] == 'Failed to send request: [Errno -2] Name or service not known':
                             self.create_nonmodal_dialog('Connection Error', 'Could not connect to twitter, please check your connection settings and try again')
+                        elif err['error'] == 'Not authorized':
+                            self.create_nonmodal_dialog('Authentication Error', 'Target\'s timeline is protected and you are not following him/her')
                         else:
                             self.create_nonmodal_dialog('Twitter error', 'We experienced some problems connecting to twitter. We were not able to retrieve all \
 of the users tweets. \n ')
@@ -893,6 +923,17 @@ of the users tweets. \n ')
         dialog.set_title(title)
         dialog.connect('response', lambda dialog, response: dialog.destroy())
         dialog.show()
+        
+    def show_about_dialog(self, button):
+        about = gtk.AboutDialog()
+        about.set_program_name("Creepy")
+        about.set_version("0.73")
+        about.set_copyright("(c) Yiannis Kakavas")
+        about.set_comments("Creepy is a geolocation information gatherer")
+        about.set_website("http://ilektrojohn.github.com/creepy")
+        about.set_logo(gtk.gdk.pixbuf_new_from_file(os.path.join(self.CONF_DIR, "creepy32.png")))
+        about.run()
+        about.destroy()
         
     def main(self):
         self.show_all()
