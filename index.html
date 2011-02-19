@@ -58,8 +58,14 @@
       provide context to the presentation.</p>
 <h2>Screenshots</h2>
 <p><img src="creepy_mapview.png"/>
+mapview with results
+</br>
 <p><img src="creepy_settings.png"/>
-<p><img src="creepy_targets.png"/>
+settings
+</br>
+<p><img src="windows.png"/>
+creepy running on windows XP
+</br>
 
 <h2>Features</h2>
 <br/>
@@ -135,12 +141,6 @@ are not shared with the application.
 <pre># easy_install tweepy</pre>
 </br>
 
-<p>You would also need pyexiv2 (0.2 or 0.3) .Simplest way is to add the PPA :
-Add pyexiv2 PPA to your repositories list :
-
-<pre># add-apt-repository ppa:pyexiv2-developers/ppa</pre> 
-<pre># apt-get update</pre>
-
 <p>Download and install  the .deb from <a href="https://github.com/ilektrojohn/creepy/downloads"> github </a>
 </br>
 <p>Alternatively add creepy's ppa repository with :
@@ -155,9 +155,18 @@ Install creepy
 <p>Creepy is now in the global menu under Applications-> Internet.
 </br>
 <h3>Backtrack 4</h3>
-<p>On Backtrack the situation is a bit more complicated but detailed instructions
-can be found at the <a href="https://github.com/ilektrojohn/creepy/wiki/Installation-instructions">Installation instructions</a> page in the wiki.
-    
+<p>Add the repository 
+<pre>http://people.dsv.su.se/~kakavas/creepy/ binary/</pre>
+to your <pre>/etc/apt/sources.list</pre> file.
+</br>
+Update package list
+<pre># apt-get update</pre>
+</br>
+Install creepy
+<pre># apt-get install creepy</pre>
+</br>
+<p>Creepy is now in the global menu under Applications-> Internet.
+</br>    
 <h3>MS Windows</h3>
 <p>Download the installer from <a href="https://github.com/ilektrojohn/creepy/downloads">gituhub</a> .
 All dependencied have been bundled in the executable, nothing more to install.
