@@ -525,7 +525,7 @@ the pin to the box below, and hit OK')
         if name:
             Thread(target=lambda : self.search_flickr_realname(name)).start()
         else :
-            self.create_dialog('error', 'Did you forget something ?? \n The search query maybe ??')
+            self.create_dialog('Error', 'No results for the search query')
         
     def clear_flickr_list(self, button):    
         self.update_flickrusername_list([])
