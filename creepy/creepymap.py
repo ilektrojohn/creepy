@@ -22,6 +22,7 @@ This file is part of creepy.
 
 from threading import Thread
 import cree
+import helper
 import gobject
 import gtk.gdk
 import os
@@ -166,6 +167,18 @@ class CreepyUI(gtk.Window):
         openaerial.connect('activate', self.reload_map, osmgpsmap.SOURCE_OPENAERIALMAP)
         select_source_menu.append(openaerial)
         filemenu.append(select_source)
+        
+        export_menu = gtk.Menu()
+        export = gtk.MenuItem("Export as..")
+        export.set_submenu(export_menu)
+        export_kmz = gtk.MenuItem("Export as kmz")
+        export_kmz.connect('activate', self.export_locations, 'kmz')
+        export_menu.append(export_kmz)
+        export_csv = gtk.MenuItem("Export as csv")
+        export_csv.connect('activate', self.export_locations, 'csv')
+        export_menu.append(export_csv)
+        filemenu.append(export)
+        
         exit = gtk.MenuItem("Exit")
         exit.connect("activate", gtk.main_quit)
         filemenu.append(exit)
@@ -241,6 +254,8 @@ class CreepyUI(gtk.Window):
         self.mapVBox = gtk.VBox(False, 0)
         self.mapVBox.pack_start(self.osm)
         maploc.attach(self.mapVBox, 2, 5, 0, 5)
+        
+        #
 
         self.textview = gtk.TextView()
         self.textbuffer = self.textview.get_buffer()
@@ -252,20 +267,18 @@ class CreepyUI(gtk.Window):
         info.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
         info.add(self.textview)
         
-        #Create the horizontal box that holds the buttons and the buttons themselves
-        hbox = gtk.HBox(False, 0)
-        
-        showbuttontext = '<b>Geolocate \n    Target</b>'
-        self.show_button = gtk.Button(showbuttontext)
-        self.show_button.child.set_use_markup(True)
-        self.show_button.connect('clicked', self.thread_show_clicked)
+        #Create the horizontal box that holds progressbar
+        progressbox = gtk.HBox(False, 0)
+        # Create the ProgressBar
+        self.pbar = gtk.ProgressBar()
+        self.pbar.show()
+        progressbox.pack_start(self.pbar, True, True, 40)
        
         
-        #hbox.pack_start(self.show_button, True, False, 0)
-       
+        
 
         tab1.pack_end(info, False)
-        tab1.pack_end(hbox, False)
+        tab1.pack_end(progressbox, False)
 
         
         #Create the targets tab
@@ -284,9 +297,12 @@ class CreepyUI(gtk.Window):
         flickr_target_label.set_markup('<b><i>Flickr UserID</i></b>')
         flickr_example_label = gtk.Label()
         flickr_example_label.set_markup('<i>( XXXXXXXX@XXX )</i>')
+        showbuttontext = '<b>Geolocate \n    Target</b>'
+        self.show_button = gtk.Button(showbuttontext)
+        self.show_button.child.set_use_markup(True)
+        self.show_button.connect('clicked', self.thread_show_clicked)
+        separator = gtk.HSeparator()
         self.flickr_target = gtk.Entry()
-        
-        
         self.twitter_username = gtk.Entry()
         tsearchtext = gtk.Label()
         stext = "<i>Use the form below to search for twitter users if necessary</i>"
@@ -313,6 +329,7 @@ class CreepyUI(gtk.Window):
         search_table.attach(self.flickr_target, 2, 4, 2, 3)
         search_table.attach(flickr_example_label, 4, 6, 2, 3)
         search_table.attach(self.show_button, 8, 10, 1, 3)
+        search_table.attach(separator, 0, 10, 3, 4)
         search_table.attach(tsearchtext, 2, 8, 5, 6)
         search_table.attach(twitter_im, 0, 1, 4, 6)
         search_table.attach(t_label1, 0, 1, 6, 7)
@@ -404,6 +421,18 @@ class CreepyUI(gtk.Window):
             self.save_flickr_config()
         settings.destroy()
         
+    
+    def startprogressbox(self):
+        # Add a timer callback to update the value of the progress bar
+        self.timer = gobject.timeout_add (100, self.progress_timeout, self.pbar)
+    def stopprogressbox(self):
+        gobject.source_remove(self.timer)
+        self.pbar.set_fraction(0)
+    # Update the value of the progress bar so that we get
+    # some movement
+    def progress_timeout(self, pbobj):
+        pbobj.pulse()
+        return True    
     def clear_photo_cache(self, button):
         folders = (self.config['directories']['img_dir'], self.config['directories']['profilepics_dir'])
         for folder in folders:
@@ -827,6 +856,7 @@ the pin to the box below, and hit OK')
             self.draw_locations(self.locations)
     
     def draw_locations(self, locations):
+        self.stopprogressbox()
         pb = gtk.gdk.pixbuf_new_from_file_at_size(os.path.join(self.CONF_DIR, 'index.png'), 24,24)
         if locations:
             for l in locations:
@@ -840,6 +870,8 @@ the pin to the box below, and hit OK')
 
 
     def search_for_locations(self, twit, flickr):
+        
+        self.startprogressbox()
         self.locations, params = self.creepy.get_locations(self.twitter_target.get_text(), self.flickr_target.get_text())
         #gobject.idle_add(self.textbuffer.set_text, 'DONE !')
         if params:
@@ -879,6 +911,10 @@ of the users tweets. \n ')
             self.create_dialog('error', 'No targets selected. Please select at least one in targets tab')
         else:
             self.notebook.set_current_page(-1)
+            #clear locations from previous search and reload map
+            self.locations = []
+            self.reload_map(None, osmgpsmap.SOURCE_VIRTUAL_EARTH_HYBRID)
+            self.update_location_list([])
             self.textbuffer.set_text('Searching for locations .. Be patient, I am doing my best. \n This can take a while, please hold ... \n')
             Thread(target=lambda : self.search_for_locations(self.twitter_target.get_text(),  self.flickr_target.get_text())).start()
             self.show_button.set_sensitive(0)
@@ -892,7 +928,34 @@ of the users tweets. \n ')
             text = 'Could not create the directories for temporary data. Please check your settings. \
             Error was ' % err
             self.create_dialog('Error', text)
-        
+    def export_locations(self, button, format):
+        if self.locations:
+            filesel = gtk.FileChooserDialog('Save as...',
+                                            None, 
+                                            gtk.FILE_CHOOSER_ACTION_SELECT_FOLDER,
+                                            (gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL,
+                                            gtk.STOCK_OPEN, gtk.RESPONSE_OK))
+            filesel.set_default_response(gtk.RESPONSE_OK)
+            response = filesel.run()
+            if response == gtk.RESPONSE_OK:
+                dir = filesel.get_filename()
+            elif response == gtk.RESPONSE_CANCEL:
+                dir = None
+            filesel.destroy()
+            
+            if dir:
+                hel = helper.Helper()
+                if format == 'kmz':
+                    result = hel.create_kmz(self.twitter_target.get_text(), dir, self.locations)
+                elif format == 'csv':
+                    result = hel.create_csv(self.twitter_target.get_text(), dir, self.locations)
+                    
+                if result == 'Success':
+                    self.create_nonmodal_dialog('Success', 'File created successfully and saved at %s' % dir)
+                else:
+                    self.create_nonmodal_dialog('Error', 'We were unable to export locations . Error was : %s' % result[1] )
+        else:
+            self.create_nonmodal_dialog('Error', 'There are no results to export')   
     def map_clicked(self, osm, event):
         lat,lon = self.osm.get_event_location(event).get_degrees()
         if event.button == 1:
@@ -927,7 +990,7 @@ of the users tweets. \n ')
     def show_about_dialog(self, button):
         about = gtk.AboutDialog()
         about.set_program_name("Creepy")
-        about.set_version("0.73")
+        about.set_version("0.1.8")
         about.set_copyright("(c) Yiannis Kakavas")
         about.set_comments("Creepy is a geolocation information gatherer")
         about.set_website("http://ilektrojohn.github.com/creepy")
