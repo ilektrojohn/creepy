@@ -1,0 +1,73 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+
+	<title>ilektrojohn/creepy @ GitHub</title>
+	
+	<style type="text/css">
+		body {
+  		margin-top: 1.0em;
+  		background-color: #040404;
+		  font-family: "Helvetica,Arial,FreeSans";
+  		color: #F6E7E1;
+    }
+    #container {
+      margin: 0 auto;
+      width: 700px;
+    }
+		h1 { font-size: 3.8em; color: #FC5003; margin-bottom: 3px; }
+		h1 .small { font-size: 0.4em; }
+		h1 a { text-decoration: none }
+		h2 { font-size: 1.5em; color: #FC5003; }
+    h3 { text-align: center; color: #FC5003; }
+    a { color: #2b343b; }
+    .description { font-size: 1.2em; margin-bottom: 30px; margin-top: 30px; font-style: italic;}
+    .download { float: right; }
+		pre { background: #000; color: #fff; padding: 15px;}
+    hr { border: 0; width: 80%; border-bottom: 1px solid #aaa}
+    .footer { text-align:center; padding-top:30px; font-style: italic; }
+	</style>
+	
+</head>
+
+<body>
+  <a href="http://github.com/ilektrojohn/creepy"><img style="position: absolute; top: 0; right: 0; border: 0;" src="http://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub" /></a>
+
+  <div id="container">
+
+    <div class="download">
+      <a href="http://github.com/ilektrojohn/creepy/zipball/master">
+        <img border="0" width="90" src="http://github.com/images/modules/download/zip.png"></a>
+      <a href="http://github.com/ilektrojohn/creepy/tarball/master">
+        <img border="0" width="90" src="http://github.com/images/modules/download/tar.png"></a>
+    </div>
+
+    <h1><a href="http://github.com/ilektrojohn/creepy">creepy</a>
+      <span class="small">by <a href="http://github.com/ilektrojohn">ilektrojohn</a></span></h1>
+
+  <h2>FAQ</h2>
+
+<h3>1) Dude, this app is disturbing , what were you thinking ?</h3>
+<p>Well, I don't think that the fact that your geolocation information can be gathered and aggregated is disturbing. The fact that you were publishing it in the first place , is , on the other hand. Just to be clear, the intention behind creating creepy was not to help stalkers or promote/endorse stalking. It was to show exactly how easy it is to aggregate geolocation information and make you think twice next time you opt-in for geolocation features in twitter, or hitting "allow" in the "this application wants to use your current location" dialog on your iphone.  
+</br>
+<h3>2) Any other uses for creepy ?</h3>
+<p>In fact, yes. I believe it can be a valuable tool for information gathering when social engineering is allowed during a penetration test. 
+</br>
+<h3>3) It takes forever to get some results ! Why is that ?</h3> 
+</p>The most time consuming part of the process is not the extraction process , it's the retrieval. The target's tweets have to be retrieved with the use of twitter's API and then for the tweets that include photos, the photos have to be downloaded from the image hosting service in order to analyze the meta-data for GPS information. Twitter occasionally has some issues and it might not work with the first try, or fail to get all tweets at once. Just hit the "geolocate target" again, the previously retrieved tweets have been cached and creepy will try to get the rest for you. 
+</br>
+<h3>4) Where is the Mac OS version ?</h3>
+</p>It's coming . Slowly. GTK+ doesn't play well with Mac OS and I don't own a mac. Plus I don't have much free time :)
+</br>
+<h3>5) What about google latitude , picasa web albums e.t.c. ?</h3>
+<p>I'm working on that . In the mean time , please fork creepy and write modules for services that are not included :) There are enough services to be included before we hit a stable release (1.0) I can't offer a time-frame though.
+
+  </div>
+  
+</body>
+</html>
+
+
