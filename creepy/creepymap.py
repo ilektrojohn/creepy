@@ -990,7 +990,7 @@ of the users tweets. \n ')
     def show_about_dialog(self, button):
         about = gtk.AboutDialog()
         about.set_program_name("Creepy")
-        about.set_version("0.1.8")
+        about.set_version("0.1.9")
         about.set_copyright("(c) Yiannis Kakavas")
         about.set_comments("Creepy is a geolocation information gatherer")
         about.set_website("http://ilektrojohn.github.com/creepy")
