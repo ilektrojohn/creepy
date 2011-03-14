@@ -171,9 +171,9 @@ class CreepyUI(gtk.Window):
         export_menu = gtk.Menu()
         export = gtk.MenuItem("Export as..")
         export.set_submenu(export_menu)
-        export_kmz = gtk.MenuItem("Export as kmz")
-        export_kmz.connect('activate', self.export_locations, 'kmz')
-        export_menu.append(export_kmz)
+        export_kml = gtk.MenuItem("Export as kml")
+        export_kml.connect('activate', self.export_locations, 'kml')
+        export_menu.append(export_kml)
         export_csv = gtk.MenuItem("Export as csv")
         export_csv.connect('activate', self.export_locations, 'csv')
         export_menu.append(export_csv)
@@ -945,8 +945,8 @@ of the users tweets. \n ')
             
             if dir:
                 hel = helper.Helper()
-                if format == 'kmz':
-                    result = hel.create_kmz(self.twitter_target.get_text(), dir, self.locations)
+                if format == 'kml':
+                    result = hel.create_kml(self.twitter_target.get_text(), dir, self.locations)
                 elif format == 'csv':
                     result = hel.create_csv(self.twitter_target.get_text(), dir, self.locations)
                     

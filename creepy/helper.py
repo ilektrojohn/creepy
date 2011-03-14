@@ -29,24 +29,38 @@ class Helper():
     def __init__(self):
         pass
     
-    def create_kmz(self, id, dir, locations): 
+
+    def html_escape(self, text):
+        """Produce entities within text."""
+        html_escape_table = {
+                             "&": "&amp;",
+                             '"': "&quot;",
+                             "'": "&apos;",
+                             ">": "&gt;",
+                             "<": "&lt;",
+                             }
+        return "".join(html_escape_table.get(c,c) for c in text)
+    def create_kml(self, id, dir, locations): 
         """
-        Takes id of a user as input and packs his locations into a kmz file
+        Takes id of a user as input and packs his locations into a kml file
         """  
         #Create the klm file
         # kml is the list to hold all xml attribs. it will be joined in a string later
         kml = []
         kml.append('<?xml version=\"1.0\" encoding=\"UTF-8\"?>')
         kml.append('<kml xmlns=\"http://www.opengis.net/kml/2.2\">') 
+        kml.append('<Document>')
+        kml.append('  <name>%s.kml</name>' % id)
         for loc in locations:
             desc = '%s Link : %s' % (loc['context'][1], loc['context'][0])
             kml.append('  <Placemark>')
-            kml.append('    <description> %s' % desc)
+            kml.append('    <description> %s' % self.html_escape(desc))
             kml.append('    </description>') 
             kml.append('    <Point>')
             kml.append('       <coordinates>%s, %s, 0</coordinates>' % (loc['longitude'], loc['latitude']))
             kml.append('    </Point>')
             kml.append('  </Placemark>')
+        kml.append('</Document>')
         kml.append('</kml>')
         
         kml_string = '\n'.join(kml)
@@ -56,8 +70,6 @@ class Helper():
             fileobj = open(filename, 'w')
             fileobj.write(kml_string)
             fileobj.close()
-            output = os.path.join(dir, '%s.kmz' % id)
-            os.system('zip -r %s %s' % (output, filename))
             return 'Success'
         except Exception, err:
             return ('Error', err)

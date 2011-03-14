@@ -65,8 +65,8 @@ class URLAnalyzer():
                     data['latitude'] = float(coordinates[0][0])
                     data['longitude'] = float(coordinates[0][1])
             return [data]
-        except Exception, err:
-            #print 'Error getting location from foursquare', err
+        except Exception:
+            err = 'Error getting location from foursquare'
             self.errors.append({'from':'foursqare', 'tweetid':tweet.id, 'url': url.geturl() ,'error':err})
             return []
     
@@ -122,7 +122,8 @@ class URLAnalyzer():
                     return coordinates
                 else:
                     return []   
-        except Exception, err:
+        except Exception:
+            err = 'Error extracting gps coordinates from exif metadata'
             self.errors.append({'from':'exif', 'tweetid':0, 'url':'', 'error':err})
            
      
@@ -152,8 +153,8 @@ class URLAnalyzer():
             photo_url = soup.find(attrs={"class": "photo", "id": "photo-display"})['src']
             urllib.urlretrieve(photo_url , temp_file)
             return [self.exif_extract(temp_file, tweet)] 
-        except Exception, err: 
-            #print 'Error trying to download %s ' % (url.geturl()),err
+        except Exception: 
+            err = 'Error trying to download photo'
             self.errors.append({'from':'twitpic', 'tweetid':tweet.id, 'url': url.geturl(), 'error':err})
             return []
              
@@ -176,8 +177,8 @@ class URLAnalyzer():
             photo_url = soup.find(attrs={"rel": "image_src"})['href'] 
             urllib.urlretrieve(photo_url, temp_file)
             return [self.exif_extract(temp_file, tweet.text)]
-        except Exception, err:
-            #print 'Error trying to download %s ' % (photo_url),err
+        except Exception:
+            err = 'Error trying to download photo'
             self.errors.append({'from':'yfrog', 'tweetid':tweet.id, 'url': url.geturl() ,'error':err})
             return []
         
@@ -188,8 +189,8 @@ class URLAnalyzer():
             photo_url = "http://img.ly"+soup.find(attrs={"id": "the-image"})['src']
             urllib.urlretrieve(photo_url, temp_file)
             return [self.exif_extract(temp_file, tweet.text)]
-        except Exception, err:
-            #print 'Error trying to download %s ' % (photo_url),err
+        except Exception:
+            err = 'Error trying to download photo'
             self.errors.append({'from':'imgly', 'tweetid':tweet.id, 'url': url.geturl() ,'error':err})
             return []
             
@@ -207,7 +208,8 @@ class URLAnalyzer():
             #print re.findall("http://[\S]+cloudfiles[\S]+", html)
             urllib.urlretrieve(re.findall("http://[\S]+cloudfiles[\S]+", html), temp_file)
             '''
-        except Exception, err:
+        except Exception:
+            err = 'Error getting information from plixi API'
             self.errors.append({'from':'plixi', 'tweetid':tweet.id, 'url': url.geturl() ,'error':err})
         return [api_location]
     
@@ -217,8 +219,8 @@ class URLAnalyzer():
             photo_url = "http://img.twitrpix.com"+url.path
             urllib.urlretrieve(photo_url, temp_file)
             return [self.exif_extract(temp_file, tweet.text)]
-        except Exception, err:
-            #print 'Error trying to download %s ' % (photo_url),err
+        except Exception:
+            err = 'Error trying to download photo'
             self.errors.append({'from':'twitrpix', 'tweetid':tweet.id, 'url': url.geturl() ,'error':err})
             return []
          
@@ -228,8 +230,8 @@ class URLAnalyzer():
             photo_url = "http://img.folext.com"+url.path+".jpg"    
             urllib.urlretrieve(photo_url, temp_file)
             return [self.exif_extract(temp_file, tweet.text)]
-        except Exception, err:
-            #print 'Error trying to download %s ' % (photo_url),err
+        except Exception:
+            err = 'Error trying to download %s ' % (photo_url)
             self.errors.append({'from':'folext', 'tweetid':tweet.id, 'url': url.geturl() ,'error':err})
             return []
         
@@ -240,8 +242,8 @@ class URLAnalyzer():
             photo_url = soup.find(attrs={"class": "cls"})['src']
             urllib.urlretrieve(photo_url, temp_file)
             return [self.exif_extract(temp_file, tweet.text)]
-        except Exception, err:
-            #print 'Error trying to download %s ' % (photo_url),err
+        except Exception:
+            err = 'Error trying to download photo'
             self.errors.append({'from':'shozu', 'tweetid':tweet.id, 'url': url.geturl() ,'error':err})
             return []
         
@@ -254,8 +256,8 @@ class URLAnalyzer():
             photo_url = "http://img.pikchur.com/pic_"+url.path[1:]+"_l.jpg"
             urllib.urlretrieve(photo_url, temp_file)
             return [self.exif_extract(temp_file, tweet.text)]
-        except Exception, err:
-            #print 'Error trying to download %s ' % (photo_url),err
+        except Exception:
+            err = 'Error trying to download photo'
             self.errors.append({'from':'pickhur', 'tweetid':tweet.id, 'url': url.geturl() ,'error':err})
             return []
     
@@ -274,8 +276,8 @@ class URLAnalyzer():
             photo_url = str(json_reply['post']['media']['url_full']).replace('large', 'full')
             urllib.urlretrieve(photo_url, temp_file)
             return [api_loc, self.exif_extract(temp_file, tweet.text)]
-        except Exception, err:
-            #print 'Error trying to download %s ' % (photo_url),err
+        except Exception:
+            err = 'Error trying to download photo'
             self.errors.append({'from':'moby', 'tweetid':tweet.id, 'url': url.geturl() ,'error':err})
         return [api_loc]
     
@@ -285,8 +287,8 @@ class URLAnalyzer():
             photo_url = "http://twitsnaps.com/snap"+url.path
             urllib.urlretrieve(photo_url, temp_file)
             return [self.exif_extract(temp_file, tweet.text)]
-        except Exception, err:
-            #print 'Error trying to download %s ' % (photo_url),err
+        except Exception:
+            err = 'Error trying to download photo'
             self.errors.append({'from':'twitsnaps', 'tweetid':tweet.id, 'url': url.geturl() ,'error':err})
             return []
         
@@ -296,8 +298,8 @@ class URLAnalyzer():
             temp_file = os.path.join(self.photo_dir,url.path[1:])
             urllib.urlretrieve(img_url, temp_file)
             return [self.exif_extract(temp_file, tweet.text)]
-        except Exception, err:
-            #print 'Error trying to download %s ' % (img_url),err
+        except Exception:
+            err = 'Error trying to download photo'
             self.errors.append({'from':'twitgoo', 'tweetid':tweet.id, 'url': url.geturl() ,'error':err})
             return []
         
