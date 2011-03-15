@@ -54,6 +54,7 @@ class Helper():
         for loc in locations:
             desc = '%s Link : %s' % (loc['context'][1], loc['context'][0])
             kml.append('  <Placemark>')
+            kml.append('  <name>%s</name>' % loc['time'])
             kml.append('    <description> %s' % self.html_escape(desc))
             kml.append('    </description>') 
             kml.append('    <Point>')
