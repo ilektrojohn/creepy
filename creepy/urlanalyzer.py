@@ -57,7 +57,7 @@ class URLAnalyzer():
             full_url = urllib.urlopen(url.geturl()).url
             if 'checkin' in full_url:
                 html = urllib.urlopen(full_url).read()
-                coordinates = re.findall('GLatLng\([-+]?([0-9]*\.[0-9]+|[0-9]+)\,[ \t][-+]?([0-9]*\.[0-9]+|[0-9]+)', html)
+                coordinates = re.findall('GLatLng\(([-+]?[0-9]*\.[0-9]+|[0-9]+)\,[ \t]([-+]?[0-9]*\.[0-9]+|[0-9]+)', html)
                 if coordinates:
                     data['from'] = 'fsquare_checkin' 
                     data['context'] = 'Information retrieved from foursquare. Tweet was %s ' % (tweet.text)
