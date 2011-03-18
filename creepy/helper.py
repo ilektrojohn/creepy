@@ -87,3 +87,15 @@ class Helper():
         except Exception, err:
             return ('Error', err)
             
+    def remove_duplicates(self, location_list):
+        known_timestamps = set()
+        processed_results = []
+        
+        for loc in location_list:
+            timestamp = loc['time']
+            if timestamp in known_timestamps:
+                continue
+            else:
+                processed_results.append(loc)
+                known_timestamps.add(timestamp)
+        return processed_results    

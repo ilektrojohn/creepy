@@ -60,7 +60,7 @@ class URLAnalyzer():
                 coordinates = re.findall('GLatLng\(([-+]?[0-9]*\.[0-9]+|[0-9]+)\,[ \t]([-+]?[0-9]*\.[0-9]+|[0-9]+)', html)
                 if coordinates:
                     data['from'] = 'fsquare_checkin' 
-                    data['context'] = 'Information retrieved from foursquare. Tweet was %s ' % (tweet.text)
+                    data['context'] = ('https://twitter.com/%s/status/%s' % (tweet.user.screen_name, tweet.id) ,'Information retrieved from foursquare. Tweet was %s  \n' % (tweet.text))
                     data['time'] = tweet.created_at 
                     data['latitude'] = float(coordinates[0][0])
                     data['longitude'] = float(coordinates[0][1])

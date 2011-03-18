@@ -20,6 +20,7 @@ This file is part of creepy.
 
 import flickr
 import twitter
+import helper
 
 class Cree():
     """
@@ -42,6 +43,7 @@ class Cree():
             Returns a tuple containing a list of location dictionaries, and a 
             dictionary of parameters
         """
+        hel = helper.Helper()
         location_list = []
         twitparams = {}
         flickrparams={}
@@ -54,7 +56,7 @@ class Cree():
             if flickrlocs:
                 location_list.extend(flickrlocs)
         params = dict(twitparams, **flickrparams)
-        return (location_list, params)
+        return (hel.remove_duplicates(location_list), params)
 
     def search_for_users(self, service, query, param=''):
         """
