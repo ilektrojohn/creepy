@@ -70,7 +70,30 @@ class URLAnalyzer():
             self.errors.append({'from':'foursqare', 'tweetid':tweet.id, 'url': url.geturl() ,'error':err})
             return []
     
-   
+    def gowalla(self, url, tweet):
+		"""
+		Handles  gowalla links
+		
+		returns location coordinates
+		"""
+		try:
+			data = {}
+			full_url = urllib.urlopen(url.geturl()).url
+			if '/checkins/' in full_url:
+				html = urllib.urlopen(full_url).read()
+				coordinates = re.findall('center=([-+]?[0-9]*\.[0-9]+|[0-9]+),([-+]?[0-9]*\.[0-9]+|[0-9]+)&', html)
+				data['from'] = 'Gowalla_checkin'
+				data['context'] = ('https://twitter.com/%s/status/%s' % (tweet.user.screen_name, tweet.id) ,'Information retrieved from Gowalla. Tweet was %s  \n' % (tweet.text))				
+				data['time'] = tweet.created_at
+				data['longitude'] = float(coordinates[0][1])
+				data['latitude'] = float(coordinates[0][0])
+			return [data] 
+		except Exception:
+			err = 'Error getting location from Gowalla'
+			self.errors.append({'from':'gowalla', 'tweetid':tweet.id, 'url':url.geturl(), 'error':err})
+			return []
+				
+			
     def exif_extract(self, temp_file, tweet):
         def calc(k): return [(float(n)/float(d)) for n,d in [k.split("/")]][0]
         def degtodec(a): return a[0]+a[1]/60+a[2]/3600
@@ -316,7 +339,8 @@ class URLAnalyzer():
                    'pk.gd': self.pikchur,
                    'moby.to': self.moby,
                    'twitsnaps.com': self.twitsnaps,
-                   'twitgoo.com':self.twitgoo}
+                   'twitgoo.com':self.twitgoo,
+                   'gowal.la':self.gowalla}
         
         final_locations_list=[]
         for i in re.findall("(https?://[\S]+)", tweet.text):  
