@@ -21,6 +21,7 @@ This file is part of creepy.
 
 import re
 import urllib, simplejson
+import urllib2
 import pyexiv2
 import time
 import os.path
@@ -60,7 +61,7 @@ class URLAnalyzer():
                 coordinates = re.findall('GLatLng\(([-+]?[0-9]*\.[0-9]+|[0-9]+)\,[ \t]([-+]?[0-9]*\.[0-9]+|[0-9]+)', html)
                 if coordinates:
                     data['from'] = 'fsquare_checkin' 
-                    data['context'] = ('https://twitter.com/%s/status/%s' % (tweet.user.screen_name, tweet.id) ,'Information retrieved from foursquare. Tweet was %s  \n' % (tweet.text))
+                    data['context'] = ('https://twitter.com/%s/status/%s' % (tweet.user.screen_name, tweet.id) ,'Information retrieved from foursquare.\n  Tweet was %s  \n' % (tweet.text))
                     data['time'] = tweet.created_at 
                     data['latitude'] = float(coordinates[0][0])
                     data['longitude'] = float(coordinates[0][1])
@@ -71,29 +72,29 @@ class URLAnalyzer():
             return []
     
     def gowalla(self, url, tweet):
-		"""
+        """
 		Handles  gowalla links
 		
 		returns location coordinates
 		"""
-		try:
-			data = {}
-			full_url = urllib.urlopen(url.geturl()).url
-			if '/checkins/' in full_url:
-				html = urllib.urlopen(full_url).read()
-				coordinates = re.findall('center=([-+]?[0-9]*\.[0-9]+|[0-9]+),([-+]?[0-9]*\.[0-9]+|[0-9]+)&', html)
-				data['from'] = 'Gowalla_checkin'
-				data['context'] = ('https://twitter.com/%s/status/%s' % (tweet.user.screen_name, tweet.id) ,'Information retrieved from Gowalla. Tweet was %s  \n' % (tweet.text))				
-				data['time'] = tweet.created_at
-				data['longitude'] = float(coordinates[0][1])
-				data['latitude'] = float(coordinates[0][0])
-			return [data] 
-		except Exception:
-			err = 'Error getting location from Gowalla'
-			self.errors.append({'from':'gowalla', 'tweetid':tweet.id, 'url':url.geturl(), 'error':err})
-			return []
-				
-			
+        try:
+            data = {}
+            full_url = urllib.urlopen(url.geturl()).url
+            if '/checkins/' in full_url:
+                html = urllib.urlopen(full_url).read()
+                coordinates = re.findall('center=([-+]?[0-9]*\.[0-9]+|[0-9]+),([-+]?[0-9]*\.[0-9]+|[0-9]+)&', html)
+                data['from'] = 'Gowalla_checkin'
+                data['context'] = ('https://twitter.com/%s/status/%s' % (tweet.user.screen_name, tweet.id) ,'Information retrieved from Gowalla. \n Tweet was %s  \n' % (tweet.text))				
+                data['time'] = tweet.created_at
+                data['longitude'] = float(coordinates[0][1])
+                data['latitude'] = float(coordinates[0][0])
+            return [data] 
+        except Exception:
+            err = 'Error getting location from Gowalla'
+            self.errors.append({'from':'gowalla', 'tweetid':tweet.id, 'url':url.geturl(), 'error':err})
+            return []
+
+
     def exif_extract(self, temp_file, tweet):
         def calc(k): return [(float(n)/float(d)) for n,d in [k.split("/")]][0]
         def degtodec(a): return a[0]+a[1]/60+a[2]/3600
@@ -112,7 +113,7 @@ class URLAnalyzer():
                 if "Exif.GPSInfo.GPSLatitude" in keys :
                     coordinates = {}
                     coordinates['from'] = 'exif'
-                    coordinates['context'] = ('https://twitter.com/%s/status/%s' % (tweet.user.screen_name, tweet.id) , 'Location retrieved from image exif metadata .Tweet was %s \n ' % (tweet.text))
+                    coordinates['context'] = ('https://twitter.com/%s/status/%s' % (tweet.user.screen_name, tweet.id) , 'Location retrieved from image exif metadata .\n Tweet was %s \n ' % (tweet.text))
                     coordinates['time'] = datetime.fromtimestamp(mktime(time.strptime(exif_data['Exif.Image.DateTime'].raw_value, "%Y:%m:%d %H:%M:%S")))
                     coordinates['latitude'] = format_coordinates(exif_data['Exif.GPSInfo.GPSLatitude'].raw_value)
                     lat_ref = exif_data['Exif.GPSInfo.GPSLatitudeRef'].raw_value
@@ -122,7 +123,11 @@ class URLAnalyzer():
                     long_ref = exif_data['Exif.GPSInfo.GPSLongitudeRef'].raw_value
                     if long_ref == 'W':
                         coordinates['longitude'] = -coordinates['longitude']
-                    return coordinates
+                    
+                    if coordinates['longitude'] == 0 and coordinates['latitude'] == 0:
+                        return []
+                    else:
+                        return coordinates
                 else:
                     return []
             else:
@@ -133,7 +138,7 @@ class URLAnalyzer():
                     coordinates = {}
                     coordinates['from'] = 'exif'
                     coordinates['time'] = exif_data['Exif.Image.DateTime']
-                    coordinates['context'] = ('https://twitter.com/%s/status/%s' % (tweet.user.screen_name, tweet.id) , 'Location retrieved from image exif metadata .Tweet was %s \n ' % (tweet.text))
+                    coordinates['context'] = ('https://twitter.com/%s/status/%s' % (tweet.user.screen_name, tweet.id) , 'Location retrieved from image exif metadata .\n Tweet was %s \n ' % (tweet.text))
                     coordinates['latitude'] = format_coordinates_alter(exif_data['Exif.GPSInfo.GPSLatitude'])
                     lat_ref = exif_data['Exif.GPSInfo.GPSLatitudeRef']
                     if lat_ref == 'S':
@@ -142,7 +147,11 @@ class URLAnalyzer():
                     long_ref = exif_data['Exif.GPSInfo.GPSLongitudeRef']
                     if long_ref == 'W':
                         coordinates['longitude'] = -coordinates['longitude']
-                    return coordinates
+                        
+                    if coordinates['longitude'] == 0 and coordinates['latitude'] == 0:
+                        return []
+                    else:
+                        return coordinates
                 else:
                     return []   
         except Exception:
@@ -195,11 +204,13 @@ class URLAnalyzer():
             #print 'Exception ', err
         
         try:
-            soup = bs(urllib.urlopen(url.geturl()))
+            #Using the normal approach causes a 302 loop because server expects cookies, so....
+            opener = urllib2.build_opener(urllib2.HTTPCookieProcessor())
+            soup = bs(opener.open(urllib2.Request(url.geturl())))
             temp_file = os.path.join(self.photo_dir,url.path[1:])
-            photo_url = soup.find(attrs={"rel": "image_src"})['href'] 
+            photo_url = soup.find(attrs={"rel": "direct"})['value'] 
             urllib.urlretrieve(photo_url, temp_file)
-            return [self.exif_extract(temp_file, tweet.text)]
+            return [self.exif_extract(temp_file, tweet)]
         except Exception:
             err = 'Error trying to download photo'
             self.errors.append({'from':'yfrog', 'tweetid':tweet.id, 'url': url.geturl() ,'error':err})
@@ -221,16 +232,14 @@ class URLAnalyzer():
         api_location ={}
         try:
             json_reply= simplejson.load(urllib.urlopen("http://api.plixi.com/api/tpapi.svc/json/photos/"+url.path[3:]))
-            api_location['from'] = 'plixi_api'
-            api_location['context'] = ('https://twitter.com/%s/status/%s' % (tweet.user.screen_name, tweet.id) , 'Location retrieved from plixi API .Tweet was %s \n ' % (tweet.text))
-            api_location['latitude'] = json_reply['Location']['Latitude'] 
-            api_location['longitude'] = json_reply['Location']['Longitude']
-            api_location['time'] = datetime.fromtimestamp(json_reply['UploadDate'])
-            ''' html = urllib.urlopen("http://plixi.com/photos/original/"+url.path[3:]).read()
-            temp_file = os.path.join(self.photo_dir,url.path[3:])
-            #print re.findall("http://[\S]+cloudfiles[\S]+", html)
-            urllib.urlretrieve(re.findall("http://[\S]+cloudfiles[\S]+", html), temp_file)
-            '''
+            if json_reply['Location']['Latitude'] == 0 and json_reply['Location']['Longitude'] == 0:
+                return [api_location]
+            else:
+                api_location['from'] = 'plixi_api'
+                api_location['context'] = ('https://twitter.com/%s/status/%s' % (tweet.user.screen_name, tweet.id) , 'Location retrieved from plixi API . \n Tweet was %s \n ' % (tweet.text))
+                api_location['latitude'] = json_reply['Location']['Latitude'] 
+                api_location['longitude'] = json_reply['Location']['Longitude']
+                api_location['time'] = datetime.fromtimestamp(json_reply['UploadDate'])
         except Exception:
             err = 'Error getting information from plixi API'
             self.errors.append({'from':'plixi', 'tweetid':tweet.id, 'url': url.geturl() ,'error':err})
@@ -290,7 +299,7 @@ class URLAnalyzer():
             json_reply = simplejson.load(urllib.urlopen("http://api.mobypicture.com/?t="+url.path[1:]+"&action=getMediaInfo&k="+self.moby_key+"&format=json"))
             if json_reply['post']['location_latlong']:
                 api_loc['from'] = "moby_api"
-                api_loc['context'] = ('https://twitter.com/%s/status/%s' % (tweet.user.screen_name, tweet.id) , 'Location retrieved from moby.to API .Tweet was %s \n ' % (tweet.text))
+                api_loc['context'] = ('https://twitter.com/%s/status/%s' % (tweet.user.screen_name, tweet.id) , 'Location retrieved from moby.to API .\n Tweet was %s \n ' % (tweet.text))
                 api_loc['latitude'] = json_reply['post']['location_latlong'][0]
                 api_loc['longitude'] = json_reply['post']['location_latlong'][1]
                 api_loc['time'] = datetime.fromtimestamp(json_reply['created_on_epoch'])
