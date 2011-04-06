@@ -9,15 +9,6 @@ Requirements :
 
 
 Ubuntu 10.10
------------------------------------------------------------------
-
-Semi-Automatic way (Recommended):
-
-
-Install tweepy :
-
-# easy_install tweepy
-
 
 Download and install the .deb package from https://github.com/ilektrojohn/creepy/downloads .
 
@@ -36,7 +27,22 @@ $ sudo apt-get install creepy
 creepy is now on the main menu, under Applications -> Internet
 
 
+Ubuntu 10.04
 
+
+add creepy's ppa with :
+
+$ sudo add-apt-repository ppa:jkakavas/creepy-lucid
+
+update the package list :
+
+$ sudo apt-get update
+
+and install creepy with :
+
+$ sudo apt-get install creepy
+
+creepy is now on the main menu, under Applications -> Internet
 
 
 
