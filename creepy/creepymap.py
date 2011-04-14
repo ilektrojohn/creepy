@@ -872,7 +872,11 @@ the pin to the box below, and hit OK')
     def search_for_locations(self, twit, flickr):
         
         self.startprogressbox()
-        self.locations, params = self.creepy.get_locations(self.twitter_target.get_text(), self.flickr_target.get_text())
+        #the username of the twitter target for the specific search
+        self.twitter_target_username = self.twitter_target.get_text()
+        #the username of the flickr target for the specific search
+        self.flickr_target_username = self.flickr_target.get_text()
+        self.locations, params = self.creepy.get_locations(self.twitter_target_username, self.flickr_target_username)
         #gobject.idle_add(self.textbuffer.set_text, 'DONE !')
         if params:
             if 'flickr_errors' in params:
@@ -944,11 +948,17 @@ of the users tweets. \n ')
             filesel.destroy()
             
             if dir:
+                if self.twitter_target_username:
+                    export_id = self.twitter_target_username
+                elif self.flickr_target_username:
+                    export_id = self.flickr_target_username
+                else:
+                    self.create_nonmodal_dialog('Error', 'There are no results to export')
                 hel = helper.Helper()
                 if format == 'kml':
-                    result = hel.create_kml(self.twitter_target.get_text(), dir, self.locations)
+                    result = hel.create_kml(export_id, dir, self.locations)
                 elif format == 'csv':
-                    result = hel.create_csv(self.twitter_target.get_text(), dir, self.locations)
+                    result = hel.create_csv(export_id, dir, self.locations)
                     
                 if result == 'Success':
                     self.create_nonmodal_dialog('Success', 'File created successfully and saved at %s' % dir)
