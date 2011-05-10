@@ -23,7 +23,7 @@ was posted from that specific location) to provide context to the presentation.
 
 1)Available map providers
     *Google Maps
-    *Virtual Maps
+    *Virtual Earth Maps
     *OpenStreetMaps
 
 2)Location information retrieval from :
@@ -60,9 +60,9 @@ was posted from that specific location) to provide context to the presentation.
     *twitgoo.com - information retrieved from photo exif tags
 
 
-5)Automatic caching of retrieved information in order to reduce API calls and the possibility of hiting limit rates.
+5)Automatic caching of retrieved information in order to reduce API calls and the possibility of hitting limit rates.
 
-6)GUI with navigate-able map for better overview of the accumulated information
+6)GUI with navigable map for better overview of the accumulated information
 
 7)Handling twitter authentication in an easy way using oAuth. User credentials are not shared with the application.
 
@@ -72,7 +72,7 @@ Creepy icon : © "eye of sauron" image by blood-solice on deviantart ( http://bl
 
 Inspired by 
 -- Johannes B. Ullrich (see original post about exif gps metadata on twitpic http://isc.sans.edu/diary.html?storyid=8203)
--- icanstalkyou.com
--- pleaserobme.com
+-- http://www.icanstalku.com
+-- http://pleaserobme.com
 
 Special thanks to Chris Hadnagy ( a.k.a @humanhacker ) for all the feedback and suggestions during development. 
