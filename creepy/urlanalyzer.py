@@ -334,7 +334,38 @@ class URLAnalyzer():
             err = 'Error trying to download photo'
             self.errors.append({'from':'twitgoo', 'tweetid':tweet.id, 'url': url.geturl() ,'error':err})
             return []
+    def instagram(self, url, tweet):
+        """
+        Handles  instagram links
         
+        returns location coordinates
+        """
+        try:
+            data = {}
+            html = urllib.urlopen(url.geturl()).read()
+            coordinates = re.findall('center=([-+]?[0-9]*\.[0-9]+|[0-9]+),([-+]?[0-9]*\.[0-9]+|[0-9]+)&', html)
+            if coordinates:
+                data['from'] = 'Instagram photo'
+                data['context'] = ('https://twitter.com/%s/status/%s' % (tweet.user.screen_name, tweet.id) ,'Information retrieved from instagram photo in a tweet. \n Tweet was %s  \n' % (tweet.text))                
+                data['time'] = tweet.created_at
+                data['longitude'] = float(coordinates[0][1])
+                data['latitude'] = float(coordinates[0][0])
+            else:
+                coordinates = re.findall('sll=([-+]?[0-9]*\.[0-9]+|[0-9]+),([-+]?[0-9]*\.[0-9]+|[0-9]+)&', html)
+                if coordinates:
+                    data['from'] = 'Instagram photo'
+                    data['context'] = ('https://twitter.com/%s/status/%s' % (tweet.user.screen_name, tweet.id) ,'Information retrieved from instagram photo in a tweet. \n Tweet was %s  \n' % (tweet.text))                
+                    data['time'] = tweet.created_at
+                    data['longitude'] = float(coordinates[0][1])
+                    data['latitude'] = float(coordinates[0][0])
+                    
+            return [data] 
+        except Exception:
+            err = 'Error getting location from instagram photo'
+            self.errors.append({'from':'instagram', 'tweetid':tweet.id, 'url':url.geturl(), 'error':err})
+            return []
+
+            
     def get_photo_location(self, tweet):            
         service = {'4sq.com': self.fsq,
                    'twitpic.com' : self.tp,
@@ -349,7 +380,8 @@ class URLAnalyzer():
                    'moby.to': self.moby,
                    'twitsnaps.com': self.twitsnaps,
                    'twitgoo.com':self.twitgoo,
-                   'gowal.la':self.gowalla}
+                   'gowal.la':self.gowalla,
+                   'instagr.am': self.instagram}
         
         final_locations_list=[]
         for i in re.findall("(https?://[\S]+)", tweet.text):  
