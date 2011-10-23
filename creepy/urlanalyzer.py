@@ -22,7 +22,7 @@ This file is part of creepy.
 import re
 import urllib, simplejson
 import urllib2
-import pyexiv2
+
 import time
 import os.path
 from datetime import datetime
@@ -30,6 +30,12 @@ from time import  mktime
 from urlparse import urlparse
 from BeautifulSoup import BeautifulSoup as bs
 
+try:
+    import pyexiv2
+except ImportError:
+    PYEXIV_AVAILABLE = False
+else:
+    PYEXIV_AVAILABLE = True
 
 class URLAnalyzer():
     """
@@ -96,6 +102,15 @@ class URLAnalyzer():
 
 
     def exif_extract(self, temp_file, tweet):
+        """
+        Attempt to extract exif information from the provided tweet.
+        If pyexiv2 dependency is not installed, this will not work and will
+        merely return an empty list
+        """
+
+        if not PYEXIV_AVAILABLE:
+            return []
+
         def calc(k): return [(float(n)/float(d)) for n,d in [k.split("/")]][0]
         def degtodec(a): return a[0]+a[1]/60+a[2]/3600
         def format_coordinates(string):
