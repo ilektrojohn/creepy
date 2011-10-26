@@ -85,6 +85,19 @@
       is presented in a map inside the application where all the retrieved data is shown
       accompanied with relevant information (i.e. what was posted from that specific location) to 
       provide context to the presentation.</p>
+<h2>Current Situation With Twitter !!! </h2>
+As you may have noticed, cree.py stopped being able to communicate with twitter's API two weeks ago. To cut a long story short
+Twitter's API Support team supposedly got abuse reports regarding the applications Consumer Key and Secret. That means that
+they claim that someone has been using these credentials that uniquely identify the application to the API in order to abuse the
+API and for that reason they reset them. The situation deserves discussion so there will be a <a href="http://diveintoinfosec.wordpress.com">blog post</a> soon .
+</br>
+Until I figure out how to solve the issue permanently, there are two easy solutions : 
+<h3> Register your own dummy application </h3>
+Go to <a href="https://dev.twitter.com/apps/new"> twitter dev </a> and register a new application . Get your consumer secret and consumer key 
+and use them in the configuration file of creepy. (HOME_DIR/.creepy/creepy.conf) 
+<h3> Drop me a mail </h3>
+Contact me( jkakavas <at> gmail <dot> com ) and i will send you the new consumer key and secret to use for your copy of creepy.
+</br>
 <h2>F.A.Q.</h2>
 Please read through the <a href="faq.html">FAQ</a> :)
 <h2>Screenshots</h2>
