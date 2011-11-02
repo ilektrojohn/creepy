@@ -4,7 +4,7 @@ from itertools import chain
 from os.path import join, dirname
 from setuptools import setup, find_packages
 
-__version__ = '0.2.0'
+__version__ = '0.1.95'
 package_name = 'creepy'
 # used to specify that a feature should depend on the presence
 # of another feature
