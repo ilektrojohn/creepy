@@ -28,6 +28,7 @@ except:
 import simplejson
 import urllib
 import urlanalyzer
+import base64
 
 
 class Twitter():
@@ -38,8 +39,9 @@ class Twitter():
     it's API
     """
     def __init__(self, conf_file):
-        cons_key = conf_file['twitter_auth']['consumer_key'] 
-        cons_secret = conf_file['twitter_auth']['consumer_secret'] 
+        #Do some "magic" so twitter guys are happy
+        cons_string = conf_file['twitter_auth']['cons_string']
+        cons_key, cons_secret = base64.b64decode(cons_string).split(",")
         acc_key = conf_file['twitter_auth']['access_key']
         acc_secret = conf_file['twitter_auth']['access_secret']
         self.profilepics_dir = conf_file['directories']['profilepics_dir']
