@@ -32,6 +32,7 @@ import webbrowser
 from configobj import ConfigObj
 import shutil
 import pango
+import base64
 
 
 gobject.threads_init()
@@ -510,7 +511,8 @@ the pin to the box below, and hit OK')
         self.auth_finalize_button.set_sensitive(1)
         
     def button_authorize_twitter(self, button):
-        self.oauth = oauth(self.config['twitter_auth']['consumer_key'], self.config['twitter_auth']['consumer_secret'])
+        cons_key, cons_secret = base64.b64decode(self.config['twitter_auth']['cons_string']).split(",")
+        self.oauth = oauth(cons_key, cons_secret)
         url = self.oauth.get_authorization_url(True)
         webbrowser.open(url)
     
