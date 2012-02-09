@@ -7,6 +7,12 @@ Requirements :
 ** python-configobj
 ** python-simplejson
 
+Ubuntu 11.10 and later 
+
+creepy is in the universe repository
+
+$ sudo apt-get install creepy
+
 
 Ubuntu 10.10
 
@@ -44,6 +50,11 @@ $ sudo apt-get install creepy
 
 creepy is now on the main menu, under Applications -> Internet
 
+Backtrack 5 
+
+Creepy is included in the official BT5 repositories. Install it with :
+
+# apt-get install creepy
 
 
 Backtrack 4 ( R2 ) 
