@@ -1,5 +1,5 @@
 '''
-Copyright 2012 Yiannis Kakavas
+Copyright 2010 Yiannis Kakavas
 
 This file is part of creepy.
 
