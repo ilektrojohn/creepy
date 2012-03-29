@@ -1,0 +1,7 @@
+# Author: Ioannis Kakavas
+#
+# Email from police on information about crime
+#
+SUBJECT="Information request regarding crime investigation"
+
+BODY="Dear @realname@, \n We kindly request your cooperation and any information you have regarding an ongoing investigation about an attempted murder that took place in @formatted_address@ on @date@ at approximately @hour@:@minutes@. We have witnesses that put you on the scene around this time. \n A police officer will contact you shortly with questions about the incident. In the meantime, please review the attached photos and examine the suspects depicted there. Any information you can provide might prove valuable. \n \n Best Regards, \n Name of the police department or whatever"
