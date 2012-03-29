@@ -19,6 +19,8 @@ This file is part of creepy.
 '''
 import os.path
 import csv
+import urllib, simplejson
+import datetime
 try:
     import cPickle as pickle
 except:
@@ -40,7 +42,7 @@ class Helper():
                              "<": "&lt;",
                              }
         return "".join(html_escape_table.get(c,c) for c in text)
-    def create_kml(self, id, dir, locations): 
+    def create_kml(self, id, directory, locations): 
         """
         Takes id of a user as input and packs his locations into a kml file
         """  
@@ -67,16 +69,16 @@ class Helper():
         kml_string = '\n'.join(kml)
         try:
             #save the file to disk
-            filename = os.path.join(dir, '%s.kml' % id)
+            filename = os.path.join(directory, '%s.kml' % id)
             fileobj = open(filename, 'w')
             fileobj.write(kml_string)
             fileobj.close()
             return 'Success'
         except Exception, err:
             return ('Error', err)
-    def create_csv(self, id, dir, locations):
+    def create_csv(self, id, directory, locations):
         try:
-            filename = os.path.join(dir, '%s.csv' % id)
+            filename = os.path.join(directory, '%s.csv' % id)
             fileobj = open(filename, 'w')
             writer = csv.writer(fileobj, quoting=csv.QUOTE_ALL)
             writer.writerow(('Time', 'Latitude', 'Longitude', 'Retrieved from', 'Context'))
@@ -99,3 +101,44 @@ class Helper():
                 processed_results.append(loc)
                 known_timestamps.add(timestamp)
         return processed_results    
+    
+    def reverse_geocode(self, location):
+        '''
+        Reverse geocodes a pair of coordinates to an address
+        '''
+        try:
+            url = 'http://maps.googleapis.com/maps/api/geocode/json?latlng=%s,%s&sensor=false'%(location[0], location[1])
+            json_reply= simplejson.load(urllib.urlopen(url))
+            
+            if json_reply['status'] == 'OK':
+                address = {}
+                address['formatted_address'] = json_reply['results'][0]['formatted_address']
+                address['area'] = json_reply['results'][0]['address_components'][0]['short_name']
+        except:
+            address = 'not_available'
+            
+        return address
+    
+    def create_template(self, realname, username, location, loctime, indirectory, outdirectory, fileid):
+        information = self.reverse_geocode(location)
+        area = information['area']
+        formatted_address = information['formatted_address']
+        date_struct = datetime.datetime.strptime(loctime, "%Y-%m-%d %H:%M:%S")
+        try:
+            #read the template
+            filename = os.path.join(indirectory, '%s.template' % fileid)
+            fileobj = open(filename, 'r+')
+            filestring = fileobj.read()
+            
+            #Replace the placeholders
+            filestring = filestring.replace("@formatted_address@", formatted_address).replace("@area@", area).replace("@username@", username).replace("@realname@" ,realname).replace("@date@", date_struct.strftime("%x")).replace("@time@", date_struct.strftime("%X")).replace("@ampm@", date_struct.strftime("%p")).replace("@datetime@", date_struct.strftime("%c")).replace("@month@", date_struct.strftime("%B")).replace("@day@", date_struct.strftime("%A")).replace("@year@", date_struct.strftime("%Y")).replace("@hour@", date_struct.strftime("%H")).replace("@minutes@", date_struct.strftime("%M"))
+            
+            #write the file to the output directory
+            filenameout = os.path.join(outdirectory, '%s.template' % fileid)
+            fileobjout = open(filenameout, 'w')
+            fileobjout.write(filestring)
+            fileobjout.close()
+            return 'Success'
+        except Exception, err:
+            return ('Error', err)
+        

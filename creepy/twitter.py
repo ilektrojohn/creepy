@@ -20,6 +20,7 @@ This file is part of creepy.
 
 import tweepy
 from tweepy import Cursor
+from time import gmtime, strftime
 import os.path
 try:
     import cPickle as pickle
@@ -29,7 +30,13 @@ import simplejson
 import urllib
 import urlanalyzer
 import base64
+import multiprocessing
+import dateutil.relativedelta as rl
+from datetime import datetime
+import time
 
+g_conf_file = None
+g_urlanalyzer = None
 
 class Twitter():
     """
@@ -38,24 +45,30 @@ class Twitter():
     Provides all the functionality needed in regards of accessing twitter via 
     it's API
     """
-    def __init__(self, conf_file):
-        #Do some "magic" so twitter guys are happy
-        cons_string = conf_file['twitter_auth']['cons_string']
-        cons_key, cons_secret = base64.b64decode(cons_string).split(",")
-        acc_key = conf_file['twitter_auth']['access_key']
-        acc_secret = conf_file['twitter_auth']['access_secret']
+    def __init__(self, conf_file , auth = True):
+        #Do some "magic" so twitter guys are happy :)
+        global g_conf_file 
+        global g_urlanalyzer
+        g_conf_file = conf_file
         self.profilepics_dir = conf_file['directories']['profilepics_dir']
         self.cache_dir = conf_file['directories']['cache_dir']
         self.urlanalyzer = urlanalyzer.URLAnalyzer(conf_file['directories']['img_dir'], conf_file['misc']['moby_key'])
-
-        if cons_key and cons_secret and acc_key and acc_secret:
-            auth = tweepy.OAuthHandler(cons_key, cons_secret)
-            auth.set_access_token(acc_key, acc_secret)
-            self.api = tweepy.API(auth)
-            self.authed = True
-        else:
-            self.authed = False
-            self.api = tweepy.API()
+        g_urlanalyzer = urlanalyzer.URLAnalyzer(conf_file['directories']['img_dir'], conf_file['misc']['moby_key'])
+        self.tweepy_count = conf_file['tweepy']['count']
+        self.handle_links = conf_file['twitter']['handle_links']
+        if auth:
+            cons_string = conf_file['twitter_auth']['cons_string']
+            cons_key, cons_secret = base64.b64decode(cons_string).split(",")
+            acc_key = conf_file['twitter_auth']['access_key']
+            acc_secret = conf_file['twitter_auth']['access_secret']
+            if cons_key and cons_secret and acc_key and acc_secret:
+                auth = tweepy.OAuthHandler(cons_key, cons_secret)
+                auth.set_access_token(acc_key, acc_secret)
+                self.api = tweepy.API(auth)
+                self.authed = True
+            else:
+                self.authed = False
+                self.api = tweepy.API()
         
     def authorize_for_twitter(self, key, secret):
         """
@@ -132,7 +145,7 @@ class Twitter():
         timeline=[]
         conn_err = {}
         try:
-            for i in Cursor(self.api.user_timeline, screen_name=username, count=200).items():
+            for i in Cursor(self.api.user_timeline, screen_name=username, count=self.tweepy_count).items():
                 timeline.append(i)
     
         except tweepy.TweepError, err:
@@ -171,7 +184,7 @@ class Twitter():
     def get_location_fromplace(self, name):
         """
         Gets location in form of coordinates pair from a lexicographic representation of a place.
-        Utilizes the geonames.com service.Not very accurate when the location is bot very specific
+        Utilizes the geonames.com service.Not very accurate when the location is not very specific
         
         Returns a tuple with the location coordinates
         """
@@ -207,12 +220,14 @@ class Twitter():
             data['time'] = tweet.created_at
             data['latitude'] = tweet.coordinates['coordinates'][1]
             data['longitude'] = tweet.coordinates['coordinates'][0]
+            data['realname'] = tweet.user.name
         elif tweet.geo is not None:
             data['from'] = 'twitter' 
             data['context'] = ('https://twitter.com/%s/status/%s' % (tweet.user.screen_name, tweet.id) , 'Information retrieved from twitter.. \n Tweet was : %s \n ' % (tweet.text))
             data['time'] = tweet.created_at 
             data['latitude'] = tweet.geo['coordinates'][0]
             data['longitude'] = tweet.geo['coordinates'][1]
+            data['realname'] = tweet.user.name
         elif tweet.place is not None:
             name = tweet.place['full_name']
             c = self.get_location_fromplace(name)
@@ -222,6 +237,7 @@ class Twitter():
                 data['time'] = tweet.created_at 
                 data['latitude'] = c[0]
                 data['longitude'] = c[1]
+                data['realname'] = tweet.user.name
             else :
                 a = tweet.place['bounding_box']['coordinates']
                 data['from'] = 'twitter_bounding_box'
@@ -229,7 +245,11 @@ class Twitter():
                 data['time'] = tweet.created_at 
                 data['latitude'] = a[0][0][1]
                 data['longitude'] = a[0][0][0]
+                data['realname'] = tweet.user.name
         return data
+    
+    
+        
     def get_tweets_locations(self, tweets):
         """
         Wrapper function for location information retrieval.
@@ -239,78 +259,120 @@ class Twitter():
         """
         location = []
         errors = []
-        for tweet in tweets:
-            loc1 = self.get_status_location(tweet)
-            if loc1:    
-                location.append(loc1)
-            loc2, errors = self.urlanalyzer.get_photo_location(tweet)
-            if loc2:
-                location.extend(loc2)
+        
+        tasks = multiprocessing.Queue()
+        results = multiprocessing.Queue()
+        
+        num = multiprocessing.cpu_count() * 2
+        analyzers = [Analyzer(tasks, results) for i in xrange(num)]
+        
+        for a in analyzers:
+            a.start()
+            
+        num_of_jobs = len(tweets)
+        for i in xrange(num_of_jobs):
+            tasks.put(Task(tweets[i]))
+        
+        for i in xrange(num):
+            tasks.put(None)
+        
+        while num_of_jobs:
+            result = results.get()
+            if result:
+                if (isinstance(result, list)):
+                    location.extend(result)
+                elif (isinstance(result,dict)):
+                    location.append(result)
+            num_of_jobs -= 1
         return (location, errors)
-        
-             
-    def get_twitter_locations(self, username):
-        """
-        Wrapper function for retrieving a user's locations
-        
-        Returns a list of location dictionaries for a specific user
-        
-        """ 
+ 
+    def get_tweets(self, username):
         identifier_tweet ='tweets_'+username
-        identifier_loc ='locations_'+username
-        results_params = {}
         #Check to see if we have saved tweets and locations for the current user
-        tweets_old = self.unpickle_data(identifier_tweet)
-        if tweets_old:
-            latest_id = tweets_old['latest_id']
-            oldest_id = tweets_old['oldest_id']
+        saved_tweets = self.unpickle_data(identifier_tweet)
+        if saved_tweets:
+            latest_id = saved_tweets['latest_id']
+            oldest_id = saved_tweets['oldest_id']
             latest, err = self.get_latest_tweets(username, latest_id)
-            if len(latest) > 0:
+            if len(latest):
                 latest_id = latest[0].id
             older, err2 = self.get_older_tweets(username, oldest_id)
             if len(older):
                 oldest_id = older[-1].id
             conn_err = dict(err, **err2)
-            tweets = latest+older+tweets_old['tweets']
+            tweets = latest+older
             tweets = self.sort_tweet_list(tweets)
-            results_params['tweets'] = tweets_old['total']+len(latest)+len(older)
-            locations_old = self.unpickle_data(identifier_loc)
-            locations_new, errors = self.get_tweets_locations(tweets)
-            locations = locations_old+locations_new    
+            num_of_tweets = saved_tweets['total']+len(latest)+len(older)   
         else:
             tweets, conn_err = self.get_all_tweets(username)
-            locations, errors = self.get_tweets_locations(tweets)
+            num_of_tweets = len(tweets)
             if len(tweets) > 0:
                 latest_id = tweets[0].id
                 oldest_id = tweets[-1].id
-            results_params['tweets'] = len(tweets)
             
-        if conn_err:
-            errors.append(conn_err)
-            
-        results_params['locations'] = len(locations)
-        results_params['twitter_errors'] = errors
-        
-        
-        
-        #Introducing a threshold for saving the tweets and locations
         if len(tweets) > 0:
-            results_params['tweets_count'] = tweets[0].user.statuses_count
             try:
-                #I just love it :) Go figure what it does.
-                cached_tweets = [tweet for tweet in tweets if tweet.id in [er['tweetid'] for er in errors]]
                 #add the latest and the oldest tweet we retrieved as pointers
-                cached_data = {'latest_id':latest_id, 'oldest_id':oldest_id, 'tweets':cached_tweets, 'total':results_params['tweets']}
+                cached_data = {'latest_id':latest_id, 'oldest_id':oldest_id, 'total':num_of_tweets}
                 self.pickle_data(cached_data, identifier_tweet)
-                self.pickle_data(locations, identifier_loc)
              
             except Exception, err:
                 print 'Exception ',err
-        else:
-            results_params['tweets_count'] = 0
+        #We need to return only the newly retrieved tweets, the rest have been analyzed already and their locations
+        #are in the location cache
+        return (tweets, conn_err)
+    
+    def get_locations(self, tweets, username):
+        identifier_loc ='locations_'+username
+        identifier_errors ='errors_'+username
+        results_params = {}
+        #Check to see if we have saved tweets and locations for the current user
+        locations_old = self.unpickle_data(identifier_loc)
+        locations, errors = self.get_tweets_locations(tweets)
+        if locations_old:
+            locations = locations+locations_old    
+        results_params['locations'] = len(locations)
+        results_params['tweets'] = len(tweets)
+        try:
+            #I just love it :) Go figure what it does.
+            cached_tweets = [tweet for tweet in tweets if tweet.id in [er['tweetid'] for er in errors]]
+            #tweets for which we had some errors analyzing locations from them
+            cached_errors = {'tweets':cached_tweets}
+            self.pickle_data(cached_errors, identifier_errors)
+            self.pickle_data(locations, identifier_loc)
+         
+        except Exception, err:
+            print 'Exception ',err
+   
         return (locations, results_params)
-      
+
+class Analyzer(multiprocessing.Process):
+    def __init__(self, task_queue, result_queue):
+        multiprocessing.Process.__init__(self)
+        self.task_queue = task_queue
+        self.result_queue = result_queue
+            
+    def run(self):
+        while True:
+            next_task = self.task_queue.get()
+            if next_task is None:
+                break
+            res = next_task()
+            self.result_queue.put(res)
+        return
         
+class Task(object):
+    def __init__(self, tweet):
+        self.tweet = tweet
+    def __call__(self):
+        try:
+            t = Twitter(g_conf_file, False)
+            loc = t.get_status_location(self.tweet)
+            if not loc and self.handle_links == 'yes':
+                loc = g_urlanalyzer.get_photo_location(self.tweet)
+            return loc
+        except:
+            return []
     
     
     

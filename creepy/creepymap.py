@@ -22,6 +22,7 @@ This file is part of creepy.
 
 from threading import Thread
 import cree
+import twitter
 import helper
 import gobject
 import gtk.gdk
@@ -53,29 +54,38 @@ class CreepyUI(gtk.Window):
 
         self.set_default_size(800, 600)
         self.connect('destroy', lambda x: gtk.main_quit())
-        self.set_title('Cree.py location creeper')
+        self.set_title('Cree.py OSINT Geolocatioon Aggregator')
         
         #If it is the first time creepy is run copy the config file and necessary images to .creepy
         if not os.path.exists(self.CONF_DIR):
             os.mkdir(self.CONF_DIR)
             #If creepy was installed through the .deb package in ubuntu , the files needed would be in /usr/share/pyshared/creepy
             if os.path.exists('/usr/share/pyshared/creepy'):
+                templates_dir = '/usr/share/pyshared/creepy/include/templates'
                 try:
+                    os.makedirs(os.path.join(self.CONF_DIR, 'templates'))
                     shutil.copy('/usr/share/pyshared/creepy/include/creepy.conf', os.path.join(self.CONF_DIR, 'creepy.conf'))
                     shutil.copy('/usr/share/pyshared/creepy/include/evil_twitter.png', os.path.join(self.CONF_DIR, 'evil_twitter.png'))
                     shutil.copy('/usr/share/pyshared/creepy/include/flickr.png', os.path.join(self.CONF_DIR, 'flickr.png'))
                     shutil.copy('/usr/share/pyshared/creepy/include/index.png', os.path.join(self.CONF_DIR, 'index.png'))
                     shutil.copy('/usr/share/pyshared/creepy/include/default.jpg', os.path.join(self.CONF_DIR, 'default.jpg'))
+                    for templatename in os.listdir(templates_dir):
+                        shutil.copy(os.path.join(templates_dir, templatename), os.path.join(self.CONF_DIR,'templates', templatename))
+                        
                 except Exception, err:
                     print err
             #If creepy is run from source folder (i.e. in Backtrack) with 'python creepymap.py' , needed files are in current dir
             else:
+                templates_dir = 'include/templates'
                 try:
+                    os.makedirs(os.path.join(self.CONF_DIR, 'templates'))
                     shutil.copy('include/creepy.conf', os.path.join(self.CONF_DIR, 'creepy.conf'))
                     shutil.copy('include/evil_twitter.png', os.path.join(self.CONF_DIR, 'evil_twitter.png'))
                     shutil.copy('include/flickr.png', os.path.join(self.CONF_DIR, 'flickr.png'))
                     shutil.copy('include/index.png', os.path.join(self.CONF_DIR, 'index.png'))
                     shutil.copy('include/default.jpg', os.path.join(self.CONF_DIR, 'default.jpg'))
+                    for templatename in os.listdir(templates_dir):
+                        shutil.copy(os.path.join(templates_dir, templatename), os.path.join(self.CONF_DIR,'templates', templatename))
                 except Exception, err:
                     print err	 
             #create the temp folders
@@ -90,21 +100,27 @@ class CreepyUI(gtk.Window):
             tmp_conf['directories']['img_dir'] = os.path.join(self.CONF_DIR, 'images')
             tmp_conf['directories']['cache_dir'] = os.path.join(self.CONF_DIR, 'cache')
             tmp_conf['directories']['profilepics_dir'] = os.path.join(self.CONF_DIR, 'images', 'profilepics')
+            tmp_conf['directories']['templates_dir'] = os.path.join(self.CONF_DIR, 'templates')
             tmp_conf.write()
-        
-        #Fix only for version 0.1.73 to copy the creepy32.png to the config folder
-        if os.path.exists('/usr/share/pyshared/creepy'):
-            try:
-                shutil.copy('/usr/share/pyshared/creepy/include/creepy32.png', os.path.join(self.CONF_DIR, 'creepy32.png'))
-            except  Exception, err:
-                print err
-        else:
-            try:
-                shutil.copy('include/creepy32.png', os.path.join(self.CONF_DIR, 'creepy32.png'))
-            except Exception, err:
-                print err
                 
                 
+        #Try and add values to the config file that did not exist in previous versions
+        try:
+            config_file = os.path.join(self.CONF_DIR, 'creepy.conf')
+            temp_config = ConfigObj(infile=config_file)   
+            count = temp_config['tweepy']['count']
+            handle_links = temp_config['twitter']['handle_links']
+        except:
+            temp_config['tweepy']['count'] = 100 
+            temp_config['twitter']['handle_links'] = "yes"
+            temp_config.write()
+        try:
+            config_file = os.path.join(self.CONF_DIR, 'creepy.conf')
+            temp_config = ConfigObj(infile=config_file)   
+            cons_string = temp_config['twitter_auth']['cons_string']
+        except:
+            temp_config['twitter_auth']['cons_string'] = 'QjZEVGxuVEJLUk9MSTZiUWxHdXJTdyxzWDFUV0ZIVDd4c1VYcE5WUFpaZ3Fhc2FDNE9GamRGcEk0czVLSDhHSQ==' 
+            temp_config.write()   
         #Try to load the options file
         try:
             config_file = os.path.join(self.CONF_DIR, 'creepy.conf')
@@ -113,11 +129,22 @@ class CreepyUI(gtk.Window):
             self.config.write_empty_values=True
             self.set_auth(self.config)
             self.profilepics_dir = self.config['directories']['profilepics_dir']
+            self.templates_dir = self.config['directories']['templates_dir']
+            self.handle_links = self.config['twitter']['handle_links']
             
         except Exception, err:
             text = 'Error parsing configuration file : %s' % err
             self.create_dialog('Error', text)
             
+            
+        # try and load template files to a list of dicts
+        self.saved_templates = []
+        try:
+            for f in os.listdir(self.templates_dir):
+                if f.endswith(".template"):
+                    self.saved_templates.append(f[:-9])   
+        except Exception, err:
+            print 'Error trying to load templates : %s' % err
             
         #check if dirs for temp data exist and if not try to create them
         if not os.path.exists(self.config['directories']['img_dir']):
@@ -301,7 +328,7 @@ class CreepyUI(gtk.Window):
         showbuttontext = '<b>Geolocate \n    Target</b>'
         self.show_button = gtk.Button(showbuttontext)
         self.show_button.child.set_use_markup(True)
-        self.show_button.connect('clicked', self.thread_show_clicked)
+        self.show_button.connect('clicked', self.thread_get_tweets)
         separator = gtk.HSeparator()
         self.flickr_target = gtk.Entry()
         self.twitter_username = gtk.Entry()
@@ -497,7 +524,8 @@ the pin to the box below, and hit OK')
             self.settings_notebook.show_all()
             
     def set_auth(self, conf_file):    
-        self.creepy = cree.Cree(conf_file)   
+        self.creepy = cree.Cree(conf_file) 
+        self.t = twitter.Twitter(conf_file)  
         
     def reset_auth_settings(self, button):
         self.config['twitter_auth']['access_key'] = ''
@@ -740,7 +768,7 @@ the pin to the box below, and hit OK')
         self.show_all()
     
     def location_list_model(self, locations):
-        store = gtk.ListStore(str, str, str, str, str)
+        store = gtk.ListStore(str, str, str, str, str )
         if locations:
             for loc in locations:
                 store.append([loc['context'][0], loc['context'][1], loc['latitude'], loc['longitude'], loc['time']])
@@ -762,6 +790,37 @@ the pin to the box below, and hit OK')
         col.set_sort_column_id(4)
         treeView.append_column(col)
         
+        
+    def export_mail_template(self, button, info):
+        filesel = gtk.FileChooserDialog('Save as...',
+                                            None, 
+                                            gtk.FILE_CHOOSER_ACTION_SELECT_FOLDER,
+                                            (gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL,
+                                            gtk.STOCK_OPEN, gtk.RESPONSE_OK))
+        filesel.set_default_response(gtk.RESPONSE_OK)
+        response = filesel.run()
+        if response == gtk.RESPONSE_OK:
+            directory = filesel.get_filename()
+        elif response == gtk.RESPONSE_CANCEL:
+            directory = None
+        filesel.destroy()
+        
+        if directory:  
+            if self.twitter_target_username:
+                    export_id = self.twitter_target_username
+            elif self.flickr_target_username:
+                export_id = self.flickr_target_username
+            else:
+                self.create_nonmodal_dialog('Error', 'There are no results to export')
+            hel = helper.Helper()  
+            result = hel.create_template(info[0], export_id, info[1], info[2], self.templates_dir, directory, info[3])
+            if result == 'Success':
+                self.create_nonmodal_dialog('Success', 'Template created successfully and saved at %s' % directory)
+            else:
+                self.create_nonmodal_dialog('Error', 'We were unable to create the template. Error was : %s' % result[1] )
+            
+            
+            
     def copy_to_clipboard(self, obj, coord):
         string = '%s, %s' % (float(coord[0]), float(coord[1]))
         clipboard = gtk.Clipboard(gtk.gdk.display_manager_get().get_default_display(), "CLIPBOARD")
@@ -812,12 +871,22 @@ the pin to the box below, and hit OK')
                 location_popup = gtk.Menu()
                 copy_clipboard = gtk.MenuItem("Copy to clipboard")
                 open_googlemap = gtk.MenuItem("Open in browser (google maps)")
+                export_set_template = gtk.MenuItem("Export mail template for Social-Engineer Toolkit")
+                template_list = gtk.Menu()
+                for template in self.saved_templates:
+                    template_list_item = gtk.MenuItem(template)
+                    template_list.append(template_list_item)
+                    template_list_item.connect('activate', self.export_mail_template, ([self.realname, (model[path[0]][2], model[path[0]][3]) ,model[path[0]][4], template]))
+                    template_list_item.show()
+                export_set_template.set_submenu(template_list)
                 location_popup.append(copy_clipboard)
                 location_popup.append(open_googlemap)
+                location_popup.append(export_set_template)
                 copy_clipboard.connect('activate', self.copy_to_clipboard, (model[path[0]][2], model[path[0]][3]))
                 open_googlemap.connect('activate', self.open_googlemaps, (model[path[0]][2], model[path[0]][3]))
                 copy_clipboard.show()
                 open_googlemap.show()
+                export_set_template.show()
                 location_popup.popup( None, None, None, event.button, time)
             return True
     
@@ -861,6 +930,7 @@ the pin to the box below, and hit OK')
         self.stopprogressbox()
         pb = gtk.gdk.pixbuf_new_from_file_at_size(os.path.join(self.CONF_DIR, 'index.png'), 24,24)
         if locations:
+            self.realname = locations[0]['realname']
             for l in locations:
                 self.osm.image_add(float(l['latitude']), float(l['longitude']), pb)
             self.osm.set_center_and_zoom(float(locations[0]['latitude']), float(locations[0]['longitude']), 12)
@@ -870,60 +940,59 @@ the pin to the box below, and hit OK')
         if self.osm.props.tiles_queued != 0:
             return True
 
-
-    def search_for_locations(self, twit, flickr):
-        
+    
+    
+    def search_for_tweets(self):
         self.startprogressbox()
+        self.tweets, conn_err = self.creepy.get_tweets(self.twitter_target_username)
+        text = '%s new tweets have been retrieved. \n' % len(self.tweets)
+        if len(self.tweets):
+            text += 'Please wait until they have been analyzed for geolocation information...\n'
+        if conn_err and (conn_err['from'] == 'twitter_connection'):
+            text += 'Unfortunately we encountered this error : %s  \n' % conn_err['error']
+        gobject.idle_add(self.textbuffer.insert, self.textbuffer.get_end_iter(), text)
+        gobject.idle_add(self.thread_show_clicked)
+            
+    def thread_get_tweets(self, button):
+        self.twitter_target_username = self.twitter_target.get_text()
+        if not self.twitter_target.get_text() and not self.flickr_target.get_text():
+            self.create_dialog('error', 'No targets selected. Please select at least one in targets tab')   
+        else:
+            self.tweets = []
+            self.locations = []
+            self.reload_map(None, osmgpsmap.SOURCE_VIRTUAL_EARTH_HYBRID)
+            self.update_location_list([])
+            self.textbuffer.set_text('Retrieving tweets for user %s \n' % self.twitter_target_username)
+            self.notebook.set_current_page(-1)
+            Thread(target=lambda : self.search_for_tweets()).start()
+            self.show_button.set_sensitive(0)  
+    
+    
+    def search_for_locations(self):
+        
         #the username of the twitter target for the specific search
         self.twitter_target_username = self.twitter_target.get_text()
         #the username of the flickr target for the specific search
         self.flickr_target_username = self.flickr_target.get_text()
-        self.locations, params = self.creepy.get_locations(self.twitter_target_username, self.flickr_target_username)
+        
+        
+        self.locations, params = self.creepy.get_locations(self.twitter_target_username, self.tweets, self.flickr_target_username)
         #gobject.idle_add(self.textbuffer.set_text, 'DONE !')
-        if params:
-            if 'flickr_errors' in params:
-                for err in params['flickr_errors']:
-                    if err['from'] == 'flickr_photos':
-                        textfl = 'Error was %s' % err['error']
-                        self.create_nonmodal_dialog('Error connecting to flickr', textfl)
-            if 'twitter_errors' in params:
-                text = ''
-                for err in params['twitter_errors']:
-                    if err['from'] == 'twitter_connection':
-                        if err['error'] == 'Not found':
-                            self.create_nonmodal_dialog('Wrong username', 'The selected target does not correspond to a twitter username. Please \
-try the search function if you are unsure ')
-                        elif err['error'] == 'Failed to send request: [Errno -2] Name or service not known':
-                            self.create_nonmodal_dialog('Connection Error', 'Could not connect to twitter, please check your connection settings and try again')
-                        elif err['error'] == 'Not authorized':
-                            self.create_nonmodal_dialog('Authentication Error', 'Target\'s timeline is protected and you are not following him/her')
-                        else:
-                            self.create_nonmodal_dialog('Twitter error', 'We experienced some problems connecting to twitter. We were not able to retrieve all \
-of the users tweets. \n ')
-                    text += 'Error while accessing %s .The problem was : %s \n ' % (err['url'], err['error'])
-      
-                text += ' \n %s tweets have been retrieved out of a total of %s. \n From them, we were able to extract %s locations. \n \
-                We encountered %s errors in total accessing various services. \n '                                     % (params['tweets'], 
-                                                                                                                              params['tweets_count'], 
-                                                                                                                              params['locations'], 
-                                                                                                                              len(params['twitter_errors']))
-                gobject.idle_add(self.textbuffer.insert, self.textbuffer.get_end_iter(), text)     
+        if params: 
+            text = 'We were able to extract %s locations.' % (params['locations'])
+            gobject.idle_add(self.textbuffer.insert, self.textbuffer.get_end_iter(), text)     
         gobject.idle_add(self.update_location_list, self.locations)
         gobject.idle_add(self.draw_locations, self.locations)
         gobject.idle_add(self.activate_search_button)
         
-    def thread_show_clicked(self, button):
-        if not self.twitter_target.get_text() and not self.flickr_target.get_text():
-            self.create_dialog('error', 'No targets selected. Please select at least one in targets tab')
-        else:
-            self.notebook.set_current_page(-1)
-            #clear locations from previous search and reload map
-            self.locations = []
-            self.reload_map(None, osmgpsmap.SOURCE_VIRTUAL_EARTH_HYBRID)
-            self.update_location_list([])
-            self.textbuffer.set_text('Searching for locations .. Be patient, I am doing my best. \n This can take a while, please hold ... \n')
-            Thread(target=lambda : self.search_for_locations(self.twitter_target.get_text(),  self.flickr_target.get_text())).start()
-            self.show_button.set_sensitive(0)
+    def thread_show_clicked(self):
+       
+        #clear locations from previous search and reload map
+        self.locations = []
+        Thread(target=lambda : self.search_for_locations()).start()
+        self.show_button.set_sensitive(0)
+            
+            
     def activate_search_button(self):
         self.show_button.set_sensitive(1)
     
@@ -1002,9 +1071,9 @@ of the users tweets. \n ')
     def show_about_dialog(self, button):
         about = gtk.AboutDialog()
         about.set_program_name("Creepy")
-        about.set_version("0.1.95")
-        about.set_copyright("(c) Yiannis Kakavas")
-        about.set_comments("Creepy is a geolocation information gatherer")
+        about.set_version("0.2")
+        about.set_copyright("(c) Ioannis Kakavas")
+        about.set_comments("Creepy is an OSINT geolocation aggregator")
         about.set_website("http://ilektrojohn.github.com/creepy")
         about.set_logo(gtk.gdk.pixbuf_new_from_file(os.path.join(self.CONF_DIR, "creepy32.png")))
         about.run()

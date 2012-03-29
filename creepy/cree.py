@@ -35,8 +35,12 @@ class Cree():
         self.f= flickr.Flickr(conf_file)
         self.t = twitter.Twitter(conf_file)
         
-        
-    def get_locations(self, twittername,  flickrid):
+    def get_tweets(self, twittername):
+        tweets, conn_err = self.t.get_tweets(twittername)
+        return (tweets, conn_err)
+    
+    
+    def get_locations(self, twittername, tweets,  flickrid):
         """ Wrapper for the process of determining a users location through the
             accessible modules. 
             
@@ -48,7 +52,7 @@ class Cree():
         twitparams = {}
         flickrparams={}
         if twittername != '':
-            twitlocs, twitparams = self.t.get_twitter_locations(twittername)
+            twitlocs, twitparams = self.t.get_locations(tweets, twittername)
             if twitlocs:
                 location_list.extend(twitlocs)
         if flickrid != '':

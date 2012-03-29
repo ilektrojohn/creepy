@@ -1,4 +1,4 @@
-Requirements : 
+Dependencies : 
 ** tweepy 	https://github.com/joshthecoder/tweepy
 ** osmgpsmap 0.7 	https://github.com/nzjrs/osm-gps-map
 ** python-flickrapi 	http://stuvel.eu/flickrapi
@@ -14,41 +14,6 @@ creepy is in the universe repository
 $ sudo apt-get install creepy
 
 
-Ubuntu 10.10
-
-Download and install the .deb package from https://github.com/ilektrojohn/creepy/downloads .
-
-Alternatively add creepy's ppa with :
-
-$ sudo add-apt-repository ppa:jkakavas/creepy
-
-update the package list :
-
-$ sudo apt-get update
-
-and install creepy with :
-
-$ sudo apt-get install creepy
-
-creepy is now on the main menu, under Applications -> Internet
-
-
-Ubuntu 10.04
-
-
-add creepy's ppa with :
-
-$ sudo add-apt-repository ppa:jkakavas/creepy-lucid
-
-update the package list :
-
-$ sudo apt-get update
-
-and install creepy with :
-
-$ sudo apt-get install creepy
-
-creepy is now on the main menu, under Applications -> Internet
 
 Backtrack 5 
 
@@ -56,15 +21,6 @@ Creepy is included in the official BT5 repositories. Install it with :
 
 # apt-get install creepy
 
-
-Backtrack 4 ( R2 ) 
---------------------------------------------------------------------------------
-
-1) add `deb http://people.dsv.su.se/~kakavas/creepy binary/` to your /etc/apt/sources.list
-
-2)`# apt-get update`
-
-3)`# apt-get install creepy`
 
 Off creepying you go!!!
 

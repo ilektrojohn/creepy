@@ -4,7 +4,7 @@ from itertools import chain
 from os.path import join, dirname
 from setuptools import setup, find_packages
 
-__version__ = '0.1.95'
+__version__ = '0.2'
 package_name = 'creepy'
 # used to specify that a feature should depend on the presence
 # of another feature
@@ -81,11 +81,11 @@ extra_setup = {}
 setup(
     name=package_name,
     version=__version__,
-    description='A geolocation information gatherer. Offers geolocation '
+    description='An OSINT geolocation aggregator. Offers geolocation '
                 'information gathering through social networking platforms',
     long_description=read('README'),
     # packaging by Rob Dennis <rdennis@gmail.com>
-    author='Yiannis Kakavas',
+    author='Ioannis Kakavas',
     author_email=' jkakavas@gmail.com',
     url='https://github.com/ilektrojohn/creepy/',
     install_requires=install_requires,

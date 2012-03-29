@@ -1,8 +1,8 @@
 #creepy
 
-##Current Version : 0.1.95
+##Current Version : 0.2
 
-##Author : Yiannis Kakavas <jkakavas__AT__gmail__dot__com>
+##Author : Ioannis Kakavas <jkakavas__AT__gmail__dot__com>
 
 ##Homepage : http://ilektrojohn.github.com/creepy/
 
@@ -42,6 +42,7 @@ was posted from that specific location) to provide context to the presentation.
 
     *Twitter
     *Foursquare (only checkins that are posted to twitter)
+    *Gowalla (only checkins that are posted to twitter)
 
 
 4)Image hosting services currently supported :
@@ -58,6 +59,7 @@ was posted from that specific location) to provide context to the presentation.
     *moby.to - information retrieved from API and photo exif tags
     *twitsnaps.com - information retrieved from photo exif tags
     *twitgoo.com - information retrieved from photo exif tags
+    *lockerz.com - information retrieved from API and photo exif tags
 
 
 5)Automatic caching of retrieved information in order to reduce API calls and the possibility of hitting limit rates.
