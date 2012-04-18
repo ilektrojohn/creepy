@@ -108,19 +108,25 @@ class CreepyUI(gtk.Window):
         try:
             config_file = os.path.join(self.CONF_DIR, 'creepy.conf')
             temp_config = ConfigObj(infile=config_file)   
-            count = temp_config['tweepy']['count']
-            handle_links = temp_config['twitter']['handle_links']
-        except:
-            temp_config['tweepy']['count'] = 100 
-            temp_config['twitter']['handle_links'] = "yes"
-            temp_config.write()
-        try:
-            config_file = os.path.join(self.CONF_DIR, 'creepy.conf')
-            temp_config = ConfigObj(infile=config_file)   
-            cons_string = temp_config['twitter_auth']['cons_string']
-        except:
-            temp_config['twitter_auth']['cons_string'] = 'QjZEVGxuVEJLUk9MSTZiUWxHdXJTdyxzWDFUV0ZIVDd4c1VYcE5WUFpaZ3Fhc2FDNE9GamRGcEk0czVLSDhHSQ==' 
-            temp_config.write()   
+            try:
+                count = temp_config['tweepy']['count']
+            except:
+                temp_config['tweepy'] = {}
+                temp_config['tweepy']['count'] = 100 
+                temp_config.write()
+            try:
+                handle_links = temp_config['twitter']['handle_links']
+            except:
+                temp_config['twitter']['handle_links'] = "yes"
+                temp_config.write()
+            try:
+                cons_string = temp_config['twitter_auth']['cons_string']
+            except:
+                temp_config['twitter_auth']['cons_string'] = 'QjZEVGxuVEJLUk9MSTZiUWxHdXJTdyxzWDFUV0ZIVDd4c1VYcE5WUFpaZ3Fhc2FDNE9GamRGcEk0czVLSDhHSQ==' 
+                temp_config.write()   
+         except Exception, err:
+            text = 'Error parsing configuration file : %s' % err
+            self.create_dialog('Error', text)
         #Try to load the options file
         try:
             config_file = os.path.join(self.CONF_DIR, 'creepy.conf')
