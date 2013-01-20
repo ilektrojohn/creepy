@@ -2,8 +2,8 @@ from InputPlugin import InputPlugin
 
 class Flickr(InputPlugin):
     
-    name = "Flickr Plugin"
-    plugin_name = "flickr"
+    name = "flickr"
+    
     
     
     def __init__(self):
@@ -24,10 +24,5 @@ class Flickr(InputPlugin):
         pass
     
     def returnPersonalInformation(self, search_params):
-        pass
-        
-
-        
-    def saveConfiguration(self):
         pass
     

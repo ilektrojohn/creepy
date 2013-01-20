@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>PluginsConfigurationDialog</class>
+ <widget class="QDialog" name="PluginsConfigurationDialog">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>810</width>
+    <height>640</height>
+   </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>810</width>
+    <height>640</height>
+   </size>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>810</width>
+    <height>640</height>
+   </size>
+  </property>
+  <property name="windowTitle">
+   <string>Plugins Configuration</string>
+  </property>
+  <widget class="QDialogButtonBox" name="BtnBox">
+   <property name="geometry">
+    <rect>
+     <x>430</x>
+     <y>600</y>
+     <width>341</width>
+     <height>32</height>
+    </rect>
+   </property>
+   <property name="orientation">
+    <enum>Qt::Horizontal</enum>
+   </property>
+   <property name="standardButtons">
+    <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+   </property>
+  </widget>
+  <widget class="QListView" name="PluginsList">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>10</y>
+     <width>211</width>
+     <height>581</height>
+    </rect>
+   </property>
+   <property name="editTriggers">
+    <set>QAbstractItemView::EditKeyPressed|QAbstractItemView::SelectedClicked</set>
+   </property>
+  </widget>
+ </widget>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>BtnBox</sender>
+   <signal>accepted()</signal>
+   <receiver>PluginsConfigurationDialog</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>248</x>
+     <y>254</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>157</x>
+     <y>274</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>BtnBox</sender>
+   <signal>rejected()</signal>
+   <receiver>PluginsConfigurationDialog</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>316</x>
+     <y>260</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>286</x>
+     <y>274</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>

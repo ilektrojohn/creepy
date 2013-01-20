@@ -2,8 +2,8 @@ from InputPlugin import InputPlugin
 
 
 class Dummy(InputPlugin):
-    name = "Dummy Plugin"
-    plugin_name = "dummy"
+    name = "dummy"
+    
     
     def __init__(self):
         pass
@@ -25,8 +25,3 @@ class Dummy(InputPlugin):
     def returnPersonalInformation(self, search_params):
         pass
         
-    
-        
-        
-    def saveConfiguration(self):
-        pass

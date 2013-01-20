@@ -1,8 +1,8 @@
 from InputPlugin import InputPlugin
 class Twitter(InputPlugin):
     
-    name = "Twitter Plugin"
-    plugin_name = "twitter"
+    name = "twitter"
+    
     
     def __init__(self):
         pass
@@ -23,7 +23,4 @@ class Twitter(InputPlugin):
     
     def returnPersonalInformation(self, search_params):
         pass
-        
-
-    def saveConfiguration(self):
-        pass
+    

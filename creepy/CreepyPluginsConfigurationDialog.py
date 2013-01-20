@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'pluginsConfig.ui'
 #
-# Created: Sun Jan 20 00:32:47 2013
+# Created: Mon Jan 21 00:39:43 2013
 #      by: PyQt4 UI code generator 4.9.1
 #
 # WARNING! All changes made in this file will be lost!
@@ -28,21 +28,12 @@ class Ui_PluginsConfigurationDialog(object):
         self.BtnBox = QtGui.QDialogButtonBox(PluginsConfigurationDialog)
         self.BtnBox.setGeometry(QtCore.QRect(430, 600, 341, 32))
         self.BtnBox.setOrientation(QtCore.Qt.Horizontal)
-        self.BtnBox.setStandardButtons(QtGui.QDialogButtonBox.Apply|QtGui.QDialogButtonBox.Cancel|QtGui.QDialogButtonBox.Ok)
+        self.BtnBox.setStandardButtons(QtGui.QDialogButtonBox.Cancel|QtGui.QDialogButtonBox.Ok)
         self.BtnBox.setObjectName(_fromUtf8("BtnBox"))
         self.PluginsList = QtGui.QListView(PluginsConfigurationDialog)
         self.PluginsList.setGeometry(QtCore.QRect(10, 10, 211, 581))
         self.PluginsList.setEditTriggers(QtGui.QAbstractItemView.EditKeyPressed|QtGui.QAbstractItemView.SelectedClicked)
         self.PluginsList.setObjectName(_fromUtf8("PluginsList"))
-        self.PluginDetails = QtGui.QStackedWidget(PluginsConfigurationDialog)
-        self.PluginDetails.setGeometry(QtCore.QRect(240, 20, 541, 571))
-        self.PluginDetails.setObjectName(_fromUtf8("PluginDetails"))
-        self.page = QtGui.QWidget()
-        self.page.setObjectName(_fromUtf8("page"))
-        self.PluginDetails.addWidget(self.page)
-        self.page_2 = QtGui.QWidget()
-        self.page_2.setObjectName(_fromUtf8("page_2"))
-        self.PluginDetails.addWidget(self.page_2)
 
         self.retranslateUi(PluginsConfigurationDialog)
         QtCore.QObject.connect(self.BtnBox, QtCore.SIGNAL(_fromUtf8("accepted()")), PluginsConfigurationDialog.accept)

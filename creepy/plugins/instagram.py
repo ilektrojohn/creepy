@@ -1,8 +1,8 @@
 from InputPlugin import InputPlugin
 class Instagram(InputPlugin):
     
-    name = "Instagram Plugin"
-    plugin_name = "instagram"
+    name = "instagram"
+    
     
     def __init__(self):
         pass
@@ -23,7 +23,4 @@ class Instagram(InputPlugin):
     
     def returnPersonalInformation(self, search_params):
         pass
-        
- 
-    def saveConfiguration(self):
-        pass
+    
