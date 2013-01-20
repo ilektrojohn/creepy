@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>805</width>
-    <height>580</height>
+    <width>834</width>
+    <height>719</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -15,16 +15,16 @@
   </property>
   <property name="windowIcon">
    <iconset>
-    <normaloff>../../creepy/creepy/include/creepy.xpm</normaloff>../../creepy/creepy/include/creepy.xpm</iconset>
+    <normaloff>../creepy/include/creepy.xpm</normaloff>../creepy/include/creepy.xpm</iconset>
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QHBoxLayout" name="horizontalLayout">
     <item>
      <widget class="QTabWidget" name="tabWidget">
       <property name="currentIndex">
-       <number>0</number>
+       <number>2</number>
       </property>
-      <widget class="QWidget" name="tab1">
+      <widget class="QWidget" name="targetTab">
        <attribute name="title">
         <string>Targets</string>
        </attribute>
@@ -57,10 +57,22 @@
          <layout class="QHBoxLayout" name="horizontalLayout_5" stretch="45,30,25">
           <item>
            <layout class="QVBoxLayout" name="verticalLayout_2">
+            <property name="spacing">
+             <number>6</number>
+            </property>
+            <property name="sizeConstraint">
+             <enum>QLayout::SetDefaultConstraint</enum>
+            </property>
             <item>
              <layout class="QHBoxLayout" name="horizontalLayout_3" stretch="50,50">
               <item>
                <widget class="QLabel" name="label">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
                 <property name="text">
                  <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
@@ -70,9 +82,6 @@ p, li { white-space: pre-wrap; }
                 </property>
                 <property name="textFormat">
                  <enum>Qt::RichText</enum>
-                </property>
-                <property name="alignment">
-                 <set>Qt::AlignCenter</set>
                 </property>
                </widget>
               </item>
@@ -85,6 +94,12 @@ p, li { white-space: pre-wrap; }
              <layout class="QHBoxLayout" name="horizontalLayout_4" stretch="50,50">
               <item>
                <widget class="QLabel" name="label_2">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
                 <property name="text">
                  <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
@@ -93,7 +108,7 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600; font-style:italic;&quot;&gt;Flickr ID&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                 </property>
                 <property name="alignment">
-                 <set>Qt::AlignCenter</set>
+                 <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
                 </property>
                </widget>
               </item>
@@ -109,9 +124,12 @@ p, li { white-space: pre-wrap; }
             <property name="orientation">
              <enum>Qt::Horizontal</enum>
             </property>
+            <property name="sizeType">
+             <enum>QSizePolicy::Minimum</enum>
+            </property>
             <property name="sizeHint" stdset="0">
              <size>
-              <width>358</width>
+              <width>350</width>
               <height>20</height>
              </size>
             </property>
@@ -119,6 +137,12 @@ p, li { white-space: pre-wrap; }
           </item>
           <item>
            <widget class="QPushButton" name="pushButton">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
             <property name="text">
              <string>Geolocate Target</string>
             </property>
@@ -188,6 +212,9 @@ p, li { white-space: pre-wrap; }
             <property name="orientation">
              <enum>Qt::Horizontal</enum>
             </property>
+            <property name="sizeType">
+             <enum>QSizePolicy::MinimumExpanding</enum>
+            </property>
             <property name="sizeHint" stdset="0">
              <size>
               <width>178</width>
@@ -209,6 +236,9 @@ p, li { white-space: pre-wrap; }
              <spacer name="horizontalSpacer_2">
               <property name="orientation">
                <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeType">
+               <enum>QSizePolicy::Minimum</enum>
               </property>
               <property name="sizeHint" stdset="0">
                <size>
@@ -234,13 +264,13 @@ p, li { white-space: pre-wrap; }
         </item>
        </layout>
       </widget>
-      <widget class="QWidget" name="tab2">
+      <widget class="QWidget" name="resultsTab">
        <attribute name="title">
         <string>Results</string>
        </attribute>
        <layout class="QVBoxLayout" name="verticalLayout">
         <item>
-         <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="20,80">
+         <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="20,0">
           <property name="spacing">
            <number>2</number>
           </property>
@@ -248,7 +278,11 @@ p, li { white-space: pre-wrap; }
            <enum>QLayout::SetDefaultConstraint</enum>
           </property>
           <item>
-           <widget class="QListView" name="listView"/>
+           <widget class="QListView" name="listView">
+            <property name="mouseTracking">
+             <bool>false</bool>
+            </property>
+           </widget>
           </item>
           <item>
            <widget class="QWebView" name="webView">
@@ -260,17 +294,31 @@ p, li { white-space: pre-wrap; }
             </property>
             <property name="url">
              <url>
-              <string>http://maps.google.com/</string>
+              <string>file:///home/ioannis/code/creepy_dev/test.html</string>
              </url>
             </property>
            </widget>
           </item>
          </layout>
         </item>
-        <item>
-         <widget class="QTextBrowser" name="textBrowser"/>
-        </item>
        </layout>
+      </widget>
+      <widget class="QWidget" name="analysisTab">
+       <property name="enabled">
+        <bool>true</bool>
+       </property>
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="accessibleName">
+        <string/>
+       </property>
+       <attribute name="title">
+        <string>Page</string>
+       </attribute>
       </widget>
      </widget>
     </item>
@@ -281,7 +329,7 @@ p, li { white-space: pre-wrap; }
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>805</width>
+     <width>834</width>
      <height>25</height>
     </rect>
    </property>
