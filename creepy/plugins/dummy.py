@@ -3,6 +3,7 @@ from InputPlugin import InputPlugin
 
 class Dummy(InputPlugin):
     name = "dummy"
+    configured = False
     
     
     def __init__(self):

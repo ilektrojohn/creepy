@@ -5,7 +5,7 @@ from CreepyPluginsConfigurationDialog import Ui_PluginsConfigurationDialog
 from CreepyPersonProjectWizard import Ui_newPersonProjectWizard
 
 from yapsy.PluginManager import PluginManagerSingleton
-from CreepyModels import *
+from ModelsAndDelegates import *
 from InputPlugin import InputPlugin
 import logging
 import os
@@ -17,6 +17,7 @@ except AttributeError:
 
 
 class CreepyPersonProjectWizard(QtGui.QWizard):
+    """ Loads the Person Based Project Wizard from the ui and shows it """
     def __init__(self,parent=None):
         QtGui.QWizard.__init__(self,parent)
         self.ui = Ui_newPersonProjectWizard()
@@ -83,7 +84,7 @@ class CreepyMainWindow(QtGui.QMainWindow):
         
         pl = []
         for plugin in self.pluginsConfigurationDialog.PluginManager.getPluginsOfCategory("Input"):
-            pl.append(plugin.name)
+            pl.append(plugin)
             '''
             Build the configuration page from the available configuration options
             and add the page to the stackwidget
@@ -93,40 +94,45 @@ class CreepyMainWindow(QtGui.QMainWindow):
             scroll = QtGui.QScrollArea()
             scroll.setWidgetResizable(True)
             layout = QtGui.QVBoxLayout()
-            layout.setMargin(5)
-            layout.addWidget(scroll)      
+            titleLabel = QtGui.QLabel(plugin.name+ " Configuration Options")
+            layout.addWidget(titleLabel)
+            layout.addWidget(scroll)
+            layout.addStretch(1)      
             vboxWidget=QtGui.QWidget()
             vboxWidget.setObjectName("vboxwidget_container_"+plugin.name)
-            vbox = QtGui.QVBoxLayout()
+            vbox = QtGui.QGridLayout()
             vbox.setObjectName("vbox_container_"+plugin.name)
+            gridLayoutRowIndex = 0
             '''
             Load the String options first
             '''
             pluginStringOptions = plugin.plugin_object.readConfiguration("string_options")
             if pluginStringOptions != None:
-                for item in pluginStringOptions.keys():
-                    horizontalPropertyContainer = QtGui.QHBoxLayout()
+                for idx, item in enumerate(pluginStringOptions.keys()):
+                    
                     label = QtGui.QLabel()
                     label.setObjectName(_fromUtf8("string_label_"+item))
                     label.setText(_fromUtf8(item))
-                    horizontalPropertyContainer.addWidget(label)
+                    vbox.addWidget(label, idx, 0)
                     value = QtGui.QLineEdit()
                     value.setObjectName(_fromUtf8("string_value_"+item))
                     value.setText(pluginStringOptions[item])
-                    horizontalPropertyContainer.addWidget(value)
-                    vbox.addLayout(horizontalPropertyContainer)
+                    vbox.addWidget(value, idx, 1)
+                    gridLayoutRowIndex = idx +1
+
+                    
                 
             '''
             Load the boolean options 
             '''
             pluginBooleanOptions = plugin.plugin_object.readConfiguration("boolean_options")
             if pluginBooleanOptions != None:
-                for item in pluginBooleanOptions.keys():
+                for idx, item in enumerate(pluginBooleanOptions.keys()):
                     cb = QtGui.QCheckBox(item)
                     cb.setObjectName("boolean_label_"+item)
                     if pluginBooleanOptions[item] == 'True':
                         cb.toggle()
-                    vbox.addWidget(cb)
+                    vbox.addWidget(cb, gridLayoutRowIndex+idx, 0)
                 
             
             vboxWidget.setLayout(vbox)
@@ -136,7 +142,7 @@ class CreepyMainWindow(QtGui.QMainWindow):
             
         self.pluginsConfigurationDialog.ui.ConfigurationDetails.setCurrentIndex(0)   
             
-        self.PluginListModel = PluginModel(pl,self)
+        self.PluginListModel = PluginListModel(pl,self)
         self.pluginsConfigurationDialog.ui.PluginsList.setModel(self.PluginListModel)
         QtCore.QObject.connect(self.pluginsConfigurationDialog.ui.PluginsList, QtCore.SIGNAL("clicked(QModelIndex)"), self.changePluginConfigurationPage)
         if self.pluginsConfigurationDialog.exec_():

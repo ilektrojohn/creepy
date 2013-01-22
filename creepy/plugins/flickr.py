@@ -3,6 +3,7 @@ from InputPlugin import InputPlugin
 class Flickr(InputPlugin):
     
     name = "flickr"
+    configured = False
     
     
     

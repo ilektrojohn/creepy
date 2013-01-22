@@ -2,6 +2,7 @@ from InputPlugin import InputPlugin
 class Twitter(InputPlugin):
     
     name = "twitter"
+    configured = False
     
     
     def __init__(self):

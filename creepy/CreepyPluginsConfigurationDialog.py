@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'pluginsConfig.ui'
 #
-# Created: Mon Jan 21 00:39:43 2013
+# Created: Mon Jan 21 21:18:21 2013
 #      by: PyQt4 UI code generator 4.9.1
 #
 # WARNING! All changes made in this file will be lost!

@@ -2,6 +2,7 @@ from InputPlugin import InputPlugin
 class Instagram(InputPlugin):
     
     name = "instagram"
+    configured = False
     
     
     def __init__(self):
