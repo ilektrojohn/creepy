@@ -9,6 +9,7 @@ from ModelsAndDelegates import *
 from InputPlugin import InputPlugin
 import logging
 import os
+import functools
 
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
@@ -95,9 +96,7 @@ class CreepyMainWindow(QtGui.QMainWindow):
             scroll.setWidgetResizable(True)
             layout = QtGui.QVBoxLayout()
             titleLabel = QtGui.QLabel(plugin.name+ " Configuration Options")
-            layout.addWidget(titleLabel)
-            layout.addWidget(scroll)
-            layout.addStretch(1)      
+            layout.addWidget(titleLabel)    
             vboxWidget=QtGui.QWidget()
             vboxWidget.setObjectName("vboxwidget_container_"+plugin.name)
             vbox = QtGui.QGridLayout()
@@ -137,8 +136,20 @@ class CreepyMainWindow(QtGui.QMainWindow):
             
             vboxWidget.setLayout(vbox)
             scroll.setWidget(vboxWidget)
+            layout.addWidget(scroll)
+            layout.addStretch(1)
+            testButtonContainer = QtGui.QHBoxLayout()
+            testButton = QtGui.QPushButton("Test Plugin Configuration") 
+            testButton.setObjectName(_fromUtf8("testButton_"+plugin.name))
+            testButton.setToolTip("Click here to test the plugin's configuration")
+            testButton.resize(testButton.sizeHint())
+            testButtonContainer.addStretch(1)
+            testButtonContainer.addWidget(testButton)
+            layout.addLayout(testButtonContainer)
+            QtCore.QObject.connect(testButton, QtCore.SIGNAL("clicked()"),functools.partial(self.checkPluginConfiguration, plugin))
             page.setLayout(layout)
             self.pluginsConfigurationDialog.ui.ConfigurationDetails.addWidget(page)
+            
             
         self.pluginsConfigurationDialog.ui.ConfigurationDetails.setCurrentIndex(0)   
             
@@ -148,7 +159,9 @@ class CreepyMainWindow(QtGui.QMainWindow):
         if self.pluginsConfigurationDialog.exec_():
             self.saveConfiguration()
         
-        
+    
+    def checkPluginConfiguration(self, plugin):
+        print plugin.plugin_object.isFunctional()   
            
          
     def saveConfiguration(self):  

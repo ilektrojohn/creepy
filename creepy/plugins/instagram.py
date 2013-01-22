@@ -17,7 +17,7 @@ class Instagram(InputPlugin):
         pass
     
     def isFunctional(self):
-        pass
+        return False
     
     def returnLocations(self, search_params):
         pass

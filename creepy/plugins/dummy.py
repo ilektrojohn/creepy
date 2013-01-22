@@ -18,7 +18,7 @@ class Dummy(InputPlugin):
         pass
     
     def isFunctional(self):
-        pass
+        return True
     
     def returnLocations(self, search_params):
         pass

@@ -17,7 +17,7 @@ class Twitter(InputPlugin):
         pass
     
     def isFunctional(self):
-        pass
+        return True
     
     def returnLocations(self, search_params):
         pass
