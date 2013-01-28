@@ -2,13 +2,13 @@ import sys
 from PyQt4 import QtCore, QtGui, QtWebKit
 from CreepyUI import Ui_CreepyMainWindow
 from CreepyPluginsConfigurationDialog import Ui_PluginsConfigurationDialog
-from CreepyPersonProjectWizard import Ui_newPersonProjectWizard
+from CreepyPersonProjectWizard import Ui_personProjectWizard
+from CreepyPluginConfigurationCheckdialog import Ui_checkPluginConfigurationDialog
 
 from yapsy.PluginManager import PluginManagerSingleton
 from ModelsAndDelegates import *
 from InputPlugin import InputPlugin
 import logging
-import os
 import functools
 
 try:
@@ -16,15 +16,42 @@ try:
 except AttributeError:
     _fromUtf8 = lambda s: s
 
+class CreepyPluginConfigurationCheckdialog(QtGui.QDialog):
+    def __init__(self, parent=None):
+        #Load the UI from the python file
+        QtGui.QDialog.__init__(self,parent)
+        self.ui = Ui_checkPluginConfigurationDialog()
+        self.ui.setupUi(self)
+        self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
 
 class CreepyPersonProjectWizard(QtGui.QWizard):
     """ Loads the Person Based Project Wizard from the ui and shows it """
     def __init__(self,parent=None):
         QtGui.QWizard.__init__(self,parent)
-        self.ui = Ui_newPersonProjectWizard()
+        self.ui = Ui_personProjectWizard()
         self.ui.setupUi(self)
-        self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
-        self.exec_()
+        
+        
+        
+    def searchForTargets(self):
+        selectedPlugins = list(self.ProjectWizardPluginListModel.checkedPlugins)
+        possibleTargets = []
+        for i in selectedPlugins:
+            possibleTargets.append(self.PluginManager.getPluginByName(i, "Input").plugin_object.searchForTargets())
+            
+        self.ProjectWizardPossibleTargetsTable = ProjectWizardPossibleTargetsTable(possibleTargets, self)
+        self.ui.personProjectSearchResultsTable.setModel(self.ProjectWizardPossibleTargetsTable)
+        
+    
+    def loadConfiguredPlugins(self):
+        #Load the installed plugins and read their metadata
+        self.PluginManager = PluginManagerSingleton.get()
+        self.PluginManager.setCategoriesFilter({ "Input": InputPlugin})
+        self.PluginManager.setPluginPlaces([os.path.join(os.getcwd(), 'creepy', 'plugins')])
+        self.PluginManager.locatePlugins()
+        self.PluginManager.loadPlugins()
+        return [[plugin,0] for plugin in self.PluginManager.getAllPlugins() if plugin.plugin_object.isFunctional()]
+        
         
 class CreepyPluginsConfigurationDialog(QtGui.QDialog):
     def __init__(self, parent=None):
@@ -32,7 +59,7 @@ class CreepyPluginsConfigurationDialog(QtGui.QDialog):
         #Load the installed plugins and read their metadata
         self.PluginManager = PluginManagerSingleton.get()
         self.PluginManager.setCategoriesFilter({ "Input": InputPlugin})
-        self.PluginManager.setPluginPlaces(["/home/ioannis/code/creepy/creepy/plugins"])
+        self.PluginManager.setPluginPlaces([os.path.join(os.getcwd(), 'creepy', 'plugins')])
         self.PluginManager.locatePlugins()
         self.PluginManager.loadPlugins()
         
@@ -42,14 +69,39 @@ class CreepyPluginsConfigurationDialog(QtGui.QDialog):
         self.ui.setupUi(self)
         #self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
         
+    def checkPluginConfiguration(self, plugin):
+        self.saveConfiguration()
+        checkPluginConfigurationResultDialog = CreepyPluginConfigurationCheckdialog()
+        if plugin.plugin_object.isFunctional():
+            checkPluginConfigurationResultDialog.ui.checkPluginConfigurationResultLabel.setText(plugin.name+" is correctly configured.")
+        else:
+            checkPluginConfigurationResultDialog.ui.checkPluginConfigurationResultLabel.setText(plugin.name+" is not correctly configured. Please try to edit the options and test again.")
+        checkPluginConfigurationResultDialog.exec_()
+         
+    def saveConfiguration(self):  
+        """
+        Reads all the configuration options for the plugins and calls the saveConfiguration method of all the plugins.
+        """ 
+        pages = (self.ui.ConfigurationDetails.widget(i) for i in range(self.ui.ConfigurationDetails.count()))
+        for page in pages:
+            for widg in [ scrollarea.children() for scrollarea in page.children() if type(scrollarea) == QtGui.QScrollArea]:
+                for i in widg[0].children():
+                    config_options = {}
+                    plugin_name = i.objectName().replace("vboxwidget_container_","")
+                    string_options = {}
+                    for j in i.findChildren(QtGui.QLabel):
+                        string_options[str(j.text())] = str(i.findChild(QtGui.QLineEdit, j.objectName().replace("label","value")).text())
+                    boolean_options = {}    
+                    for k in i.findChildren(QtGui.QCheckBox):
+                        boolean_options[str(k.text())] = str(k.isChecked())  
+                        
+                    config_options['string_options'] = string_options
+                    config_options['boolean_options'] = boolean_options            
+                    self.PluginManager.getPluginByName(plugin_name, "Input").plugin_object.saveConfiguration(config_options)  
+                
         
         
         
-    def loadInstalledPlugins(self):
-        pass
-        
-    def drawConfigurationPages(self, installedPlugins):
-        pass
     
 class CreepyMainWindow(QtGui.QMainWindow):
     def __init__(self,parent=None):
@@ -84,7 +136,7 @@ class CreepyMainWindow(QtGui.QMainWindow):
         self.pluginsConfigurationDialog.ui.ConfigurationDetails.setObjectName(_fromUtf8("ConfigurationDetails"))
         
         pl = []
-        for plugin in self.pluginsConfigurationDialog.PluginManager.getPluginsOfCategory("Input"):
+        for plugin in self.pluginsConfigurationDialog.PluginManager.getAllPlugins():
             pl.append(plugin)
             '''
             Build the configuration page from the available configuration options
@@ -146,54 +198,43 @@ class CreepyMainWindow(QtGui.QMainWindow):
             testButtonContainer.addStretch(1)
             testButtonContainer.addWidget(testButton)
             layout.addLayout(testButtonContainer)
-            QtCore.QObject.connect(testButton, QtCore.SIGNAL("clicked()"),functools.partial(self.checkPluginConfiguration, plugin))
+            QtCore.QObject.connect(testButton, QtCore.SIGNAL("clicked()"),functools.partial(self.pluginsConfigurationDialog.checkPluginConfiguration, plugin))
             page.setLayout(layout)
             self.pluginsConfigurationDialog.ui.ConfigurationDetails.addWidget(page)
             
             
         self.pluginsConfigurationDialog.ui.ConfigurationDetails.setCurrentIndex(0)   
             
-        self.PluginListModel = PluginListModel(pl,self)
-        self.pluginsConfigurationDialog.ui.PluginsList.setModel(self.PluginListModel)
+        self.PluginConfigurationListModel = PluginConfigurationListModel(pl,self)
+        self.pluginsConfigurationDialog.ui.PluginsList.setModel(self.PluginConfigurationListModel)
         QtCore.QObject.connect(self.pluginsConfigurationDialog.ui.PluginsList, QtCore.SIGNAL("clicked(QModelIndex)"), self.changePluginConfigurationPage)
         if self.pluginsConfigurationDialog.exec_():
-            self.saveConfiguration()
+            self.pluginsConfigurationDialog.saveConfiguration()
         
     
-    def checkPluginConfiguration(self, plugin):
-        print plugin.plugin_object.isFunctional()   
-           
-         
-    def saveConfiguration(self):  
-        """
-        Reads all the configuration options for the plugins and calls the saveConfiguration method of all the plugins.
-        """ 
-        pages = (self.pluginsConfigurationDialog.ui.ConfigurationDetails.widget(i) for i in range(self.pluginsConfigurationDialog.ui.ConfigurationDetails.count()))
-        for page in pages:
-            for widg in [ scrollarea.children() for scrollarea in page.children() if type(scrollarea) == QtGui.QScrollArea]:
-                for i in widg[0].children():
-                    config_options = {}
-                    plugin_name = i.objectName().replace("vboxwidget_container_","")
-                    string_options = {}
-                    for j in i.findChildren(QtGui.QLabel):
-                        string_options[str(j.text())] = str(i.findChild(QtGui.QLineEdit, j.objectName().replace("label","value")).text())
-                    boolean_options = {}    
-                    for k in i.findChildren(QtGui.QCheckBox):
-                        boolean_options[str(k.text())] = str(k.isChecked())  
-                        
-                    config_options['string_options'] = string_options
-                    config_options['boolean_options'] = boolean_options            
-                    self.pluginsConfigurationDialog.PluginManager.getPluginByName(plugin_name, "Input").plugin_object.saveConfiguration(config_options)  
-                
-        
-        
+    
     def changePluginConfigurationPage(self, modelIndex):
         self.pluginsConfigurationDialog.ui.ConfigurationDetails.setCurrentIndex(modelIndex.row())   
         
     def showPersonProjectWizard(self):
         personProjectWizard = CreepyPersonProjectWizard()
+        personProjectObject = {}
+        personProjectObject['projectType'] = 'person'
+        
+        personProjectWizard.ProjectWizardPluginListModel = ProjectWizardPluginListModel(personProjectWizard.loadConfiguredPlugins(),self)
+        personProjectWizard.ui.personProjectAvailablePluginsListView.setModel(personProjectWizard.ProjectWizardPluginListModel)
+        QtCore.QObject.connect(personProjectWizard.ui.personProjectSearchButton, QtCore.SIGNAL("clicked()"), personProjectWizard.searchForTargets)
         
         
+        
+        
+        if personProjectWizard.exec_():
+            personProjectObject['projectName'] = str(personProjectWizard.ui.personProjectNameValue.text())
+            personProjectObject['projectKeywords'] = [keyword.strip() for keyword in str(personProjectWizard.ui.personProjectKeywordsValue.text()).split(",")]
+            personProjectObject['projectDescription'] = str(personProjectWizard.ui.personProjectDescriptionValue.toPlainText())
+            print personProjectObject
+        else:
+            print 'sdsdsda'
 if __name__=="__main__":
     app = QtGui.QApplication(sys.argv)
     myapp = CreepyMainWindow()

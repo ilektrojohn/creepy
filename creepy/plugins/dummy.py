@@ -14,6 +14,9 @@ class Dummy(InputPlugin):
     def deactivate(self):
         pass
         
+    def searchForTargets(self):
+        return {'targetUsername':'dummyusername', 'targetFullname': 'dummy fullname', 'targetPicture': '303ec0c.jpg', 'targetDetails': 'Profile description'}
+    
     def loadConfiguration(self):
         pass
     

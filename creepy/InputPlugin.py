@@ -20,7 +20,10 @@ class InputPlugin(IPlugin):
         
     def deactivate(self):
         pass
-        
+    
+    def searchForTargets(self):
+        return 'dummyUser'
+    
     def loadConfiguration(self):
         pass
     

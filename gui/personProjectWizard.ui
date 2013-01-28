@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>newPersonProjectWizard</class>
- <widget class="QWizard" name="newPersonProjectWizard">
+ <class>personProjectWizard</class>
+ <widget class="QWizard" name="personProjectWizard">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -13,52 +13,90 @@
   <property name="windowTitle">
    <string>New Person Project</string>
   </property>
-  <widget class="QWizardPage" name="newPersonBasedProjecWizardPage1">
+  <widget class="QWizardPage" name="personProjecWizardPage1">
    <property name="title">
-    <string>Set the target</string>
+    <string>Step 1 - Set Project Metadata</string>
    </property>
    <property name="subTitle">
-    <string/>
+    <string>Add project related information</string>
    </property>
-   <layout class="QGridLayout" name="gridLayout">
-    <item row="1" column="2" colspan="2">
-     <widget class="QScrollArea" name="scrollArea">
-      <property name="widgetResizable">
-       <bool>true</bool>
-      </property>
-      <widget class="QWidget" name="scrollAreaWidgetContents">
-       <property name="geometry">
-        <rect>
-         <x>0</x>
-         <y>0</y>
-         <width>711</width>
-         <height>82</height>
-        </rect>
+   <widget class="QWidget" name="gridLayoutWidget">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>0</y>
+      <width>861</width>
+      <height>591</height>
+     </rect>
+    </property>
+    <layout class="QGridLayout" name="gridLayout_3">
+     <item row="2" column="1">
+      <widget class="QPlainTextEdit" name="personProjectDescriptionValue"/>
+     </item>
+     <item row="3" column="1">
+      <spacer name="verticalSpacer">
+       <property name="orientation">
+        <enum>Qt::Vertical</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>20</width>
+         <height>40</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item row="0" column="1">
+      <widget class="QLineEdit" name="personProjectNameValue"/>
+     </item>
+     <item row="0" column="0">
+      <widget class="QLabel" name="personProjectNameLabel">
+       <property name="enabled">
+        <bool>true</bool>
+       </property>
+       <property name="text">
+        <string>Project Name </string>
        </property>
       </widget>
-     </widget>
-    </item>
-    <item row="0" column="2">
-     <widget class="QLineEdit" name="lineEdit"/>
-    </item>
-    <item row="3" column="2" colspan="2">
-     <widget class="QListView" name="listView"/>
-    </item>
-    <item row="0" column="0" colspan="2">
-     <widget class="QLabel" name="label">
-      <property name="text">
-       <string>Search for</string>
-      </property>
-     </widget>
-    </item>
-    <item row="5" column="2" colspan="2">
-     <widget class="QLabel" name="label_4">
-      <property name="text">
-       <string>Selected Targets</string>
-      </property>
-     </widget>
-    </item>
-    <item row="2" column="2">
+     </item>
+     <item row="1" column="1">
+      <widget class="QLineEdit" name="personProjectKeywordsValue"/>
+     </item>
+     <item row="2" column="0">
+      <widget class="QLabel" name="personProjectDescriptionLabel">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="text">
+        <string>Description</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="0">
+      <widget class="QLabel" name="personProkectKeywordsLabel">
+       <property name="text">
+        <string>Keywords</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </widget>
+  </widget>
+  <widget class="QWizardPage" name="newPersonBasedProjecWizardPage2">
+   <property name="title">
+    <string>Step 1 - Set the target</string>
+   </property>
+   <property name="subTitle">
+    <string>Search for the person you want to track using the available plugins and add it to the selected targets</string>
+   </property>
+   <layout class="QGridLayout" name="gridLayout">
+    <item row="3" column="2">
      <spacer name="horizontalSpacer_2">
       <property name="orientation">
        <enum>Qt::Horizontal</enum>
@@ -71,15 +109,60 @@
       </property>
      </spacer>
     </item>
-    <item row="1" column="0" colspan="2">
-     <widget class="QLabel" name="label_2">
+    <item row="4" column="0">
+     <widget class="QLabel" name="personProjectSearchResultsLabel">
       <property name="text">
-       <string>Available Plugins</string>
+       <string>Search Results </string>
       </property>
      </widget>
     </item>
-    <item row="4" column="2" colspan="2">
-     <widget class="Line" name="line">
+    <item row="1" column="2" colspan="2">
+     <widget class="QScrollArea" name="personProjectAvailablePluginsScrollArea">
+      <property name="widgetResizable">
+       <bool>true</bool>
+      </property>
+      <widget class="QWidget" name="scrollAreaWidgetContents">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>0</y>
+         <width>729</width>
+         <height>155</height>
+        </rect>
+       </property>
+       <layout class="QVBoxLayout" name="verticalLayout">
+        <item>
+         <widget class="QListView" name="personProjectAvailablePluginsListView"/>
+        </item>
+       </layout>
+      </widget>
+     </widget>
+    </item>
+    <item row="0" column="3">
+     <widget class="QLabel" name="personProjectSearchForDetailsLabel">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="text">
+       <string>Search by username, mail, full name, id</string>
+      </property>
+     </widget>
+    </item>
+    <item row="7" column="2" colspan="2">
+     <widget class="QListView" name="personProjectTargetsList"/>
+    </item>
+    <item row="0" column="0" colspan="2">
+     <widget class="QLabel" name="personProjectSearchForLabel">
+      <property name="text">
+       <string>Search for</string>
+      </property>
+     </widget>
+    </item>
+    <item row="5" column="1" colspan="3">
+     <widget class="Line" name="personProjectTargetSeperatorLine">
       <property name="lineWidth">
        <number>4</number>
       </property>
@@ -88,191 +171,57 @@
       </property>
      </widget>
     </item>
-    <item row="3" column="0">
-     <widget class="QLabel" name="label_3">
+    <item row="1" column="0" colspan="2">
+     <widget class="QLabel" name="personProjectSearchInLabel">
       <property name="text">
-       <string>Search Results </string>
+       <string>Search In</string>
       </property>
      </widget>
     </item>
-    <item row="2" column="3">
-     <widget class="QPushButton" name="pushButton">
+    <item row="0" column="2">
+     <widget class="QLineEdit" name="personProjectSearchForValue"/>
+    </item>
+    <item row="7" column="0">
+     <widget class="QLabel" name="personProjectSelectedTargetsLabel">
       <property name="text">
-       <string>Search</string>
+       <string>Selected Targets</string>
       </property>
      </widget>
     </item>
-    <item row="0" column="3">
-     <spacer name="horizontalSpacer">
-      <property name="orientation">
-       <enum>Qt::Horizontal</enum>
-      </property>
-      <property name="sizeHint" stdset="0">
-       <size>
-        <width>40</width>
-        <height>20</height>
-       </size>
-      </property>
-     </spacer>
+    <item row="3" column="3">
+     <layout class="QHBoxLayout" name="horizontalLayout_2">
+      <item>
+       <spacer name="horizontalSpacer">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item>
+       <widget class="QPushButton" name="personProjectSearchButton">
+        <property name="text">
+         <string>Search</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
     </item>
-    <item row="6" column="2" colspan="2">
-     <widget class="QListView" name="listView_2"/>
+    <item row="4" column="2" colspan="2">
+     <widget class="QTableView" name="personProjectSearchResultsTable"/>
     </item>
    </layout>
   </widget>
-  <widget class="QWizardPage" name="newPersonBasedProjecWizardPage2">
+  <widget class="QWizardPage" name="newPersonBasedProjecWizardPage3">
    <property name="title">
     <string>Configure the Search Parameters</string>
    </property>
-   <layout class="QGridLayout" name="gridLayout_2">
-    <item row="5" column="4">
-     <widget class="QLabel" name="label_8">
-      <property name="text">
-       <string> from </string>
-      </property>
-     </widget>
-    </item>
-    <item row="2" column="6">
-     <widget class="QCalendarWidget" name="calendarWidget_2">
-      <property name="sizePolicy">
-       <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-        <horstretch>0</horstretch>
-        <verstretch>0</verstretch>
-       </sizepolicy>
-      </property>
-     </widget>
-    </item>
-    <item row="5" column="1">
-     <widget class="QSpinBox" name="spinBox"/>
-    </item>
-    <item row="7" column="6">
-     <widget class="QCommandLinkButton" name="commandLinkButton">
-      <property name="text">
-       <string>Select point from map</string>
-      </property>
-     </widget>
-    </item>
-    <item row="2" column="3" colspan="3">
-     <spacer name="horizontalSpacer_4">
-      <property name="orientation">
-       <enum>Qt::Horizontal</enum>
-      </property>
-      <property name="sizeHint" stdset="0">
-       <size>
-        <width>40</width>
-        <height>20</height>
-       </size>
-      </property>
-     </spacer>
-    </item>
-    <item row="5" column="6">
-     <widget class="QLineEdit" name="lineEdit_2">
-      <property name="toolTip">
-       <string>Use an address</string>
-      </property>
-     </widget>
-    </item>
-    <item row="3" column="6">
-     <spacer name="verticalSpacer_2">
-      <property name="orientation">
-       <enum>Qt::Vertical</enum>
-      </property>
-      <property name="sizeType">
-       <enum>QSizePolicy::Fixed</enum>
-      </property>
-      <property name="sizeHint" stdset="0">
-       <size>
-        <width>20</width>
-        <height>40</height>
-       </size>
-      </property>
-     </spacer>
-    </item>
-    <item row="4" column="0" colspan="3">
-     <widget class="QCheckBox" name="checkBox_2">
-      <property name="text">
-       <string>Specify location boundaries for results : </string>
-      </property>
-     </widget>
-    </item>
-    <item row="1" column="6">
-     <widget class="QLabel" name="label_6">
-      <property name="text">
-       <string>Until :</string>
-      </property>
-     </widget>
-    </item>
-    <item row="2" column="2">
-     <spacer name="horizontalSpacer_3">
-      <property name="orientation">
-       <enum>Qt::Horizontal</enum>
-      </property>
-      <property name="sizeHint" stdset="0">
-       <size>
-        <width>40</width>
-        <height>20</height>
-       </size>
-      </property>
-     </spacer>
-    </item>
-    <item row="1" column="0">
-     <widget class="QLabel" name="label_5">
-      <property name="text">
-       <string>From : </string>
-      </property>
-     </widget>
-    </item>
-    <item row="2" column="0" colspan="2">
-     <widget class="QCalendarWidget" name="calendarWidget">
-      <property name="sizePolicy">
-       <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-        <horstretch>0</horstretch>
-        <verstretch>0</verstretch>
-       </sizepolicy>
-      </property>
-     </widget>
-    </item>
-    <item row="5" column="2" colspan="2">
-     <widget class="QComboBox" name="comboBox"/>
-    </item>
-    <item row="0" column="0">
-     <widget class="QCheckBox" name="checkBox">
-      <property name="text">
-       <string>Specify timeframe for results : </string>
-      </property>
-     </widget>
-    </item>
-    <item row="3" column="0" colspan="2">
-     <spacer name="verticalSpacer">
-      <property name="orientation">
-       <enum>Qt::Vertical</enum>
-      </property>
-      <property name="sizeType">
-       <enum>QSizePolicy::Fixed</enum>
-      </property>
-      <property name="sizeHint" stdset="0">
-       <size>
-        <width>20</width>
-        <height>40</height>
-       </size>
-      </property>
-     </spacer>
-    </item>
-    <item row="5" column="0">
-     <widget class="QLabel" name="label_7">
-      <property name="text">
-       <string>Return results only within</string>
-      </property>
-     </widget>
-    </item>
-    <item row="6" column="6">
-     <widget class="QLabel" name="label_9">
-      <property name="text">
-       <string>or</string>
-      </property>
-     </widget>
-    </item>
-   </layout>
+   <layout class="QGridLayout" name="gridLayout_2"/>
   </widget>
  </widget>
  <resources/>

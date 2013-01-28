@@ -15,6 +15,9 @@ class Flickr(InputPlugin):
     def deactivate(self):
         pass
         
+    def searchForTargets(self):
+        return {'targetUsername':'flickrusername', 'targetFullname': 'flickr fullname', 'targetPicture': '303ec0sasac.jpg', 'targetDetails': 'Flickr Profile description'}
+    
     def loadConfiguration(self):
         pass
     

@@ -16,6 +16,9 @@ class Instagram(InputPlugin):
     def loadConfiguration(self):
         pass
     
+    def searchForTargets(self):
+        pass
+    
     def isFunctional(self):
         return False
     

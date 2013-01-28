@@ -13,6 +13,9 @@ class Twitter(InputPlugin):
     def deactivate(self):
         pass
         
+    def searchForTargets(self):
+        pass
+    
     def loadConfiguration(self):
         pass
     
