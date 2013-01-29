@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'personProjectWizard.ui'
 #
-# Created: Mon Jan 28 20:52:41 2013
+# Created: Tue Jan 29 22:23:14 2013
 #      by: PyQt4 UI code generator 4.9.1
 #
 # WARNING! All changes made in this file will be lost!
@@ -84,9 +84,6 @@ class Ui_personProjectWizard(object):
         self.personProjectSearchForDetailsLabel.setSizePolicy(sizePolicy)
         self.personProjectSearchForDetailsLabel.setObjectName(_fromUtf8("personProjectSearchForDetailsLabel"))
         self.gridLayout.addWidget(self.personProjectSearchForDetailsLabel, 0, 3, 1, 1)
-        self.personProjectTargetsList = QtGui.QListView(self.newPersonBasedProjecWizardPage2)
-        self.personProjectTargetsList.setObjectName(_fromUtf8("personProjectTargetsList"))
-        self.gridLayout.addWidget(self.personProjectTargetsList, 7, 2, 1, 2)
         self.personProjectSearchForLabel = QtGui.QLabel(self.newPersonBasedProjecWizardPage2)
         self.personProjectSearchForLabel.setObjectName(_fromUtf8("personProjectSearchForLabel"))
         self.gridLayout.addWidget(self.personProjectSearchForLabel, 0, 0, 1, 2)
@@ -114,8 +111,25 @@ class Ui_personProjectWizard(object):
         self.horizontalLayout_2.addWidget(self.personProjectSearchButton)
         self.gridLayout.addLayout(self.horizontalLayout_2, 3, 3, 1, 1)
         self.personProjectSearchResultsTable = QtGui.QTableView(self.newPersonBasedProjecWizardPage2)
+        self.personProjectSearchResultsTable.setDragEnabled(True)
+        self.personProjectSearchResultsTable.setDragDropMode(QtGui.QAbstractItemView.DragOnly)
+        self.personProjectSearchResultsTable.setSelectionBehavior(QtGui.QAbstractItemView.SelectRows)
+        self.personProjectSearchResultsTable.setSortingEnabled(True)
         self.personProjectSearchResultsTable.setObjectName(_fromUtf8("personProjectSearchResultsTable"))
+        self.personProjectSearchResultsTable.horizontalHeader().setCascadingSectionResizes(True)
+        self.personProjectSearchResultsTable.horizontalHeader().setStretchLastSection(True)
+        self.personProjectSearchResultsTable.verticalHeader().setVisible(False)
+        self.personProjectSearchResultsTable.verticalHeader().setCascadingSectionResizes(True)
+        self.personProjectSearchResultsTable.verticalHeader().setMinimumSectionSize(19)
+        self.personProjectSearchResultsTable.verticalHeader().setStretchLastSection(False)
         self.gridLayout.addWidget(self.personProjectSearchResultsTable, 4, 2, 1, 2)
+        self.personProjectSelectedTargetsTable = QtGui.QTableView(self.newPersonBasedProjecWizardPage2)
+        self.personProjectSelectedTargetsTable.setDragDropOverwriteMode(True)
+        self.personProjectSelectedTargetsTable.setDragDropMode(QtGui.QAbstractItemView.DropOnly)
+        self.personProjectSelectedTargetsTable.setDefaultDropAction(QtCore.Qt.CopyAction)
+        self.personProjectSelectedTargetsTable.setSelectionBehavior(QtGui.QAbstractItemView.SelectRows)
+        self.personProjectSelectedTargetsTable.setObjectName(_fromUtf8("personProjectSelectedTargetsTable"))
+        self.gridLayout.addWidget(self.personProjectSelectedTargetsTable, 7, 2, 1, 2)
         personProjectWizard.addPage(self.newPersonBasedProjecWizardPage2)
         self.newPersonBasedProjecWizardPage3 = QtGui.QWizardPage()
         self.newPersonBasedProjecWizardPage3.setObjectName(_fromUtf8("newPersonBasedProjecWizardPage3"))

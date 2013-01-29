@@ -100,30 +100,57 @@ class ProjectWizardPossibleTargetsTable(QAbstractTableModel):
     def data(self, index, role):
         target = self.targets[index.row()]
         if index.isValid() and target:
-            if role == Qt.DisplayRole:
-                column = index.column()
+            column = index.column()
+            if role == Qt.DecorationRole:
                 if column == 0:
                     picturePath = os.path.join(os.getcwd(), "creepy", "temp", target['targetPicture'])
                     if picturePath and os.path.exists(picturePath):
                         pixmap = QPixmap(picturePath)
-                        pixmap.scaled(5, 5, Qt.IgnoreAspectRatio)
-                        return pixmap
+                        return pixmap.scaled(30, 30, Qt.IgnoreAspectRatio, Qt.FastTransformation)
                     else:
                         pixmap = QPixmap(os.path.join(os.getcwd(), "creepy", "include", "add.png"))
-                        pixmap.scaled(5, 5, Qt.IgnoreAspectRatio)
+                        pixmap.scaled(20, 20, Qt.IgnoreAspectRatio)
                         return pixmap
+            if role == Qt.DisplayRole:
+                if column == 0:
+                    return QVariant()
                 elif column == 1:
                     return QVariant(target['targetUsername'])
                 elif column == 2:
                     return QVariant(target['targetFullname'])
                 elif column == 3:
                     return QVariant(target['targetDetails'])
+                
             
         else: 
             return QVariant()
+
+    def flags(self, index):
+        if not index.isValid():
+            return Qt.ItemIsEnabled
+        return Qt.ItemFlags(QAbstractTableModel.flags(self, index)|Qt.ItemIsDragEnabled)
         
+    def mimeTypes(self):
+        return [ "application/target.tableitem.creepy" ] 
+    
+    def mimeData(self, indices):
+        mimeData = QMimeData()
+        encodedData = QByteArray()
+        stream = QDataStream(encodedData, QIODevice.WriteOnly)
+        for index in indices:
+            if index.column() == 0:
+                d = self.data(index, Qt.DecorationRole)
+            else:
+                d = self.data(index, Qt.DisplayRole).toString()
+            print d
+        stream << d
+        mimeData.setData("application/target.tableitem.creepy", encodedData)
+        return mimeData  
         
-        
-        
-        
+    def dropMimeData(self, data, action, row, column, parent):
+        print "Param data:", data
+        print "Param row:",  row
+        print "Param column:", column
+        print "Param parent:", parent
+           
         

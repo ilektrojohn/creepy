@@ -42,6 +42,9 @@ class CreepyPersonProjectWizard(QtGui.QWizard):
         self.ProjectWizardPossibleTargetsTable = ProjectWizardPossibleTargetsTable(possibleTargets, self)
         self.ui.personProjectSearchResultsTable.setModel(self.ProjectWizardPossibleTargetsTable)
         
+        self.ProjectWizardSelectedTargetsTable = ProjectWizardPossibleTargetsTable([],self)
+        self.ui.personProjectSelectedTargetsTable.setModel(self.ProjectWizardSelectedTargetsTable)
+        
     
     def loadConfiguredPlugins(self):
         #Load the installed plugins and read their metadata
