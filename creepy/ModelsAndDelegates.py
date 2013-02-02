@@ -128,7 +128,7 @@ class ProjectWizardPossibleTargetsTable(QAbstractTableModel):
     def flags(self, index):
         if not index.isValid():
             return Qt.ItemIsEnabled
-        return Qt.ItemFlags(QAbstractTableModel.flags(self, index)|Qt.ItemIsDragEnabled)
+        return Qt.ItemFlags(QAbstractTableModel.flags(self, index)|Qt.ItemIsDragEnabled|Qt.ItemIsDropEnabled)
         
     def mimeTypes(self):
         return [ "application/target.tableitem.creepy" ] 
@@ -149,6 +149,7 @@ class ProjectWizardPossibleTargetsTable(QAbstractTableModel):
         
     def dropMimeData(self, data, action, row, column, parent):
         print "Param data:", data
+        print "Action was:", action
         print "Param row:",  row
         print "Param column:", column
         print "Param parent:", parent

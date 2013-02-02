@@ -30,6 +30,7 @@ class CreepyPersonProjectWizard(QtGui.QWizard):
         QtGui.QWizard.__init__(self,parent)
         self.ui = Ui_personProjectWizard()
         self.ui.setupUi(self)
+        self.selectedTargets = []
         
         
         
@@ -42,8 +43,9 @@ class CreepyPersonProjectWizard(QtGui.QWizard):
         self.ProjectWizardPossibleTargetsTable = ProjectWizardPossibleTargetsTable(possibleTargets, self)
         self.ui.personProjectSearchResultsTable.setModel(self.ProjectWizardPossibleTargetsTable)
         
-        self.ProjectWizardSelectedTargetsTable = ProjectWizardPossibleTargetsTable([],self)
+        self.ProjectWizardSelectedTargetsTable = ProjectWizardPossibleTargetsTable([{}],self)
         self.ui.personProjectSelectedTargetsTable.setModel(self.ProjectWizardSelectedTargetsTable)
+        self.loadSearchParametersForPlugins()
         
     
     def loadConfiguredPlugins(self):
@@ -54,6 +56,18 @@ class CreepyPersonProjectWizard(QtGui.QWizard):
         self.PluginManager.locatePlugins()
         self.PluginManager.loadPlugins()
         return [[plugin,0] for plugin in self.PluginManager.getAllPlugins() if plugin.plugin_object.isFunctional()]
+        
+    def loadSearchParametersForPlugins(self):
+        selectedPlugins = list(set([target.targetPlugin for target in self.selectedTargets]))
+        for pluginName in selectedPlugins:
+            plugin = self.PluginManager.getPluginByName(pluginName, "Input")
+            # Add search parameters for each of the selectetd plugin
+            testLabel = QLabel(plugin.name)
+            self.ui.personProjectPluginConfigLayout.addWidget(testLabel)
+            
+            
+            
+            
         
         
 class CreepyPluginsConfigurationDialog(QtGui.QDialog):

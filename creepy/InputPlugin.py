@@ -63,4 +63,22 @@ class InputPlugin(IPlugin):
         except Exception, err:
             logging.error("Could not save the configuration for the "+self.name+" plugin .")
             logging.exception(err)
+            
+    def loadSearchConfigurationParameters(self):
+        config_filename = self.name+".conf"
+        config_file = os.path.join(os.getcwd(), 'creepy', 'plugins', config_filename)
+        config = ConfigObj(infile=config_file)
+        config.create_empty = False
+        try:
+            logging.log(logging.DEBUG, "Trying to load the search configuration parameters for the "+self.name+" plugin .")
+            params = config['search_options']
+        except Exception, err:
+            params= None
+            logging.error("Could not load the search configuration parameters for the "+self.name+" plugin .")
+            logging.exception(err)
+        
+        return params    
+            
+    
+    
         
