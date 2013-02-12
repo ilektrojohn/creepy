@@ -14,7 +14,7 @@ class Twitter(InputPlugin):
         pass
         
     def searchForTargets(self):
-        pass
+        return None
     
     def loadConfiguration(self):
         pass

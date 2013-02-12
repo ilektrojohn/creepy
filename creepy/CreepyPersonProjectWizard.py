@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'personProjectWizard.ui'
 #
-# Created: Sat Feb  2 14:25:16 2013
+# Created: Tue Feb 12 19:48:43 2013
 #      by: PyQt4 UI code generator 4.9.1
 #
 # WARNING! All changes made in this file will be lost!
@@ -128,6 +128,7 @@ class Ui_personProjectWizard(object):
         self.personProjectSelectedTargetsTable.setDragDropOverwriteMode(True)
         self.personProjectSelectedTargetsTable.setDragDropMode(QtGui.QAbstractItemView.DropOnly)
         self.personProjectSelectedTargetsTable.setDefaultDropAction(QtCore.Qt.CopyAction)
+        self.personProjectSelectedTargetsTable.setSelectionMode(QtGui.QAbstractItemView.SingleSelection)
         self.personProjectSelectedTargetsTable.setSelectionBehavior(QtGui.QAbstractItemView.SelectRows)
         self.personProjectSelectedTargetsTable.setSortingEnabled(True)
         self.personProjectSelectedTargetsTable.setObjectName(_fromUtf8("personProjectSelectedTargetsTable"))

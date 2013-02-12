@@ -38,12 +38,14 @@ class CreepyPersonProjectWizard(QtGui.QWizard):
         selectedPlugins = list(self.ProjectWizardPluginListModel.checkedPlugins)
         possibleTargets = []
         for i in selectedPlugins:
-            possibleTargets.append(self.PluginManager.getPluginByName(i, "Input").plugin_object.searchForTargets())
+            pluginTargets = self.PluginManager.getPluginByName(i, "Input").plugin_object.searchForTargets()
+            if pluginTargets:
+                possibleTargets.append(pluginTargets)
             
         self.ProjectWizardPossibleTargetsTable = ProjectWizardPossibleTargetsTable(possibleTargets, self)
         self.ui.personProjectSearchResultsTable.setModel(self.ProjectWizardPossibleTargetsTable)
         
-        self.ProjectWizardSelectedTargetsTable = ProjectWizardPossibleTargetsTable([{}],self)
+        self.ProjectWizardSelectedTargetsTable = ProjectWizardSelectedTargetsTable([],self)
         self.ui.personProjectSelectedTargetsTable.setModel(self.ProjectWizardSelectedTargetsTable)
         self.loadSearchParametersForPlugins()
         

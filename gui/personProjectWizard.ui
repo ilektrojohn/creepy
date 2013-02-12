@@ -257,6 +257,9 @@
       <property name="defaultDropAction">
        <enum>Qt::CopyAction</enum>
       </property>
+      <property name="selectionMode">
+       <enum>QAbstractItemView::SingleSelection</enum>
+      </property>
       <property name="selectionBehavior">
        <enum>QAbstractItemView::SelectRows</enum>
       </property>
