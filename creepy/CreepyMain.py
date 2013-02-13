@@ -32,7 +32,10 @@ class CreepyPersonProjectWizard(QtGui.QWizard):
         self.ui.setupUi(self)
         self.selectedTargets = []
         
-        
+    def initializePage(self, i):
+        if i == 2:
+            self.showPluginsSearchOptions()
+          
         
     def searchForTargets(self):
         selectedPlugins = list(self.ProjectWizardPluginListModel.checkedPlugins)
@@ -45,9 +48,7 @@ class CreepyPersonProjectWizard(QtGui.QWizard):
         self.ProjectWizardPossibleTargetsTable = ProjectWizardPossibleTargetsTable(possibleTargets, self)
         self.ui.personProjectSearchResultsTable.setModel(self.ProjectWizardPossibleTargetsTable)
         
-        self.ProjectWizardSelectedTargetsTable = ProjectWizardSelectedTargetsTable([],self)
         self.ui.personProjectSelectedTargetsTable.setModel(self.ProjectWizardSelectedTargetsTable)
-        self.loadSearchParametersForPlugins()
         
     
     def loadConfiguredPlugins(self):
@@ -58,20 +59,80 @@ class CreepyPersonProjectWizard(QtGui.QWizard):
         self.PluginManager.locatePlugins()
         self.PluginManager.loadPlugins()
         return [[plugin,0] for plugin in self.PluginManager.getAllPlugins() if plugin.plugin_object.isFunctional()]
-        
-    def loadSearchParametersForPlugins(self):
-        selectedPlugins = list(set([target.targetPlugin for target in self.selectedTargets]))
-        for pluginName in selectedPlugins:
+            
+    def showPluginsSearchOptions(self):
+        #List of plugin objects
+        pl = []
+        for pluginName in list(set([target['plugin'] for target in self.ProjectWizardSelectedTargetsTable.targets])):
             plugin = self.PluginManager.getPluginByName(pluginName, "Input")
-            # Add search parameters for each of the selectetd plugin
-            testLabel = QLabel(plugin.name)
-            self.ui.personProjectPluginConfigLayout.addWidget(testLabel)
+            pl.append(plugin)
+            '''
+            Build the configuration page from the available saerch options
+            and add the page to the stackwidget
+            '''
+            page = QtGui.QWidget()
+            page.setObjectName(_fromUtf8("searchconfig_page_"+plugin.name))
+            scroll = QtGui.QScrollArea()
+            scroll.setWidgetResizable(True)
+            layout = QtGui.QVBoxLayout()
+            titleLabel = QtGui.QLabel(plugin.name+ " Search Options")
+            layout.addWidget(titleLabel)    
+            vboxWidget=QtGui.QWidget()
+            vboxWidget.setObjectName("searchconfig_vboxwidget_container_"+plugin.name)
+            vbox = QtGui.QGridLayout()
+            vbox.setObjectName("searchconfig_vbox_container_"+plugin.name)
+            gridLayoutRowIndex = 0
+            '''
+            Load the String options first
+            '''
+            pluginStringOptions = plugin.plugin_object.readConfiguration("search_string_options")
+            if pluginStringOptions != None:
+                for idx, item in enumerate(pluginStringOptions.keys()):
+                    
+                    label = QtGui.QLabel()
+                    label.setObjectName(_fromUtf8("searchconfig_string_label_"+item))
+                    label.setText(_fromUtf8(item))
+                    vbox.addWidget(label, idx, 0)
+                    value = QtGui.QLineEdit()
+                    value.setObjectName(_fromUtf8("searchconfig_string_value_"+item))
+                    value.setText(pluginStringOptions[item])
+                    vbox.addWidget(value, idx, 1)
+                    gridLayoutRowIndex = idx +1
+
+                    
+                
+            '''
+            Load the boolean options 
+            '''
+            pluginBooleanOptions = plugin.plugin_object.readConfiguration("search_boolean_options")
+            if pluginBooleanOptions != None:
+                for idx, item in enumerate(pluginBooleanOptions.keys()):
+                    cb = QtGui.QCheckBox(item)
+                    cb.setObjectName("searchconfig_boolean_label_"+item)
+                    if pluginBooleanOptions[item] == 'True':
+                        cb.toggle()
+                    vbox.addWidget(cb, gridLayoutRowIndex+idx, 0)
+                
+            
+            vboxWidget.setLayout(vbox)
+            scroll.setWidget(vboxWidget)
+            layout.addWidget(scroll)
+            layout.addStretch(1)
+            page.setLayout(layout)
+            self.ui.searchConfiguration.addWidget(page)
             
             
+        self.ui.searchConfiguration.setCurrentIndex(0)   
             
-            
-        
-        
+        self.SearchConfigPluginConfigurationListModel = PluginConfigurationListModel(pl,self)
+        self.ui.personProjectWizardSearchConfigPluginsList.setModel(self.SearchConfigPluginConfigurationListModel)
+        QtCore.QObject.connect(self.ui.personProjectWizardSearchConfigPluginsList, QtCore.SIGNAL("clicked(QModelIndex)"), self.changePluginConfigurationPage)
+
+
+    def changePluginConfigurationPage(self, modelIndex):
+        self.ui.searchConfiguration.setCurrentIndex(modelIndex.row())   
+
+
 class CreepyPluginsConfigurationDialog(QtGui.QDialog):
     def __init__(self, parent=None):
         
@@ -243,6 +304,10 @@ class CreepyMainWindow(QtGui.QMainWindow):
         personProjectWizard.ProjectWizardPluginListModel = ProjectWizardPluginListModel(personProjectWizard.loadConfiguredPlugins(),self)
         personProjectWizard.ui.personProjectAvailablePluginsListView.setModel(personProjectWizard.ProjectWizardPluginListModel)
         QtCore.QObject.connect(personProjectWizard.ui.personProjectSearchButton, QtCore.SIGNAL("clicked()"), personProjectWizard.searchForTargets)
+        
+        #Creating it here so it becomes available globally in all functions
+        personProjectWizard.ProjectWizardSelectedTargetsTable = ProjectWizardSelectedTargetsTable([],self)
+        
         
         
         

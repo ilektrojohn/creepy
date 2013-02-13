@@ -13,6 +13,12 @@
   <property name="windowTitle">
    <string>New Person Project</string>
   </property>
+  <property name="wizardStyle">
+   <enum>QWizard::ClassicStyle</enum>
+  </property>
+  <property name="options">
+   <set>QWizard::HelpButtonOnRight</set>
+  </property>
   <widget class="QWizardPage" name="personProjectWizardPage1">
    <property name="title">
     <string>Step 1 - Set Project Metadata</string>
@@ -289,16 +295,25 @@
    <property name="subTitle">
     <string>Provide the necessary search parameters for the plugins you are using</string>
    </property>
-   <widget class="QWidget" name="verticalLayoutWidget">
+   <widget class="QListView" name="personProjectWizardSearchConfigPluginsList">
     <property name="geometry">
      <rect>
       <x>0</x>
       <y>0</y>
-      <width>851</width>
-      <height>521</height>
+      <width>256</width>
+      <height>531</height>
      </rect>
     </property>
-    <layout class="QVBoxLayout" name="personProjectPluginConfigLayout"/>
+   </widget>
+   <widget class="QStackedWidget" name="searchConfiguration">
+    <property name="geometry">
+     <rect>
+      <x>260</x>
+      <y>0</y>
+      <width>591</width>
+      <height>531</height>
+     </rect>
+    </property>
    </widget>
   </widget>
   <widget class="QWizardPage" name="personProjectWizardPage4">

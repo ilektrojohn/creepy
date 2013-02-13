@@ -16,7 +16,7 @@ class Flickr(InputPlugin):
         pass
         
     def searchForTargets(self):
-        return {'plugin':'flickr', 'targetUsername':'flickrusername', 'targetFullname': 'flickr fullname', 'targetPicture': '303ec0sasac.jpg', 'targetDetails': 'Flickr Profile description'}
+        return {'plugin':'Flickr Plugin', 'targetUsername':'flickrusername', 'targetFullname': 'flickr fullname', 'targetPicture': '303ec0sasac.jpg', 'targetDetails': 'Flickr Profile description'}
     
     def loadConfiguration(self):
         pass

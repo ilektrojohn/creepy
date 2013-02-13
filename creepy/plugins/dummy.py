@@ -15,7 +15,7 @@ class Dummy(InputPlugin):
         pass
         
     def searchForTargets(self):
-        return {'plugin':'dummy', 'targetUsername':'dummyusername', 'targetFullname': 'dummy fullname', 'targetPicture': '303ec0c.jpg', 'targetDetails': 'Profile description'}
+        return {'plugin':'Dummy Plugin', 'targetUsername':'dummyusername', 'targetFullname': 'dummy fullname', 'targetPicture': '303ec0c.jpg', 'targetDetails': 'Profile description'}
     
     def loadConfiguration(self):
         pass

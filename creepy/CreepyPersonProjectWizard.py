@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'personProjectWizard.ui'
 #
-# Created: Tue Feb 12 19:48:43 2013
+# Created: Wed Feb 13 21:28:24 2013
 #      by: PyQt4 UI code generator 4.9.1
 #
 # WARNING! All changes made in this file will be lost!
@@ -18,6 +18,8 @@ class Ui_personProjectWizard(object):
     def setupUi(self, personProjectWizard):
         personProjectWizard.setObjectName(_fromUtf8("personProjectWizard"))
         personProjectWizard.resize(879, 658)
+        personProjectWizard.setWizardStyle(QtGui.QWizard.ClassicStyle)
+        personProjectWizard.setOptions(QtGui.QWizard.HelpButtonOnRight)
         self.personProjectWizardPage1 = QtGui.QWizardPage()
         self.personProjectWizardPage1.setObjectName(_fromUtf8("personProjectWizardPage1"))
         self.gridLayoutWidget = QtGui.QWidget(self.personProjectWizardPage1)
@@ -140,12 +142,12 @@ class Ui_personProjectWizard(object):
         personProjectWizard.addPage(self.personProjectWizardPage2)
         self.personProjectWizardPage3 = QtGui.QWizardPage()
         self.personProjectWizardPage3.setObjectName(_fromUtf8("personProjectWizardPage3"))
-        self.verticalLayoutWidget = QtGui.QWidget(self.personProjectWizardPage3)
-        self.verticalLayoutWidget.setGeometry(QtCore.QRect(0, 0, 851, 521))
-        self.verticalLayoutWidget.setObjectName(_fromUtf8("verticalLayoutWidget"))
-        self.personProjectPluginConfigLayout = QtGui.QVBoxLayout(self.verticalLayoutWidget)
-        self.personProjectPluginConfigLayout.setMargin(0)
-        self.personProjectPluginConfigLayout.setObjectName(_fromUtf8("personProjectPluginConfigLayout"))
+        self.personProjectWizardSearchConfigPluginsList = QtGui.QListView(self.personProjectWizardPage3)
+        self.personProjectWizardSearchConfigPluginsList.setGeometry(QtCore.QRect(0, 0, 256, 531))
+        self.personProjectWizardSearchConfigPluginsList.setObjectName(_fromUtf8("personProjectWizardSearchConfigPluginsList"))
+        self.searchConfiguration = QtGui.QStackedWidget(self.personProjectWizardPage3)
+        self.searchConfiguration.setGeometry(QtCore.QRect(260, 0, 591, 531))
+        self.searchConfiguration.setObjectName(_fromUtf8("searchConfiguration"))
         personProjectWizard.addPage(self.personProjectWizardPage3)
         self.personProjectWizardPage4 = QtGui.QWizardPage()
         self.personProjectWizardPage4.setObjectName(_fromUtf8("personProjectWizardPage4"))
