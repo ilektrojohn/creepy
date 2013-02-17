@@ -37,7 +37,11 @@
     </property>
     <layout class="QGridLayout" name="gridLayout_3">
      <item row="2" column="1">
-      <widget class="QPlainTextEdit" name="personProjectDescriptionValue"/>
+      <widget class="QPlainTextEdit" name="personProjectDescriptionValue">
+       <property name="plainText">
+        <string/>
+       </property>
+      </widget>
      </item>
      <item row="3" column="1">
       <spacer name="verticalSpacer">
@@ -53,7 +57,11 @@
       </spacer>
      </item>
      <item row="0" column="1">
-      <widget class="QLineEdit" name="personProjectNameValue"/>
+      <widget class="QLineEdit" name="personProjectNameValue">
+       <property name="placeholderText">
+        <string>Add a name for your project</string>
+       </property>
+      </widget>
      </item>
      <item row="0" column="0">
       <widget class="QLabel" name="personProjectNameLabel">
@@ -66,7 +74,11 @@
       </widget>
      </item>
      <item row="1" column="1">
-      <widget class="QLineEdit" name="personProjectKeywordsValue"/>
+      <widget class="QLineEdit" name="personProjectKeywordsValue">
+       <property name="placeholderText">
+        <string>Add comma seperated keywords for your project</string>
+       </property>
+      </widget>
      </item>
      <item row="2" column="0">
       <widget class="QLabel" name="personProjectDescriptionLabel">
@@ -132,8 +144,8 @@
         <rect>
          <x>0</x>
          <y>0</y>
-         <width>729</width>
-         <height>155</height>
+         <width>102</width>
+         <height>102</height>
         </rect>
        </property>
        <layout class="QVBoxLayout" name="verticalLayout">

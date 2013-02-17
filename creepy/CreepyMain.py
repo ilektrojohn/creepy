@@ -1,4 +1,5 @@
-import sys
+import sys, datetime
+import shelve, logging
 from PyQt4 import QtCore, QtGui, QtWebKit
 from CreepyUI import Ui_CreepyMainWindow
 from CreepyPluginsConfigurationDialog import Ui_PluginsConfigurationDialog
@@ -31,6 +32,8 @@ class CreepyPersonProjectWizard(QtGui.QWizard):
         self.ui = Ui_personProjectWizard()
         self.ui.setupUi(self)
         self.selectedTargets = []
+        self.enabledPlugins = []
+        
         
     def initializePage(self, i):
         if i == 2:
@@ -65,6 +68,7 @@ class CreepyPersonProjectWizard(QtGui.QWizard):
         pl = []
         for pluginName in list(set([target['plugin'] for target in self.ProjectWizardSelectedTargetsTable.targets])):
             plugin = self.PluginManager.getPluginByName(pluginName, "Input")
+            self.enabledPlugins.append(plugin)
             pl.append(plugin)
             '''
             Build the configuration page from the available saerch options
@@ -131,7 +135,39 @@ class CreepyPersonProjectWizard(QtGui.QWizard):
 
     def changePluginConfigurationPage(self, modelIndex):
         self.ui.searchConfiguration.setCurrentIndex(modelIndex.row())   
-
+        
+    def readSearchConfiguration(self):  
+        """
+        Reads all the search configuration options for the enabled plugins and and returns a list of the enabled plugins and their options.
+        """ 
+        enabledPlugins = []
+        pages = (self.ui.searchConfiguration.widget(i) for i in range(self.ui.searchConfiguration.count()))
+        for page in pages:
+            for widg in [ scrollarea.children() for scrollarea in page.children() if type(scrollarea) == QtGui.QScrollArea]:
+                for i in widg[0].children():
+                    plugin_name = str(i.objectName().replace("searchconfig_vboxwidget_container_",""))
+                    string_options = {}
+                    for j in i.findChildren(QtGui.QLabel):
+                        string_options[str(j.text())] = str(i.findChild(QtGui.QLineEdit, j.objectName().replace("label","value")).text())
+                    boolean_options = {}    
+                    for k in i.findChildren(QtGui.QCheckBox):
+                        boolean_options[str(k.text())] = str(k.isChecked())  
+                    
+            enabledPlugins.append({"pluginName":plugin_name,"searchOptions":{'string':string_options, 'boolean':boolean_options}})       
+        return enabledPlugins
+    
+    def storeProject(self, projectObject):
+        """
+        Receives a projectObject and stores it using the selected data persistence method. 
+        Decoupled here for flexibility
+        """
+        storedProject = shelve.open(projectObject['projectName']+".db")
+        try:
+            storedProject['project'] = projectObject
+        except Exception,err:
+            logging.log(logging.ERROR, "Error saving the project : "+err)
+        finally:
+            storedProject.close()
 
 class CreepyPluginsConfigurationDialog(QtGui.QDialog):
     def __init__(self, parent=None):
@@ -295,7 +331,10 @@ class CreepyMainWindow(QtGui.QMainWindow):
     
     def changePluginConfigurationPage(self, modelIndex):
         self.pluginsConfigurationDialog.ui.ConfigurationDetails.setCurrentIndex(modelIndex.row())   
-        
+    
+    
+    
+    
     def showPersonProjectWizard(self):
         personProjectWizard = CreepyPersonProjectWizard()
         personProjectObject = {}
@@ -316,7 +355,11 @@ class CreepyMainWindow(QtGui.QMainWindow):
             personProjectObject['projectName'] = str(personProjectWizard.ui.personProjectNameValue.text())
             personProjectObject['projectKeywords'] = [keyword.strip() for keyword in str(personProjectWizard.ui.personProjectKeywordsValue.text()).split(",")]
             personProjectObject['projectDescription'] = str(personProjectWizard.ui.personProjectDescriptionValue.toPlainText())
-            print personProjectObject
+            personProjectObject['enabledPlugins'] = personProjectWizard.readSearchConfiguration()
+            personProjectObject['dateCreated'] = datetime.datetime.now()
+            personProjectObject['results'] = {}
+            personProjectObject['viewSettigns'] = {}
+            personProjectWizard.storeProject(personProjectObject)
         else:
             print 'sdsdsda'
 if __name__=="__main__":
