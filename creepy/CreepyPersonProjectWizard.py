@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'personProjectWizard.ui'
 #
-# Created: Wed Feb 13 21:28:24 2013
+# Created: Sun Feb 17 21:59:17 2013
 #      by: PyQt4 UI code generator 4.9.1
 #
 # WARNING! All changes made in this file will be lost!
@@ -29,6 +29,7 @@ class Ui_personProjectWizard(object):
         self.gridLayout_3.setMargin(0)
         self.gridLayout_3.setObjectName(_fromUtf8("gridLayout_3"))
         self.personProjectDescriptionValue = QtGui.QPlainTextEdit(self.gridLayoutWidget)
+        self.personProjectDescriptionValue.setPlainText(_fromUtf8(""))
         self.personProjectDescriptionValue.setObjectName(_fromUtf8("personProjectDescriptionValue"))
         self.gridLayout_3.addWidget(self.personProjectDescriptionValue, 2, 1, 1, 1)
         spacerItem = QtGui.QSpacerItem(20, 40, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
@@ -69,7 +70,7 @@ class Ui_personProjectWizard(object):
         self.personProjectAvailablePluginsScrollArea.setWidgetResizable(True)
         self.personProjectAvailablePluginsScrollArea.setObjectName(_fromUtf8("personProjectAvailablePluginsScrollArea"))
         self.scrollAreaWidgetContents = QtGui.QWidget()
-        self.scrollAreaWidgetContents.setGeometry(QtCore.QRect(0, 0, 729, 155))
+        self.scrollAreaWidgetContents.setGeometry(QtCore.QRect(0, 0, 102, 102))
         self.scrollAreaWidgetContents.setObjectName(_fromUtf8("scrollAreaWidgetContents"))
         self.verticalLayout = QtGui.QVBoxLayout(self.scrollAreaWidgetContents)
         self.verticalLayout.setObjectName(_fromUtf8("verticalLayout"))
@@ -162,7 +163,9 @@ class Ui_personProjectWizard(object):
         personProjectWizard.setWindowTitle(QtGui.QApplication.translate("personProjectWizard", "New Person Project", None, QtGui.QApplication.UnicodeUTF8))
         self.personProjectWizardPage1.setTitle(QtGui.QApplication.translate("personProjectWizard", "Step 1 - Set Project Metadata", None, QtGui.QApplication.UnicodeUTF8))
         self.personProjectWizardPage1.setSubTitle(QtGui.QApplication.translate("personProjectWizard", "Add project related information", None, QtGui.QApplication.UnicodeUTF8))
+        self.personProjectNameValue.setPlaceholderText(QtGui.QApplication.translate("personProjectWizard", "Add a name for your project", None, QtGui.QApplication.UnicodeUTF8))
         self.personProjectNameLabel.setText(QtGui.QApplication.translate("personProjectWizard", "Project Name ", None, QtGui.QApplication.UnicodeUTF8))
+        self.personProjectKeywordsValue.setPlaceholderText(QtGui.QApplication.translate("personProjectWizard", "Add comma seperated keywords for your project", None, QtGui.QApplication.UnicodeUTF8))
         self.personProjectDescriptionLabel.setText(QtGui.QApplication.translate("personProjectWizard", "Description", None, QtGui.QApplication.UnicodeUTF8))
         self.personProkectKeywordsLabel.setText(QtGui.QApplication.translate("personProjectWizard", "Keywords", None, QtGui.QApplication.UnicodeUTF8))
         self.personProjectWizardPage2.setTitle(QtGui.QApplication.translate("personProjectWizard", "Step 2 - Set the target", None, QtGui.QApplication.UnicodeUTF8))

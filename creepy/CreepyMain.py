@@ -33,12 +33,17 @@ class CreepyPersonProjectWizard(QtGui.QWizard):
         self.ui.setupUi(self)
         self.selectedTargets = []
         self.enabledPlugins = []
-        
+        #Register the project name field so that it will become mandatory
+        self.page(0).registerField('name*', self.ui.personProjectNameValue)
         
     def initializePage(self, i):
+        """
+        If the page to be loaded is the page containing the search
+        options for our plugins, load the relative search options based on the 
+        selected targets
+        """
         if i == 2:
             self.showPluginsSearchOptions()
-          
         
     def searchForTargets(self):
         selectedPlugins = list(self.ProjectWizardPluginListModel.checkedPlugins)

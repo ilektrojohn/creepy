@@ -1,0 +1,341 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>CreepyMainWindow</class>
+ <widget class="QMainWindow" name="CreepyMainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1483</width>
+    <height>719</height>
+   </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Maximum" vsizetype="Maximum">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
+  <property name="windowTitle">
+   <string>Greepy Geolocation Aggregator</string>
+  </property>
+  <property name="windowIcon">
+   <iconset>
+    <normaloff>../creepy/include/creepy.xpm</normaloff>../creepy/include/creepy.xpm</iconset>
+  </property>
+  <property name="autoFillBackground">
+   <bool>true</bool>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <layout class="QVBoxLayout" name="verticalLayout_2">
+    <item>
+     <widget class="QWebView" name="mapWebView">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="minimumSize">
+       <size>
+        <width>800</width>
+        <height>600</height>
+       </size>
+      </property>
+      <property name="url">
+       <url>
+        <string>about:blank</string>
+       </url>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>1483</width>
+     <height>25</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuCreepy">
+    <property name="title">
+     <string>Creepy</string>
+    </property>
+    <widget class="QMenu" name="menuNewProject">
+     <property name="title">
+      <string>New Project</string>
+     </property>
+     <addaction name="actionNewPersonProject"/>
+     <addaction name="actionNewLocationBasedProject"/>
+    </widget>
+    <addaction name="menuNewProject"/>
+    <addaction name="actionExit"/>
+   </widget>
+   <widget class="QMenu" name="menuEdit">
+    <property name="title">
+     <string>Edit</string>
+    </property>
+    <addaction name="actionPluginsConfiguration"/>
+    <addaction name="actionSettings"/>
+   </widget>
+   <widget class="QMenu" name="menuAbout">
+    <property name="title">
+     <string>Help</string>
+    </property>
+    <addaction name="actionReport_a_problem_bug"/>
+    <addaction name="actionAbout"/>
+   </widget>
+   <widget class="QMenu" name="menuView">
+    <property name="title">
+     <string>View</string>
+    </property>
+    <addaction name="separator"/>
+    <addaction name="actionToolbars"/>
+   </widget>
+   <addaction name="menuCreepy"/>
+   <addaction name="menuEdit"/>
+   <addaction name="menuView"/>
+   <addaction name="menuAbout"/>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+  <widget class="QDockWidget" name="dockWLocationsList">
+   <property name="minimumSize">
+    <size>
+     <width>250</width>
+     <height>127</height>
+    </size>
+   </property>
+   <property name="windowTitle">
+    <string>Locations List</string>
+   </property>
+   <attribute name="dockWidgetArea">
+    <number>2</number>
+   </attribute>
+   <widget class="QWidget" name="dockWLocationsListContents">
+    <layout class="QVBoxLayout" name="verticalLayout">
+     <item>
+      <widget class="QTreeView" name="treeView"/>
+     </item>
+    </layout>
+   </widget>
+  </widget>
+  <widget class="QDockWidget" name="dockWProjects">
+   <property name="minimumSize">
+    <size>
+     <width>200</width>
+     <height>300</height>
+    </size>
+   </property>
+   <property name="windowTitle">
+    <string>Target Projects</string>
+   </property>
+   <attribute name="dockWidgetArea">
+    <number>1</number>
+   </attribute>
+   <widget class="QWidget" name="dockWProjectsContents">
+    <layout class="QVBoxLayout" name="verticalLayout_3">
+     <item>
+      <widget class="QTreeView" name="treeViewProjects"/>
+     </item>
+    </layout>
+   </widget>
+  </widget>
+  <widget class="QDockWidget" name="dockWCurrentTargetDetails">
+   <property name="windowTitle">
+    <string>CurrentTarget Details</string>
+   </property>
+   <attribute name="dockWidgetArea">
+    <number>2</number>
+   </attribute>
+   <widget class="QWidget" name="dockWCurrentTargetDetailsContents"/>
+  </widget>
+  <widget class="QToolBar" name="toolBar">
+   <property name="windowTitle">
+    <string>toolBar</string>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+   <addaction name="actionNewPersonProject"/>
+   <addaction name="actionPluginsConfiguration"/>
+   <addaction name="actionExport_as_kml"/>
+   <addaction name="actionExport_as_csv"/>
+   <addaction name="separator"/>
+   <addaction name="actionGeolocateCurrentTarget"/>
+   <addaction name="actionAnalyzeCurrentTarget"/>
+   <addaction name="actionCurrent_Target_Details"/>
+  </widget>
+  <action name="actionExport_as_kml">
+   <property name="checkable">
+    <bool>false</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../creepy/include/creepy_resources.qrc">
+     <normaloff>:/cr/save.png</normaloff>:/cr/save.png</iconset>
+   </property>
+   <property name="text">
+    <string>Export as kml</string>
+   </property>
+  </action>
+  <action name="actionExport_as_csv">
+   <property name="icon">
+    <iconset resource="../creepy/include/creepy_resources.qrc">
+     <normaloff>:/cr/cvs.png</normaloff>:/cr/cvs.png</iconset>
+   </property>
+   <property name="text">
+    <string>Export as csv</string>
+   </property>
+  </action>
+  <action name="actionExit">
+   <property name="text">
+    <string>Exit</string>
+   </property>
+  </action>
+  <action name="actionReport_a_problem_bug">
+   <property name="text">
+    <string>Report a problem / bug</string>
+   </property>
+  </action>
+  <action name="actionAbout">
+   <property name="text">
+    <string>About</string>
+   </property>
+  </action>
+  <action name="actionPluginsConfiguration">
+   <property name="icon">
+    <iconset resource="../creepy/include/creepy_resources.qrc">
+     <normaloff>:/cr/plugins_config.png</normaloff>:/cr/plugins_config.png</iconset>
+   </property>
+   <property name="text">
+    <string>Plugins Configuration</string>
+   </property>
+  </action>
+  <action name="actionLocations_List">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Locations List</string>
+   </property>
+   <property name="softKeyRole">
+    <enum>QAction::NoSoftKey</enum>
+   </property>
+  </action>
+  <action name="actionResult_Details">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Result Details</string>
+   </property>
+  </action>
+  <action name="actionAvailable_Plugins">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Available Plugins</string>
+   </property>
+  </action>
+  <action name="actionCurrent_Target_Details">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset>
+     <normaloff>:/toolbarIcons/creepy32.png</normaloff>:/toolbarIcons/creepy32.png</iconset>
+   </property>
+   <property name="text">
+    <string>Current Target Details</string>
+   </property>
+  </action>
+  <action name="actionToolbars">
+   <property name="text">
+    <string>Toolbars</string>
+   </property>
+  </action>
+  <action name="actionSettings">
+   <property name="text">
+    <string>Settings</string>
+   </property>
+  </action>
+  <action name="actionNewPersonProject">
+   <property name="icon">
+    <iconset resource="../creepy/include/creepy_resources.qrc">
+     <normaloff>:/cr/add.png</normaloff>:/cr/add.png</iconset>
+   </property>
+   <property name="text">
+    <string>Person Based Project</string>
+   </property>
+  </action>
+  <action name="actionNewLocationBasedProject">
+   <property name="text">
+    <string>Location Based Project</string>
+   </property>
+  </action>
+  <action name="actionGeolocateCurrentTarget">
+   <property name="icon">
+    <iconset resource="../creepy/include/creepy_resources.qrc">
+     <normaloff>:/cr/creepy32.png</normaloff>:/cr/creepy32.png</iconset>
+   </property>
+   <property name="text">
+    <string>Geolocate Current Target</string>
+   </property>
+   <property name="toolTip">
+    <string>Geolocate Current Target</string>
+   </property>
+  </action>
+  <action name="actionAnalyzeCurrentTarget">
+   <property name="icon">
+    <iconset resource="../creepy/include/creepy_resources.qrc">
+     <normaloff>:/cr/analyze.png</normaloff>:/cr/analyze.png</iconset>
+   </property>
+   <property name="text">
+    <string>Analyze Current Target</string>
+   </property>
+  </action>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QWebView</class>
+   <extends>QWidget</extends>
+   <header>QtWebKit/QWebView</header>
+  </customwidget>
+ </customwidgets>
+ <resources>
+  <include location="../creepy/include/creepy_resources.qrc"/>
+ </resources>
+ <connections>
+  <connection>
+   <sender>actionExit</sender>
+   <signal>activated()</signal>
+   <receiver>CreepyMainWindow</receiver>
+   <slot>close()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>402</x>
+     <y>289</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>
