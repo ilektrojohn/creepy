@@ -27,26 +27,50 @@
    <bool>true</bool>
   </property>
   <widget class="QWidget" name="centralwidget">
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+     <horstretch>0</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
+   </property>
    <layout class="QVBoxLayout" name="verticalLayout_2">
     <item>
-     <widget class="QWebView" name="mapWebView">
+     <widget class="QStackedWidget" name="centralStackedWidget">
       <property name="sizePolicy">
-       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+       <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
         <horstretch>0</horstretch>
         <verstretch>0</verstretch>
        </sizepolicy>
       </property>
-      <property name="minimumSize">
-       <size>
-        <width>800</width>
-        <height>600</height>
-       </size>
+      <property name="autoFillBackground">
+       <bool>true</bool>
       </property>
-      <property name="url">
-       <url>
-        <string>about:blank</string>
-       </url>
+      <property name="currentIndex">
+       <number>0</number>
       </property>
+      <widget class="QWidget" name="mapPage">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <layout class="QHBoxLayout" name="horizontalLayout">
+        <item>
+         <widget class="QWebView" name="mapWebView">
+          <property name="autoFillBackground">
+           <bool>true</bool>
+          </property>
+          <property name="url">
+           <url>
+            <string>about:blank</string>
+           </url>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="analysisPage"/>
      </widget>
     </item>
    </layout>
@@ -143,9 +167,9 @@
     </layout>
    </widget>
   </widget>
-  <widget class="QDockWidget" name="dockWCurrentTargetDetails">
+  <widget class="QDockWidget" name="dockWCurrentLocationDetails">
    <property name="windowTitle">
-    <string>CurrentTarget Details</string>
+    <string>Current Location Details</string>
    </property>
    <attribute name="dockWidgetArea">
     <number>2</number>

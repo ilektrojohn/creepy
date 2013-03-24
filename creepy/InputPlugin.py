@@ -30,7 +30,7 @@ class InputPlugin(IPlugin):
     def isFunctional(self):
         pass
     
-    def returnLocations(self, search_params):
+    def returnLocations(self, target, search_params):
         pass
     
     def returnPersonalInformation(self, search_params):

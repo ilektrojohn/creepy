@@ -1,0 +1,14 @@
+<RCC>
+  <qresource prefix="cr">
+    <file>analysis.png</file>
+    <file>folder_locations.png</file>
+    <file>project_icon.png</file>
+    <file>analyze.png</file>
+    <file>add.png</file>
+    <file>cvs.png</file>
+    <file>geolocate.png</file>
+    <file>creepy32.png</file>
+    <file>plugins_config.png</file>
+    <file>save.png</file>
+  </qresource>
+</RCC>

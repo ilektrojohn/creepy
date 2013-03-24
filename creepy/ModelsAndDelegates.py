@@ -108,14 +108,14 @@ class ProjectWizardPossibleTargetsTable(QAbstractTableModel):
                     picturePath = os.path.join(os.getcwd(), "creepy", "temp", target['targetPicture'])
                     if picturePath and os.path.exists(picturePath):
                         pixmap = QPixmap(picturePath)
-                        return pixmap.scaled(30, 30, Qt.IgnoreAspectRatio, Qt.FastTransformation)
+                        return QIcon(pixmap.scaled(30, 30, Qt.IgnoreAspectRatio, Qt.FastTransformation))
                     else:
                         pixmap = QPixmap(os.path.join(os.getcwd(), "creepy", "include", "add.png"))
                         pixmap.scaled(20, 20, Qt.IgnoreAspectRatio)
-                        return pixmap
+                        return QIcon(pixmap)
             if role == Qt.DisplayRole:
                 if column == 0:
-                    return QVariant(target['plugin'])
+                    return QVariant(target['pluginName'])
                 elif column == 1:
                     return QVariant()
                 elif column == 2:
@@ -193,7 +193,7 @@ class ProjectWizardSelectedTargetsTable(QAbstractTableModel):
                     return pixmap
             if role == Qt.DisplayRole:
                 if column == 0:
-                    return QVariant(target['plugin'])
+                    return QVariant(target['pluginName'])
                 if column == 1:
                     return QVariant()
                 elif column == 2:
@@ -239,8 +239,8 @@ class ProjectWizardSelectedTargetsTable(QAbstractTableModel):
             droppedRows = []
             for row in draggedRows:
                 #Ensure we are not putting duplicates in the target list
-                if all(row[2] != target['targetUsername'] and row[0] != target['plugin'] for target in self.targets):
-                    droppedRows.append({'targetUsername':row[3], 'targetFullname':row[2], 'targetPicture':row[1], 'targetDetails':row[4], 'plugin':row[0]})
+                if all(row[2] != target['targetUsername'] and row[0] != target['pluginName'] for target in self.targets):
+                    droppedRows.append({'targetUsername':row[3], 'targetFullname':row[2], 'targetPicture':row[1], 'targetDetails':row[4], 'pluginName':row[0]})
             self.insertRows(droppedRows, len(droppedRows), parent)
                 
         return True        

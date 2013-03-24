@@ -1,16 +1,21 @@
 import sys, datetime
 import shelve, logging
+import pprint
 from PyQt4 import QtCore, QtGui, QtWebKit
 from CreepyUI import Ui_CreepyMainWindow
 from CreepyPluginsConfigurationDialog import Ui_PluginsConfigurationDialog
 from CreepyPersonProjectWizard import Ui_personProjectWizard
 from CreepyPluginConfigurationCheckdialog import Ui_checkPluginConfigurationDialog
-
+import creepy_resources_rc
 from yapsy.PluginManager import PluginManagerSingleton
+from ProjectTree import *
+from Project import Project
+from Location import Location
 from ModelsAndDelegates import *
 from InputPlugin import InputPlugin
 import logging
 import functools
+from ubuntuone.syncdaemon.sync import loglevel
 
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
@@ -39,12 +44,21 @@ class CreepyPersonProjectWizard(QtGui.QWizard):
     def initializePage(self, i):
         """
         If the page to be loaded is the page containing the search
-        options for our plugins, load the relative search options based on the 
+        options for our plugins, store the selected targets and load the relative search options based on the 
         selected targets
         """
         if i == 2:
+            self.storeSelectedTargets()
             self.showPluginsSearchOptions()
         
+    
+    def storeSelectedTargets(self):
+        self.selectedTargets = []
+        for target in self.ProjectWizardSelectedTargetsTable.targets:
+            self.selectedTargets.append({'pluginName':str(target['pluginName']),'targetUsername':str(target['targetUsername'])})
+             
+             
+             
     def searchForTargets(self):
         selectedPlugins = list(self.ProjectWizardPluginListModel.checkedPlugins)
         possibleTargets = []
@@ -71,7 +85,7 @@ class CreepyPersonProjectWizard(QtGui.QWizard):
     def showPluginsSearchOptions(self):
         #List of plugin objects
         pl = []
-        for pluginName in list(set([target['plugin'] for target in self.ProjectWizardSelectedTargetsTable.targets])):
+        for pluginName in list(set([target['pluginName'] for target in self.ProjectWizardSelectedTargetsTable.targets])):
             plugin = self.PluginManager.getPluginByName(pluginName, "Input")
             self.enabledPlugins.append(plugin)
             pl.append(plugin)
@@ -135,7 +149,7 @@ class CreepyPersonProjectWizard(QtGui.QWizard):
             
         self.SearchConfigPluginConfigurationListModel = PluginConfigurationListModel(pl,self)
         self.ui.personProjectWizardSearchConfigPluginsList.setModel(self.SearchConfigPluginConfigurationListModel)
-        QtCore.QObject.connect(self.ui.personProjectWizardSearchConfigPluginsList, QtCore.SIGNAL("clicked(QModelIndex)"), self.changePluginConfigurationPage)
+        self.ui.personProjectWizardSearchConfigPluginsList.clicked.connect(self.changePluginConfigurationPage)
 
 
     def changePluginConfigurationPage(self, modelIndex):
@@ -166,11 +180,15 @@ class CreepyPersonProjectWizard(QtGui.QWizard):
         Receives a projectObject and stores it using the selected data persistence method. 
         Decoupled here for flexibility
         """
-        storedProject = shelve.open(projectObject['projectName']+".db")
+        projectName = projectObject.name()+".db"
+        print(os.path.join(os.getcwd(),"creepy","projects",projectName))
+        
+        storedProject = shelve.open(os.path.join(os.getcwd(),"creepy","projects",projectName))
         try:
             storedProject['project'] = projectObject
         except Exception,err:
-            logging.log(logging.ERROR, "Error saving the project : "+err)
+            logging.log(logging.ERROR, "Error saving the project ")
+            logging.exception(err)
         finally:
             storedProject.close()
 
@@ -231,6 +249,7 @@ class CreepyMainWindow(QtGui.QMainWindow):
         QtGui.QWidget.__init__(self,parent)
         self.ui = Ui_CreepyMainWindow()
         self.ui.setupUi(self)
+        self.projectsList = []
         
         #Load the map in the mapWebView using GoogleMaps JS API
         
@@ -241,14 +260,43 @@ class CreepyMainWindow(QtGui.QMainWindow):
         # Add the toggleViewActions for the Docked widgets in the View Menu
         self.ui.menuView.addAction(self.ui.dockWProjects.toggleViewAction())
         self.ui.menuView.addAction(self.ui.dockWLocationsList.toggleViewAction())
-        self.ui.menuView.addAction(self.ui.dockWCurrentTargetDetails.toggleViewAction())
+        self.ui.menuView.addAction(self.ui.dockWCurrentLocationDetails.toggleViewAction())
         #Add the actions to show the PluginConfiguration Dialog
         self.ui.actionPluginsConfiguration.triggered.connect(self.showPluginsConfigurationDialog)
         
         #Add actions for the "New .." wizards 
         self.ui.actionNewPersonProject.triggered.connect(self.showPersonProjectWizard)
         
+        self.loadProjectsFromStorage()
         
+        
+    def analyzeProject(self, project):
+        pluginManager = PluginManagerSingleton.get()
+        pluginManager.setCategoriesFilter({ "Input": InputPlugin})
+        pluginManager.setPluginPlaces([os.path.join(os.getcwd(), 'creepy', 'plugins')])
+        pluginManager.locatePlugins()
+        pluginManager.loadPlugins()
+        for target in project.selectedTargets:
+            pluginObject = pluginManager.getPluginByName(target['pluginName'], "Input").plugin_object
+            for pl in project.enabledPlugins:
+                if pl["pluginName"] == target["pluginName"]:
+                    runtimeConfig = pl["searchOptions"] 
+            locationList = pluginObject.returnLocations(target, runtimeConfig)
+            for loc in locationList:
+                location = Location()
+                location.longitude = loc['lon']
+                location.latitude = loc['lat']
+                location.context = loc['context']
+                location.shortName = loc['shortName']
+                #####CONTINUE HERE#######
+        
+        
+    def changeMainWidgetPage(self, pageType):
+        if pageType == "map":
+            self.ui.centralStackedWidget.setCurrentIndex(0)
+        else:
+            self.ui.centralStackedWidget.setCurrentIndex(1)  
+             
     def showPluginsConfigurationDialog(self):
         #Show the stackWidget
         self.pluginsConfigurationDialog = CreepyPluginsConfigurationDialog()
@@ -319,7 +367,7 @@ class CreepyMainWindow(QtGui.QMainWindow):
             testButtonContainer.addStretch(1)
             testButtonContainer.addWidget(testButton)
             layout.addLayout(testButtonContainer)
-            QtCore.QObject.connect(testButton, QtCore.SIGNAL("clicked()"),functools.partial(self.pluginsConfigurationDialog.checkPluginConfiguration, plugin))
+            testButton.clicked.connect(functools.partial(self.pluginsConfigurationDialog.checkPluginConfiguration, plugin))
             page.setLayout(layout)
             self.pluginsConfigurationDialog.ui.ConfigurationDetails.addWidget(page)
             
@@ -328,7 +376,7 @@ class CreepyMainWindow(QtGui.QMainWindow):
             
         self.PluginConfigurationListModel = PluginConfigurationListModel(pl,self)
         self.pluginsConfigurationDialog.ui.PluginsList.setModel(self.PluginConfigurationListModel)
-        QtCore.QObject.connect(self.pluginsConfigurationDialog.ui.PluginsList, QtCore.SIGNAL("clicked(QModelIndex)"), self.changePluginConfigurationPage)
+        self.pluginsConfigurationDialog.ui.PluginsList.clicked.connect(self.changePluginConfigurationPage)
         if self.pluginsConfigurationDialog.exec_():
             self.pluginsConfigurationDialog.saveConfiguration()
         
@@ -342,31 +390,82 @@ class CreepyMainWindow(QtGui.QMainWindow):
     
     def showPersonProjectWizard(self):
         personProjectWizard = CreepyPersonProjectWizard()
-        personProjectObject = {}
-        personProjectObject['projectType'] = 'person'
         
         personProjectWizard.ProjectWizardPluginListModel = ProjectWizardPluginListModel(personProjectWizard.loadConfiguredPlugins(),self)
         personProjectWizard.ui.personProjectAvailablePluginsListView.setModel(personProjectWizard.ProjectWizardPluginListModel)
-        QtCore.QObject.connect(personProjectWizard.ui.personProjectSearchButton, QtCore.SIGNAL("clicked()"), personProjectWizard.searchForTargets)
+        personProjectWizard.ui.personProjectSearchButton.clicked.connect(personProjectWizard.searchForTargets)
         
         #Creating it here so it becomes available globally in all functions
         personProjectWizard.ProjectWizardSelectedTargetsTable = ProjectWizardSelectedTargetsTable([],self)
         
         
-        
-        
-        
         if personProjectWizard.exec_():
-            personProjectObject['projectName'] = str(personProjectWizard.ui.personProjectNameValue.text())
-            personProjectObject['projectKeywords'] = [keyword.strip() for keyword in str(personProjectWizard.ui.personProjectKeywordsValue.text()).split(",")]
-            personProjectObject['projectDescription'] = str(personProjectWizard.ui.personProjectDescriptionValue.toPlainText())
-            personProjectObject['enabledPlugins'] = personProjectWizard.readSearchConfiguration()
-            personProjectObject['dateCreated'] = datetime.datetime.now()
-            personProjectObject['results'] = {}
-            personProjectObject['viewSettigns'] = {}
-            personProjectWizard.storeProject(personProjectObject)
+            project = Project()
+            project.projectName = str(personProjectWizard.ui.personProjectNameValue.text())
+            project.projectKeywords = [keyword.strip() for keyword in str(personProjectWizard.ui.personProjectKeywordsValue.text()).split(",")]
+            project.projectDescription = str(personProjectWizard.ui.personProjectDescriptionValue.toPlainText())
+            project.enabledPlugins = personProjectWizard.readSearchConfiguration()
+            project.dateCreated = datetime.datetime.now()
+            project.dateEdited = datetime.datetime.now()
+            project.results = {}
+            project.viewSettigns = {}
+            project.selectedTargets = personProjectWizard.selectedTargets
+            projectNode = ProjectNode(project.projectName, project)
+            
+            locationsNode = LocationsNode("Locations", projectNode)
+            analysisNode = AnalysisNode("Analysis", projectNode)
+            personProjectWizard.storeProject(projectNode)
+            self.loadProjectsFromStorage()
         else:
             print 'sdsdsda'
+            
+            
+    def loadProjectsFromStorage(self):
+        #Show the exisiting Projects 
+        projectsDir = os.path.join(os.getcwd(),'creepy','projects')
+        projectFileNames = [ os.path.join(projectsDir,f) for f in os.listdir(projectsDir) if (os.path.isfile(os.path.join(projectsDir,f)) and f.endswith('.db'))]
+        rootNode = ProjectTreeNode("Projects")
+        for projectFile in projectFileNames:
+            projectObject = shelve.open(projectFile)
+            try:
+                rootNode.addChild(projectObject['project'])
+            except Exception, err:
+                logging.log(logging.ERROR, "Could not read stored project from file")
+                logging.exception(err)
+        
+        self.projectTreeModel = ProjectTreeModel(rootNode) 
+        self.ui.treeViewProjects.setModel(self.projectTreeModel)
+        self.ui.treeViewProjects.doubleClicked.connect(self.doubleClickItem)
+        self.ui.treeViewProjects.setContextMenuPolicy(Qt.CustomContextMenu)
+        self.ui.treeViewProjects.customContextMenuRequested.connect(self.rightClickMenu)
+        
+    def doubleClickItem(self):
+        nodeObject =  self.ui.treeViewProjects.selectionModel().selection().indexes()[0].internalPointer()
+        if nodeObject.nodeType() == "PROJECT" or nodeObject.nodeType() == "LOCATIONS":
+            self.changeMainWidgetPage("map")
+        if nodeObject.nodeTyanalyzeProjectActionpe() == "ANALYSIS":
+            self.changeMainWidgetPage("analysis")
+        
+    def rightClickMenu(self, pos):
+        #We will not allow multi select so the selectionModel().selection().indexes() will contain only one
+        
+        nodeObject =  self.ui.treeViewProjects.selectionModel().selection().indexes()[0].internalPointer()
+        
+        rightClickMenu = QMenu()
+        analyzeProjectAction = QtGui.QAction(QtGui.QIcon(QPixmap(":/cr/analyze.png")), "Analyze Target", self)
+        editProjectAction = QtGui.QAction(QtGui.QIcon(QPixmap(":/cr/analyze.png")), "Edit Project", self)
+        deleteProjectAction = QtGui.QAction(QtGui.QIcon(QPixmap(":/cr/analyze.png")), "Delete Project", self)
+        if nodeObject.nodeType() == "PROJECT":
+            rightClickMenu.addAction(analyzeProjectAction)
+            rightClickMenu.addAction(editProjectAction)
+            rightClickMenu.addAction(deleteProjectAction)
+            
+        
+        action = rightClickMenu.exec_(self.ui.treeViewProjects.viewport().mapToGlobal(pos))
+        if action == analyzeProjectAction:
+            self.analyzeProject(nodeObject.project)
+        
+        
 if __name__=="__main__":
     app = QtGui.QApplication(sys.argv)
     myapp = CreepyMainWindow()
