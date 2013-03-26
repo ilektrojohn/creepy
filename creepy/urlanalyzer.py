@@ -125,7 +125,8 @@ class URLAnalyzer():
                 % (tweet.user.screen_name, tweet.id),
                 'Location retrieved from image exif metadata.\n Tweet was %s\n'
                 % (tweet.text))
-            coordinates['time'] = exif_data.get_date_time()
+            coordinates['time'] = datetime.strptime(
+                exif_data['Exif.Photo.DateTimeOriginal'], '%Y:%m:%d %H:%M:%S')
             coordinates['latitude'] = latitude
             coordinates['realname'] = tweet.user.name
             coordinates['longitude'] = longitude
