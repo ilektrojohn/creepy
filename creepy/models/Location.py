@@ -1,5 +1,6 @@
 class Location(object):
-    def __init__(self, longitute=0, latitude=0,context=None, shortName=None,longName=None,streetNumber=None,route=None,locality=None,postalCode=None,country=None):
+    def __init__(self, datetime=None, longitute=0, latitude=0,context=None, shortName=None,longName=None,streetNumber=None,route=None,locality=None,postalCode=None,country=None):
+        self.datetime = datetime
         self.longitude = longitute
         self.latitude = latitude
         self.context =context

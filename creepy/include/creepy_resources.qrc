@@ -1,5 +1,7 @@
 <RCC>
   <qresource prefix="cr">
+    <file>project_actionmenu_delete.png</file>
+    <file>project_actionmenu_edit.png</file>
     <file>analysis.png</file>
     <file>folder_locations.png</file>
     <file>project_icon.png</file>

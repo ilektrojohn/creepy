@@ -141,7 +141,14 @@
    <widget class="QWidget" name="dockWLocationsListContents">
     <layout class="QVBoxLayout" name="verticalLayout">
      <item>
-      <widget class="QTreeView" name="treeView"/>
+      <widget class="QTableView" name="locationsTableView">
+       <property name="selectionMode">
+        <enum>QAbstractItemView::SingleSelection</enum>
+       </property>
+       <property name="selectionBehavior">
+        <enum>QAbstractItemView::SelectRows</enum>
+       </property>
+      </widget>
      </item>
     </layout>
    </widget>

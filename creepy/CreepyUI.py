@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'creepy.ui'
 #
-# Created: Sun Mar 24 20:15:03 2013
+# Created: Tue Mar 26 00:03:15 2013
 #      by: PyQt4 UI code generator 4.9.1
 #
 # WARNING! All changes made in this file will be lost!
@@ -88,9 +88,11 @@ class Ui_CreepyMainWindow(object):
         self.dockWLocationsListContents.setObjectName(_fromUtf8("dockWLocationsListContents"))
         self.verticalLayout = QtGui.QVBoxLayout(self.dockWLocationsListContents)
         self.verticalLayout.setObjectName(_fromUtf8("verticalLayout"))
-        self.treeView = QtGui.QTreeView(self.dockWLocationsListContents)
-        self.treeView.setObjectName(_fromUtf8("treeView"))
-        self.verticalLayout.addWidget(self.treeView)
+        self.locationsTableView = QtGui.QTableView(self.dockWLocationsListContents)
+        self.locationsTableView.setSelectionMode(QtGui.QAbstractItemView.SingleSelection)
+        self.locationsTableView.setSelectionBehavior(QtGui.QAbstractItemView.SelectRows)
+        self.locationsTableView.setObjectName(_fromUtf8("locationsTableView"))
+        self.verticalLayout.addWidget(self.locationsTableView)
         self.dockWLocationsList.setWidget(self.dockWLocationsListContents)
         CreepyMainWindow.addDockWidget(QtCore.Qt.DockWidgetArea(2), self.dockWLocationsList)
         self.dockWProjects = QtGui.QDockWidget(CreepyMainWindow)

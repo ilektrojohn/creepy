@@ -9,6 +9,7 @@ from CreepyPluginConfigurationCheckdialog import Ui_checkPluginConfigurationDial
 import creepy_resources_rc
 from yapsy.PluginManager import PluginManagerSingleton
 from ProjectTree import *
+from LocationsList import *
 from Project import Project
 from Location import Location
 from ModelsAndDelegates import *
@@ -276,21 +277,38 @@ class CreepyMainWindow(QtGui.QMainWindow):
         pluginManager.setPluginPlaces([os.path.join(os.getcwd(), 'creepy', 'plugins')])
         pluginManager.locatePlugins()
         pluginManager.loadPlugins()
+        locationsList = []
         for target in project.selectedTargets:
             pluginObject = pluginManager.getPluginByName(target['pluginName'], "Input").plugin_object
             for pl in project.enabledPlugins:
                 if pl["pluginName"] == target["pluginName"]:
                     runtimeConfig = pl["searchOptions"] 
-            locationList = pluginObject.returnLocations(target, runtimeConfig)
-            for loc in locationList:
-                location = Location()
-                location.longitude = loc['lon']
-                location.latitude = loc['lat']
-                location.context = loc['context']
-                location.shortName = loc['shortName']
+            targetLocations = pluginObject.returnLocations(target, runtimeConfig)
+            if targetLocations:
+                for loc in targetLocations:
+                    location = Location()
+                    location.datetime = loc['date']
+                    location.longitude = loc['lon']
+                    location.latitude = loc['lat']
+                    location.context = loc['context']
+                    location.shortName = loc['shortName']
+                    locationsList.append(location)
                 #####CONTINUE HERE#######
         
+        project.locations.extend(locationsList)
         
+    
+    def presentProject(self, project):
+        mapFrame = self.ui.webPage.mainFrame()
+        for location in project.locations:
+            mapFrame.evaluateJavaScript(QString("addMarker("+str(location.latitude)+","+str(location.longitude)+",\""+str(location.shortName)+"\")"))
+            print QString("addMarker("+str(location.latitude)+","+str(location.longitude)+","+str(location.shortName)+")")
+            mapFrame.evaluateJavaScript(QString("centerMap("+str(location.latitude)+","+str(location.longitude)+")"))
+        
+        locationsTableModel = LocationsTableModel(project.locations) 
+        self.ui.locationsTableView.setModel(locationsTableModel)
+        self.ui.locationsTableView.resizeColumnsToContents()   
+            
     def changeMainWidgetPage(self, pageType):
         if pageType == "map":
             self.ui.centralStackedWidget.setCurrentIndex(0)
@@ -407,7 +425,8 @@ class CreepyMainWindow(QtGui.QMainWindow):
             project.enabledPlugins = personProjectWizard.readSearchConfiguration()
             project.dateCreated = datetime.datetime.now()
             project.dateEdited = datetime.datetime.now()
-            project.results = {}
+            project.locations = []
+            project.analysis = None
             project.viewSettigns = {}
             project.selectedTargets = personProjectWizard.selectedTargets
             projectNode = ProjectNode(project.projectName, project)
@@ -443,27 +462,30 @@ class CreepyMainWindow(QtGui.QMainWindow):
         nodeObject =  self.ui.treeViewProjects.selectionModel().selection().indexes()[0].internalPointer()
         if nodeObject.nodeType() == "PROJECT" or nodeObject.nodeType() == "LOCATIONS":
             self.changeMainWidgetPage("map")
-        if nodeObject.nodeTyanalyzeProjectActionpe() == "ANALYSIS":
+        if nodeObject.nodeType() == "ANALYSIS":
             self.changeMainWidgetPage("analysis")
         
     def rightClickMenu(self, pos):
         #We will not allow multi select so the selectionModel().selection().indexes() will contain only one
-        
-        nodeObject =  self.ui.treeViewProjects.selectionModel().selection().indexes()[0].internalPointer()
-        
-        rightClickMenu = QMenu()
-        analyzeProjectAction = QtGui.QAction(QtGui.QIcon(QPixmap(":/cr/analyze.png")), "Analyze Target", self)
-        editProjectAction = QtGui.QAction(QtGui.QIcon(QPixmap(":/cr/analyze.png")), "Edit Project", self)
-        deleteProjectAction = QtGui.QAction(QtGui.QIcon(QPixmap(":/cr/analyze.png")), "Delete Project", self)
-        if nodeObject.nodeType() == "PROJECT":
-            rightClickMenu.addAction(analyzeProjectAction)
-            rightClickMenu.addAction(editProjectAction)
-            rightClickMenu.addAction(deleteProjectAction)
+        if self.ui.treeViewProjects.selectionModel().selection().count() == 1:
+            nodeObject =  self.ui.treeViewProjects.selectionModel().selection().indexes()[0].internalPointer()
+           
+            rightClickMenu = QMenu()
+            analyzeProjectAction = QtGui.QAction(QtGui.QIcon(QPixmap(":/cr/analyze.png")), "Analyze Target", self)
+            editProjectAction = QtGui.QAction(QtGui.QIcon(QPixmap(":/cr/project_actionmenu_edit.png")), "Edit Project", self)
+            deleteProjectAction = QtGui.QAction(QtGui.QIcon(QPixmap(":/cr/project_actionmenu_delete.png")), "Delete Project", self)
+            if nodeObject.nodeType() == "PROJECT":
+                rightClickMenu.addAction(analyzeProjectAction)
+                rightClickMenu.addAction(editProjectAction)
+                rightClickMenu.addAction(deleteProjectAction)
+                
             
-        
-        action = rightClickMenu.exec_(self.ui.treeViewProjects.viewport().mapToGlobal(pos))
-        if action == analyzeProjectAction:
-            self.analyzeProject(nodeObject.project)
+            action = rightClickMenu.exec_(self.ui.treeViewProjects.viewport().mapToGlobal(pos))
+            if action == analyzeProjectAction:
+                print nodeObject.project.locations
+                self.analyzeProject(nodeObject.project)
+                print nodeObject.project.locations
+                self.presentProject(nodeObject.project)
         
         
 if __name__=="__main__":

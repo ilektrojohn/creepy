@@ -1,5 +1,5 @@
 from InputPlugin import InputPlugin
-
+import datetime
 
 class Dummy(InputPlugin):
     name = "dummy"
@@ -24,7 +24,8 @@ class Dummy(InputPlugin):
         return True
     
     def returnLocations(self, target, search_params):
-        locations = [{'lon':38.343242,'lat':23.3213,'context':'this is the context', 'shortName':'This is the short name'},{'lon':40.343242,'lat':29.3213,'context':'this is the context2', 'shortName':'This is the short name2'}]
+        d = datetime.datetime.now()
+        locations = [{'lon':38.343242,'lat':23.3213,'context':'this is the context', 'shortName':'This is the short name','date':d},{'lon':40.343242,'lat':29.3213,'context':'this is the context2', 'shortName':'This is the short name2', 'date':d}]
         return locations
     
     def returnPersonalInformation(self, search_params):
