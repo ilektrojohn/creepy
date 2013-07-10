@@ -124,7 +124,7 @@ class CreepyUI(gtk.Window):
             except:
                 temp_config['twitter_auth']['cons_string'] = 'QjZEVGxuVEJLUk9MSTZiUWxHdXJTdyxzWDFUV0ZIVDd4c1VYcE5WUFpaZ3Fhc2FDNE9GamRGcEk0czVLSDhHSQ==' 
                 temp_config.write()   
-         except Exception, err:
+        except Exception, err:
             text = 'Error parsing configuration file : %s' % err
             self.create_dialog('Error', text)
         #Try to load the options file
