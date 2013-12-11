@@ -176,5 +176,3 @@ class LocationNode(ProjectTreeNode):
         super(LocationNode, self).__init__(name, parent)
         self._type = "Location"   
         self.location = location
-        
-             

@@ -1,9 +1,0 @@
-[Core]
-Name = Dummy Plugin
-Module = dummy
-
-[Documentation]
-Author = Ioannis Kakavas
-Version = 0.1
-Website = https://www.geocreepy.net
-Description = Returns a dummy list of locations

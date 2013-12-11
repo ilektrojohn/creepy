@@ -11,7 +11,10 @@
       src="http://maps.googleapis.com/maps/api/js?key=AIzaSyCcUbHMTn2FZlsn7kaljhVKSy0L5IfZKxs&sensor=true">
     </script>
     <script type="text/javascript">
-    var map = null;
+      var markersArray = [];
+      var map = null;
+      var infowindow = new google.maps.InfoWindow({
+  		  });
       function initialize() {
         var mapOptions = {
           center: new google.maps.LatLng(-34.397, 150.644),
@@ -22,19 +25,35 @@
             mapOptions);
       }
       
-      function addMarker(lat, lng, placeTitle) {
+      
+      function addMarker(lat, lng, context) {
   	      var myLatLng = new google.maps.LatLng(lat, lng);
           var marker = new google.maps.Marker({
             position: myLatLng,
-            title: placeTitle,
             map: map
-        	});
+          });
+          google.maps.event.addListener(marker, 'click', function() {
+            infowindow.setContent(context)
+   			infowindow.open(map,marker);
+  		  });
+  		  markersArray.push(marker);
+          
  		}
  		
  		function centerMap(lat, lng) {
  			var myLatLng = new google.maps.LatLng(lat, lng);
  			map.setCenter(myLatLng);
  		}
+ 		function setZoom(level){
+ 		    map.setZoom(level);
+ 		}
+ 		
+ 		function clearMarkers() {
+		  for (var i = 0; i < markersArray.length; i++ ) {
+		    markersArray[i].setMap(null);
+		  }
+		  markersArray.length = 0;
+		}
 
     </script>
   </head>

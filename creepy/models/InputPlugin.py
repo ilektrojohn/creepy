@@ -2,6 +2,9 @@ from yapsy.IPlugin import IPlugin
 from configobj import ConfigObj
 import logging
 import os
+
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
 '''
 Created on Jan 19, 2013
 
@@ -21,61 +24,66 @@ class InputPlugin(IPlugin):
     def deactivate(self):
         pass
     
-    def searchForTargets(self):
+    def searchForTargets(self, search_term):
         return 'dummyUser'
     
     def loadConfiguration(self):
         pass
     
-    def isFunctional(self):
-        pass
+    def isConfigured(self):
+        return (True,"")
     
     def returnLocations(self, target, search_params):
         pass
     
     def returnPersonalInformation(self, search_params):
         pass
-        
+    def getConfigObj(self):    
+        config_filename = self.name+".conf"
+        config_file = os.path.join(os.getcwd(),'plugins', self.name, config_filename)
+        config = ConfigObj(infile=config_file)
+        config.create_empty=False
+        return config
+    
     def readConfiguration(self, category):
         config_filename = self.name+".conf"
-        config_file = os.path.join(os.getcwd(),'creepy','plugins',config_filename)
+        config_file = os.path.join(os.getcwd(),'plugins', self.name, config_filename)
         config = ConfigObj(infile=config_file)
         config.create_empty=False
         try:
-            print config
-            logging.log(logging.DEBUG, "Trying to load the "+category+" for the "+self.name+" plugin .")
+            logger.debug("Trying to load the "+category+" for the "+self.name+" plugin .")
             options = config[category]
         except Exception,err:
             options = None 
-            logging.log(logging.ERROR, "Could not load the "+category+" for the "+self.name+" plugin .")  
-            logging.exception(err) 
-        return options
+            logger.error("Could not load the "+category+" for the "+self.name+" plugin .")  
+            logger.exception(err) 
+        return config,options
     def saveConfiguration(self, new_config):
         config_filename = self.name+".conf"
-        config_file = os.path.join(os.getcwd(),'creepy','plugins',config_filename)
+        config_file = os.path.join(os.getcwd(),'plugins',self.name, config_filename)
         config = ConfigObj(infile=config_file)
         config.create_empty=False
         try:
-            logging.log(logging.DEBUG, "Trying to save the configuration for the "+self.name+" plugin .")
+            logger.debug("Trying to save the configuration for the "+self.name+" plugin .")
             config['string_options'] = new_config['string_options']
             config['boolean_options'] = new_config['boolean_options']
             config.write()
         except Exception, err:
-            logging.error("Could not save the configuration for the "+self.name+" plugin .")
-            logging.exception(err)
+            logger.error("Could not save the configuration for the "+self.name+" plugin .")
+            logger.exception(err)
             
     def loadSearchConfigurationParameters(self):
         config_filename = self.name+".conf"
-        config_file = os.path.join(os.getcwd(), 'creepy', 'plugins', config_filename)
+        config_file = os.path.join(os.getcwd(),  'plugins', self.name, config_filename)
         config = ConfigObj(infile=config_file)
         config.create_empty = False
         try:
-            logging.log(logging.DEBUG, "Trying to load the search configuration parameters for the "+self.name+" plugin .")
+            logger.debug("Trying to load the search configuration parameters for the "+self.name+" plugin .")
             params = config['search_options']
         except Exception, err:
             params= None
-            logging.error("Could not load the search configuration parameters for the "+self.name+" plugin .")
-            logging.exception(err)
+            logger.error("Could not load the search configuration parameters for the "+self.name+" plugin .")
+            logger.exception(err)
         
         return params    
             
