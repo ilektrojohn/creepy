@@ -8,3 +8,5 @@ Version = 0.1
 Website = https://www.geocreepy.net
 Description = Retrieves geo-locations from a user's tweets
 
+[Configuration]
+ApiKey = xxxxxxxxxxxxxxxxxxxxxxxx

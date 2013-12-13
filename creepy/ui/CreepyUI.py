@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'C:\Users\ioannis\workspace-python\creepy\gui\creepy.ui'
+# Form implementation generated from reading ui file 'creepy.ui'
 #
-# Created: Thu Dec 12 20:48:31 2013
-#      by: PyQt4 UI code generator 4.9.4
+# Created: Wed Apr 17 00:53:45 2013
+#      by: PyQt4 UI code generator 4.9.1
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -65,7 +65,7 @@ class Ui_CreepyMainWindow(object):
         self.verticalLayout_2.addWidget(self.centralStackedWidget)
         CreepyMainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtGui.QMenuBar(CreepyMainWindow)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 1483, 21))
+        self.menubar.setGeometry(QtCore.QRect(0, 0, 1483, 25))
         self.menubar.setObjectName(_fromUtf8("menubar"))
         self.menuCreepy = QtGui.QMenu(self.menubar)
         self.menuCreepy.setObjectName(_fromUtf8("menuCreepy"))
@@ -300,13 +300,3 @@ class Ui_CreepyMainWindow(object):
 
 from PyQt4 import QtWebKit
 import creepy_resources_rc
-
-if __name__ == "__main__":
-    import sys
-    app = QtGui.QApplication(sys.argv)
-    CreepyMainWindow = QtGui.QMainWindow()
-    ui = Ui_CreepyMainWindow()
-    ui.setupUi(CreepyMainWindow)
-    CreepyMainWindow.show()
-    sys.exit(app.exec_())
-

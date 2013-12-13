@@ -48,7 +48,7 @@ class Instagram(InputPlugin):
             temp_file = os.path.join(os.getcwd(), "temp", filename)
             urllib.urlretrieve(i.profile_picture, temp_file)
             possibleTargets.append(target)
-        logger.debug(str(len(possibleTargets))+" possible targets were found matching the search query")
+        logger.debug(len(possibleTargets)+" possible targets were found matching the search query")
         return possibleTargets
    
     def getAllPhotos(self, uid, count, max_id, photos):
