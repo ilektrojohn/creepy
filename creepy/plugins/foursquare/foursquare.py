@@ -1,17 +1,18 @@
 from InputPlugin import InputPlugin
 import os
 from PyQt4 import QtGui
-from instagram.client import InstagramAPI
+import foursquare
 import logging
 import urllib
+import datetime
 from urlparse import urlparse, parse_qs
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 
-class Instagram(InputPlugin):
+class Foursquare(InputPlugin):
     
-    name = "instagram"
+    name = "foursquare"
     hasWizard = True
     
     def __init__(self):
@@ -19,72 +20,72 @@ class Instagram(InputPlugin):
         self.api = self.getAuthenticatedAPI()
     
     def getAuthenticatedAPI(self):
-        return  InstagramAPI(access_token = self.options_string['hidden_access_token'])     
-
+        return  foursquare.Foursquare(access_token=self.options_string['hidden_access_token'])     
+        
     def isConfigured(self):
         if not self.api:
             self.api = self.getAuthenticatedAPI()
         try:
-            self.api.user()
+            self.api.users()
             return (True,"")
         except Exception, err:
-            return (False, err.error_message)
+            return (False, err.message)
     
     def searchForTargets(self, search_term):
         logger.debug("Attempting to search for targets. Search term was : "+search_term)
         possibleTargets = []
         if not self.api:
             self.api = self.getAuthenticatedAPI()
-        results = self.api.user_search(q=search_term)
+        params = {"email":search_term,"twitter":search_term,"name":search_term}
+        r = self.api.users.search(params=params)
         
-        for i in results:
-            target = {'pluginName':'Instagram Plugin'}
-            target['targetUserid'] = i.id
-            target['targetUsername'] = i.username
-            target['targetPicture'] = 'profile_pic_%s' % i.username
-            target['targetFullname'] = i.full_name
+        for i in r['results']:
+            target = {'pluginName':'Foursquare Plugin'}
+            target['targetUserid'] = i['id']
+            target['targetUsername'] = i['id']
+            target['targetPicture'] = 'profile_pic_%s' % i['id']
+            target['targetFullname'] = i['firstName']+" "+i['lastName']
             #save the pic in the temp folder to show it later
-            filename = 'profile_pic_%s' % i.username
+            filename = 'profile_pic_%s' % i['id']
             temp_file = os.path.join(os.getcwd(), "temp", filename)
-            urllib.urlretrieve(i.profile_picture, temp_file)
+            link = i['photo']['prefix']+"original"+i['photo']['suffix']
+            urllib.urlretrieve(link, temp_file)
             possibleTargets.append(target)
         logger.debug(str(len(possibleTargets))+" possible targets were found matching the search query")
         return possibleTargets
    
-    def getAllPhotos(self, uid, count, max_id, photos):
-        logger.debug("Attempting to retrieve all photos for user "+uid)
-        if not self.api:
-            self.api = self.getAuthenticatedAPI()
-        new_photos, next1 = self.api.user_recent_media(user_id=uid, count=count, max_id=max_id)
-        if new_photos:
-            logger.debug("found "+str(len(new_photos))+ " photos")
-            photos.extend(new_photos)
-            logger.debug("we now have "+str(len(photos))+ " photos")
-        if not next1:
-            logger.debug("finished, got all photos")
-            return photos
-        else:
-            a = parse_qs(urlparse(next1).query)
-            logger.debug("found more , max_id will now be "+a['max_id'][0])
-            return self.getAllPhotos(uid, count, a['max_id'][0], photos)
-        
+
     def returnLocations(self, target, search_params):
-        logger.debug("Attempting to retrieve all photos for user "+target['targetUserid'])
         locations_list = []
         if not self.api:
             self.api = self.getAuthenticatedAPI()
-        photos_list = self.getAllPhotos(target['targetUserid'], 33, None, [])
-        for i in photos_list:
-            if hasattr(i, 'location'):
-                loc = {}
-                loc['plugin'] = "instagram"
-                loc['context'] = i.caption.text if i.caption else "No Caption"
-                loc['infowindow'] = self.constructContextInfoWindow(i)                                 
-                loc['date'] = i.created_time
-                loc['lat'] = i.location.point.latitude
-                loc['lon'] = i.location.point.longitude
-                loc['shortName'] = i.location.name
-                locations_list.append(loc) 
+        checkins_list = self.api.users.all_checkins(target['targetUserid'])
+        for i in checkins_list:
+            if i['type'] == 'venue':
+                l = i['venue']['location']
+                if l.has_key('lat') and l.has_key['lng']:
+                    loc = {}
+                    loc['plugin'] = "foursquare"
+                    loc['context'] = i['shout'] if i.has_key['shout'] else "No Caption"
+                    loc['infowindow'] = self.constructContextInfoWindow(i)                                 
+                    loc['date'] = datetime.datetime.fromtimestamp(i['createdAt'])
+                    loc['lat'] = l['lat']
+                    loc['lon'] = l['lng']
+                    loc['shortName'] = i['venue']['name']
+                    locations_list.append(loc)
+            else:
+                if i.has_key['location']:
+                    l = i['location']
+                    if l.has_key['lat'] and l.has_key['lng']:
+                        loc = {}
+                        loc['plugin'] = "foursquare"
+                        loc['context'] = i['shout'] if i.has_key['shout'] else "No Caption"
+                        loc['infowindow'] = self.constructContextInfoWindow(i)                                 
+                        loc['date'] = datetime.datetime.fromtimestamp(i['createdAt'])
+                        loc['lat'] = l['lat']
+                        loc['lon'] = l['lng']
+                        loc['shortName'] = l['place'] if l.has_key['place'] else "Not available"
+                        locations_list.append(loc)
         logger.debug(len(locations_list)+ " locations have been retrieved")    
         return locations_list
         
@@ -92,8 +93,8 @@ class Instagram(InputPlugin):
     
     def runConfigWizard(self):
         try:
-            api = InstagramAPI(client_id=self.options_string['hidden_client_id'], client_secret=self.options_string['hidden_client_secret'], redirect_uri=self.options_string['redirect_uri'])
-            url = api.get_authorize_login_url()
+            api = foursquare.Foursquare(client_id=self.options_string['hidden_client_id'], client_secret=self.options_string['hidden_client_secret'], redirect_uri=self.options_string['redirect_uri'])
+            url = api.oauth.auth_url()
             
             
             
@@ -106,8 +107,8 @@ class Instagram(InputPlugin):
             txtArea.setReadOnly(True)
             txtArea.setText("Please copy the following link to your browser window. \n \n"+
                             url +"\n \n"
-                            "Once you authenticate with Instagram you will be redirected to a link that looks like \n\n"+
-                            "https://creepy.ilektrojohn.com?code=xxxxxxxxxxxxxxx . \n \n"+
+                            "Once you authenticate with Foursquare you will be redirected to a link that looks like \n\n"+
+                            "https://www.geocreepy.net?code=xxxxxxxxxxxxxxx . \n \n"+
                             "Copy this link to the text box below and click on Finish to complete authorization");
 #            label1a = QtGui.QLabel("Click next to connect to instagram.com . Please login with your account in order to authorize creepy")
             inputLink = QtGui.QLineEdit()
@@ -131,9 +132,9 @@ class Instagram(InputPlugin):
                 print c
                 if c:
                     try:
-                        access_token = api.exchange_code_for_access_token(code=c)
+                        access_token = api.oauth.get_token(c)
                         
-                        self.options_string['hidden_access_token'] = access_token[0]
+                        self.options_string['hidden_access_token'] = access_token
                         self.config.write()
                     except Exception, err:
                         self.showWarning("Error Getting Access Token", "Please verify that the link you pasted was correct. Try running the wizard again.")
