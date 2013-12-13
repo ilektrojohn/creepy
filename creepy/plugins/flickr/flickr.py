@@ -4,8 +4,11 @@ import datetime
 import logging
 import re
 from flickrapi.exceptions import FlickrError
+logger = logging.getLogger(__name__)   
+logger.setLevel(logging.DEBUG)
+
 class Flickr(InputPlugin):
-    
+     
     name = "flickr"
     hasWizard = False
     
@@ -28,11 +31,11 @@ class Flickr(InputPlugin):
                 possibleTargets.append(self.getUserInfo(userid[1]))
                 
         except FlickrError, e:
-            logging.log(logging.ERROR,e)
+            logger.error(e)
             if e.message == 'Error: 1: User not found':
-                logging.info("No results for search query "+search_term+" from Flickr Plugin")
+                logger.info("No results for search query "+search_term+" from Flickr Plugin")
             return None
-        
+        logger.debug(str(len(possibleTargets))+" possible targets were found matching the search query")
         #Flickr returns 2 entries per user, one with nsid and one with id , they are exactly the same
         return [dict(t) for t in set([tuple(d.items()) for d in possibleTargets])]
     
@@ -58,8 +61,8 @@ class Flickr(InputPlugin):
             else:
                 return None
         except Exception, err:
-            logging.log(logging.ERROR, "Error getting target info from Flickr for target "+userId)
-            logging.log(logging.ERROR, err)
+            logger.error("Error getting target info from Flickr for target "+userId)
+            logger.error(err)
             return None
     
     def isConfigured(self):
@@ -70,8 +73,8 @@ class Flickr(InputPlugin):
             api.people_findByUsername(username="testAPIKey");
             return (True, "")
         except Exception, e:
-            logging.log(logging.ERROR, "Error establishing connection to Flickr API.")
-            logging.log(logging.ERROR,e)
+            logger.error("Error establishing connection to Flickr API.")
+            logger.error(e)
             return (False, "Error establishing connection to Flickr API. ")
     
     def getPhotosByPage(self, id, page_nr):
@@ -80,8 +83,8 @@ class Flickr(InputPlugin):
             if results.attrib['stat'] == 'ok':
                 return results.find('photos').findall('photo')
         except Exception , err:
-            logging.error("Error getting photos per page from Flickr")
-            logging.error(err)
+            logger.error("Error getting photos per page from Flickr")
+            logger.error(err)
             
     def getLocationsFromPhotos(self, photos):  
         locations = []
@@ -110,7 +113,7 @@ class Flickr(InputPlugin):
                 res = results.find('photos')
                 total_photos = res.attrib['total']
                 pages = int(res.attrib['pages'])
-                logging.debug("Photo results from Flickr were "+ str(pages) + " pages and " + total_photos+" photos.")
+                logger.debug("Photo results from Flickr were "+ str(pages) + " pages and " + total_photos+" photos.")
                 if pages > 1:
                     for i in range(1, pages + 1, 1):
                         photosList.extend(self.getPhotosByPage(target['targetUserid'], i))
@@ -121,8 +124,8 @@ class Flickr(InputPlugin):
                 return locationsList
                 
         except FlickrError, err:
-            logging.error("Error getting locations from Flickr")
-            logging.error(err)
+            logger.error("Error getting locations from Flickr")
+            logger.error(err)
             
             
     def constructContextInfoWindow(self, link, date):
