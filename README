@@ -1,6 +1,6 @@
 #creepy
 
-##Current Version : 0.1.93
+##Current Version : 1.0
 
 ##Author : Yiannis Kakavas <jkakavas__AT__gmail__dot__com>
 
@@ -9,70 +9,15 @@
 ##Installation Instructions : See INSTALL file
 
 ##Description: 
-geolocation information aggregator.
+Geolocation OSINT tool.
 
 creepy is an application that allows you to gather geolocation related information 
-about users from social networking platforms and image hosting services. 
+about users from a number of online services. 
 The information is presented in a map inside the application where all the 
 retrieved data is shown accompanied with relevant information (i.e. what 
 was posted from that specific location) to provide context to the presentation.
 
 
-
-##Features
-
-1)Available map providers
-    *Google Maps
-    *Virtual Earth Maps
-    *OpenStreetMaps
-
-2)Location information retrieval from :
-
-    *Twitter's tweet location
-        **Coordinates when tweet was posted from mobile device
-        **Place (geographical name) derived from users ip when posting on twitter's web interface. 
-           Place gets translated into coordinates using geonames.com
-        **Bounding Box derived from users ip when posting on twitter's web interface.
-           The less accurate source , a corner of the bounding box is selected randomly.
-    *Geolocation information accessible through image hosting services API
-    *EXIF tags from the photos posted.
-
-
-3)Social networking platforms currently supported :
-
-    *Twitter
-    *Foursquare (only checkins that are posted to twitter)
-
-
-4)Image hosting services currently supported :
-
-    *flickr - information retrieved from API
-    *twitpic.com - information retrieved from API and photo exif tags
-    *yfrog.com - information retrieved from photo exif tags
-    *img.ly - information retrieved from photo exif tags
-    *plixi.com - information retrieved from photo exif tags
-    *twitrpix.com - information retrieved from photo exif tags
-    *foleext.com - information retrieved from photo exif tags
-    *shozu.com - information retrieved from photo exif tags
-    *pickhur.com - information retrieved from photo exif tags
-    *moby.to - information retrieved from API and photo exif tags
-    *twitsnaps.com - information retrieved from photo exif tags
-    *twitgoo.com - information retrieved from photo exif tags
-
-
-5)Automatic caching of retrieved information in order to reduce API calls and the possibility of hitting limit rates.
-
-6)GUI with navigable map for better overview of the accumulated information
-
-7)Handling twitter authentication in an easy way using oAuth. User credentials are not shared with the application.
-
-8)User/target search for twitter and flickr. 
-
 Creepy icon : © "eye of sauron" image by blood-solice on deviantart ( http://blood-solice.deviantart.com )
 
-Inspired by 
--- Johannes B. Ullrich (see original post about exif gps metadata on twitpic http://isc.sans.edu/diary.html?storyid=8203)
--- http://www.icanstalku.com
--- http://pleaserobme.com
 
-Special thanks to Chris Hadnagy ( a.k.a @humanhacker ) for all the feedback and suggestions during development. 
