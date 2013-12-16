@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 Requirements : 
 ** tweepy 	https://github.com/joshthecoder/tweepy
 ** osmgpsmap 0.7 	https://github.com/nzjrs/osm-gps-map
@@ -7,6 +8,18 @@ Requirements :
 ** python-configobj
 ** python-simplejson
 
+=======
+Dependencies :
+** tweepy               https://github.com/joshthecoder/tweepy
+** osmgpsmap 0.7        https://github.com/nzjrs/osm-gps-map
+** python-flickrapi     http://stuvel.eu/flickrapi
+** BeautifulSoup        http://www.crummy.com/software/BeautifulSoup/
+** GExiv2               http://redmine.yorba.org/projects/gexiv2/wiki
+** python-configobj
+** python-simplejson
+
+Ubuntu 11.10 and later
+>>>>>>> 7ffb25a9dcf9e1b1255cbf00aa13e2ed8c2493e5
 
 Ubuntu 10.10
 
@@ -46,8 +59,12 @@ creepy is now on the main menu, under Applications -> Internet
 
 
 
+<<<<<<< HEAD
 Backtrack 4 ( R2 ) 
 --------------------------------------------------------------------------------
+=======
+Backtrack 5
+>>>>>>> 7ffb25a9dcf9e1b1255cbf00aa13e2ed8c2493e5
 
 1) add `deb http://people.dsv.su.se/~kakavas/creepy binary/` to your /etc/apt/sources.list
 
@@ -65,7 +82,7 @@ MS Windows
 
 Download the installer from  https://github.com/ilektrojohn/creepy/downloads
 
-Run it, Done. 
+Run it, Done.
 
-All dependencies are included in the exe. 
+All dependencies are included in the exe.
  NOTE: In Windows XP systems, if when running the application you get a system error about the current configuration e.t.c , means that you don't have the MSVCR90.DLL needed for python interpreter. Download and install the [[http://www.microsoft.com/downloads/en/details.aspx?FamilyID=a5c84275-3b97-4ab7-a40d-3802b2af5fc2]] Visual C++ distributable package and the problem will be solved.
