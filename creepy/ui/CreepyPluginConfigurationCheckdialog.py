@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'pluginConfigCheckDialog.ui'
+# Form implementation generated from reading ui file '.\pluginConfigCheckDialog.ui'
 #
-# Created: Wed Jan 23 22:27:14 2013
-#      by: PyQt4 UI code generator 4.9.1
+# Created: Sun Dec 15 18:10:10 2013
+#      by: PyQt4 UI code generator 4.9.4
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -51,4 +51,14 @@ class Ui_checkPluginConfigurationDialog(object):
     def retranslateUi(self, checkPluginConfigurationDialog):
         checkPluginConfigurationDialog.setWindowTitle(QtGui.QApplication.translate("checkPluginConfigurationDialog", "Plugin Configuration Test", None, QtGui.QApplication.UnicodeUTF8))
         self.checkPluginConfigurationResultLabel.setText(QtGui.QApplication.translate("checkPluginConfigurationDialog", "TextLabel", None, QtGui.QApplication.UnicodeUTF8))
+
+
+if __name__ == "__main__":
+    import sys
+    app = QtGui.QApplication(sys.argv)
+    checkPluginConfigurationDialog = QtGui.QDialog()
+    ui = Ui_checkPluginConfigurationDialog()
+    ui.setupUi(checkPluginConfigurationDialog)
+    checkPluginConfigurationDialog.show()
+    sys.exit(app.exec_())
 

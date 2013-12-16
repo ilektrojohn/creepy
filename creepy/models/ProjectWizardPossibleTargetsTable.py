@@ -44,7 +44,7 @@ class ProjectWizardPossibleTargetsTable(QAbstractTableModel):
                         pixmap = QPixmap(picturePath)
                         return QIcon(pixmap.scaled(30, 30, Qt.IgnoreAspectRatio, Qt.FastTransformation))
                     else:
-                        pixmap = QPixmap(os.path.join(os.getcwd(), "include", "add.png"))
+                        pixmap = QPixmap(os.path.join(os.getcwd(), "include", "generic_user.png"))
                         pixmap.scaled(20, 20, Qt.IgnoreAspectRatio)
                         return QIcon(pixmap)
             if role == Qt.DisplayRole:

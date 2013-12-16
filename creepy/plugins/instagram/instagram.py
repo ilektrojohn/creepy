@@ -1,13 +1,20 @@
-from InputPlugin import InputPlugin
+from models.InputPlugin import InputPlugin
 import os
 from PyQt4 import QtGui
 from instagram.client import InstagramAPI
 import logging
 import urllib
 from urlparse import urlparse, parse_qs
+from configobj import ConfigObj
 
+#set up logging
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
+fh = logging.FileHandler('creepy_main.log')
+fh.setLevel(logging.DEBUG)
+formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+fh.setFormatter(formatter)
+logger.addHandler(fh)
 
 class Instagram(InputPlugin):
     
@@ -15,6 +22,18 @@ class Instagram(InputPlugin):
     hasWizard = True
     
     def __init__(self):
+        #Try and read the labels file
+        labels_filename = self.name+".labels"
+        labels_file = os.path.join(os.getcwd(),'plugins', self.name, labels_filename)
+        labels_config = ConfigObj(infile=labels_file)
+        labels_config.create_empty=False
+        try:
+            logger.debug("Trying to load the labels file for the  "+self.name+" plugin .")
+            self.labels = labels_config['labels']
+        except Exception,err:
+            self.labels = None 
+            logger.error("Could not load the labels file for the  "+self.name+" plugin .")  
+            logger.exception(err) 
         self.config, self.options_string = self.readConfiguration("string_options")
         self.api = self.getAuthenticatedAPI()
     
@@ -33,22 +52,26 @@ class Instagram(InputPlugin):
     def searchForTargets(self, search_term):
         logger.debug("Attempting to search for targets. Search term was : "+search_term)
         possibleTargets = []
-        if not self.api:
-            self.api = self.getAuthenticatedAPI()
-        results = self.api.user_search(q=search_term)
-        
-        for i in results:
-            target = {'pluginName':'Instagram Plugin'}
-            target['targetUserid'] = i.id
-            target['targetUsername'] = i.username
-            target['targetPicture'] = 'profile_pic_%s' % i.username
-            target['targetFullname'] = i.full_name
-            #save the pic in the temp folder to show it later
-            filename = 'profile_pic_%s' % i.username
-            temp_file = os.path.join(os.getcwd(), "temp", filename)
-            urllib.urlretrieve(i.profile_picture, temp_file)
-            possibleTargets.append(target)
-        logger.debug(str(len(possibleTargets))+" possible targets were found matching the search query")
+        try:
+            if not self.api:
+                self.api = self.getAuthenticatedAPI()
+            results = self.api.user_search(q=search_term)
+            
+            for i in results:
+                target = {'pluginName':'Instagram Plugin'}
+                target['targetUserid'] = i.id
+                target['targetUsername'] = i.username
+                target['targetPicture'] = 'profile_pic_%s' % i.id
+                target['targetFullname'] = i.full_name
+                #save the pic in the temp folder to show it later
+                filename = 'profile_pic_%s' % i.id
+                temp_file = os.path.join(os.getcwd(), "temp", filename)
+                if not os.path.exists(temp_file):
+                    urllib.urlretrieve(i.profile_picture, temp_file)
+                possibleTargets.append(target)
+            logger.debug(str(len(possibleTargets))+" possible targets were found matching the search query")
+        except Exception, err:
+            logger.error("Error searching for targets with instagram plugin.")
         return possibleTargets
    
     def getAllPhotos(self, uid, count, max_id, photos):
@@ -71,21 +94,25 @@ class Instagram(InputPlugin):
     def returnLocations(self, target, search_params):
         logger.debug("Attempting to retrieve all photos for user "+target['targetUserid'])
         locations_list = []
-        if not self.api:
-            self.api = self.getAuthenticatedAPI()
-        photos_list = self.getAllPhotos(target['targetUserid'], 33, None, [])
-        for i in photos_list:
-            if hasattr(i, 'location'):
-                loc = {}
-                loc['plugin'] = "instagram"
-                loc['context'] = i.caption.text if i.caption else "No Caption"
-                loc['infowindow'] = self.constructContextInfoWindow(i)                                 
-                loc['date'] = i.created_time
-                loc['lat'] = i.location.point.latitude
-                loc['lon'] = i.location.point.longitude
-                loc['shortName'] = i.location.name
-                locations_list.append(loc) 
-        logger.debug(len(locations_list)+ " locations have been retrieved")    
+        try:
+            if not self.api:
+                self.api = self.getAuthenticatedAPI()
+            photos_list = self.getAllPhotos(target['targetUserid'], 33, None, [])
+            for i in photos_list:
+                if hasattr(i, 'location'):
+                    loc = {}
+                    loc['plugin'] = "instagram"
+                    loc['context'] = i.caption.text if i.caption else "No Caption"
+                    loc['infowindow'] = self.constructContextInfoWindow(i)                                 
+                    loc['date'] = i.created_time
+                    loc['lat'] = i.location.point.latitude
+                    loc['lon'] = i.location.point.longitude
+                    loc['shortName'] = i.location.name
+                    locations_list.append(loc) 
+            logger.debug(str(len(locations_list))+ " locations have been retrieved")
+        except Exception, err:
+            logger.error(err)
+            logger.error("Error getting locations from instagram plugin")    
         return locations_list
         
     
@@ -128,7 +155,6 @@ class Instagram(InputPlugin):
             wizard.resize(600,400)
             if wizard.exec_():
                 c = self.parseRedirectUrl(str(inputLink.text()))
-                print c
                 if c:
                     try:
                         access_token = api.exchange_code_for_access_token(code=c)
@@ -157,3 +183,15 @@ class Instagram(InputPlugin):
         html = self.options_string['infowindow_html']
         caption = photo.caption.text if photo.caption else "No Caption"
         return html.replace("@TEXT@",caption).replace("@DATE@",photo.created_time.strftime("%a %b %d,%H:%M:%S %z")).replace("@PLUGIN@", "instagram").replace("@LINK@", photo.link)
+    
+    
+    def getLabelForKey(self, key):
+        '''
+        read the plugin_name.labels 
+        file and try to get label text for the key that was asked
+        '''
+        if not self.labels:
+            return key
+        if not key in self.labels.keys():
+            return key
+        return self.labels[key]

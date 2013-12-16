@@ -8,17 +8,19 @@
       #map_canvas { height: 100% }
     </style>
     <script type="text/javascript"
-      src="http://maps.googleapis.com/maps/api/js?key=AIzaSyCcUbHMTn2FZlsn7kaljhVKSy0L5IfZKxs&sensor=true">
+      src="http://maps.googleapis.com/maps/api/js?key=AIzaSyCcUbHMTn2FZlsn7kaljhVKSy0L5IfZKxs&sensor=true&libraries=visualization">
     </script>
     <script type="text/javascript">
       var markersArray = [];
+      var locArray = [];
       var map = null;
+      var heatmap = null;
       var infowindow = new google.maps.InfoWindow({
   		  });
       function initialize() {
         var mapOptions = {
-          center: new google.maps.LatLng(-34.397, 150.644),
-          zoom: 8,
+          center: new google.maps.LatLng(38.448244914157165, 24.004483222961426),
+          zoom: 2,
           mapTypeId: google.maps.MapTypeId.ROADMAP
         };
         map = new google.maps.Map(document.getElementById("map_canvas"),
@@ -37,6 +39,7 @@
    			infowindow.open(map,marker);
   		  });
   		  markersArray.push(marker);
+  		  locArray.push(myLatLng);
           
  		}
  		
@@ -54,6 +57,35 @@
 		  }
 		  markersArray.length = 0;
 		}
+		
+		function hideMarkers(){
+		   for (var i = 0; i < markersArray.length; i++ ) {
+		    markersArray[i].setVisible(false);
+		  }
+		}
+		
+		function showMarkers(){
+		   for (var i = 0; i < markersArray.length; i++ ) {
+		    markersArray[i].setVisible(true);
+		  }
+		}
+		
+		function hideHeatmap(){
+		  if (heatmap){
+		    heatmap.setMap(null);
+		  }
+		}
+		
+		function showHeatmap(){
+		  var pointArray = new google.maps.MVCArray(locArray);
+          heatmap = new google.maps.visualization.HeatmapLayer({
+    		data: pointArray
+			});
+		  heatmap.set('radius',50);
+		  heatmap.set('opacity',0.6);
+		  heatmap.set('visible',true);
+		  heatmap.setMap(map);
+		  }
 
     </script>
   </head>

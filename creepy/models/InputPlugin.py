@@ -3,8 +3,15 @@ from configobj import ConfigObj
 import logging
 import os
 
+#set up logging
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
+fh = logging.FileHandler('creepy_main.log')
+fh.setLevel(logging.DEBUG)
+formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+fh.setFormatter(formatter)
+logger.addHandler(fh)
+
 '''
 Created on Jan 19, 2013
 
@@ -87,6 +94,9 @@ class InputPlugin(IPlugin):
         
         return params    
             
-    
-    
-        
+    def getLabelForKey(self, key):
+        '''
+        If the developer of the plugin has not implemented this function in the plugin, 
+        return the key name to be used in the label
+        '''  
+        return key

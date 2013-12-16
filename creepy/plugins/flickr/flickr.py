@@ -1,12 +1,19 @@
-from InputPlugin import InputPlugin
+from models.InputPlugin import InputPlugin
 import flickrapi
 import datetime
 import logging
 import re
+import os
+from configobj import ConfigObj
 from flickrapi.exceptions import FlickrError
-logger = logging.getLogger(__name__)   
+#set up logging
+logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
-
+fh = logging.FileHandler('creepy_main.log')
+fh.setLevel(logging.DEBUG)
+formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+fh.setFormatter(formatter)
+logger.addHandler(fh)
 class Flickr(InputPlugin):
      
     name = "flickr"
@@ -14,8 +21,20 @@ class Flickr(InputPlugin):
     
     
     def __init__(self):
+        #Try and read the labels file
+        labels_filename = self.name+".labels"
+        labels_file = os.path.join(os.getcwd(),'plugins', self.name, labels_filename)
+        labels_config = ConfigObj(infile=labels_file)
+        labels_config.create_empty=False
+        try:
+            logger.debug("Trying to load the labels file for the  "+self.name+" plugin .")
+            self.labels = labels_config['labels']
+        except Exception,err:
+            self.labels = None 
+            logger.error("Could not load the labels file for the  "+self.name+" plugin .")  
+            logger.exception(err) 
         self.config, self.options_string = self.readConfiguration("string_options")
-        self.api = flickrapi.FlickrAPI(self.options_string["api_key"])
+        self.api = flickrapi.FlickrAPI(self.options_string["hidden_api_key"])
     def searchForTargets(self, search_term):
         
         possibleTargets = []
@@ -69,7 +88,7 @@ class Flickr(InputPlugin):
         try:
             if not self.options_string:
                 self.options_string = self.readConfiguration("string_options")[1]
-            api = flickrapi.FlickrAPI(self.options_string["api_key"])
+            api = flickrapi.FlickrAPI(self.options_string["hidden_api_key"])
             api.people_findByUsername(username="testAPIKey");
             return (True, "")
         except Exception, e:
@@ -94,7 +113,7 @@ class Flickr(InputPlugin):
                     loc = {}
                     loc['plugin'] = "flickr"
                     photo_link = 'http://www.flickr.com/photos/%s/%s' % (photo.attrib['owner'], photo.attrib['id'])
-                    loc['context'] = (photo_link, 'Photo from flickr  \n Title : %s \n ' % (photo.attrib['title']))      
+                    loc['context'] = 'Photo from flickr  \n Title : %s \n ' % (photo.attrib['title'])      
                     loc['date'] = datetime.datetime.strptime(photo.attrib['datetaken'], "%Y-%m-%d %H:%M:%S")
                     loc['lat'] = photo.attrib['latitude']
                     loc['lon'] = photo.attrib['longitude']
@@ -131,4 +150,15 @@ class Flickr(InputPlugin):
     def constructContextInfoWindow(self, link, date):
         html = self.options_string['infowindow_html']
         return html.replace("@LINK@",link).replace("@DATE@",date.strftime("%a %b %d,%H:%M:%S %z")).replace("@PLUGIN@", "flickr")
+    
+    def getLabelForKey(self, key):
+        '''
+        read the plugin_name.labels 
+        file and try to get label text for the key that was asked
+        '''
+        if not self.labels:
+            return key
+        if not key in self.labels.keys():
+            return key
+        return self.labels[key]
         

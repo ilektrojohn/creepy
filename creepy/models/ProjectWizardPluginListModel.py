@@ -1,5 +1,5 @@
 from PyQt4.QtCore import QVariant, QAbstractListModel, Qt
-from PyQt4.Qt import QPixmap, QFileSystemModel
+from PyQt4.Qt import QPixmap, QFileSystemModel, QIcon
 import os
 
 class ProjectWizardPluginListModel(QAbstractListModel):
@@ -17,7 +17,14 @@ class ProjectWizardPluginListModel(QAbstractListModel):
             if role == Qt.DisplayRole:
                 return QVariant(plugin.name)
             if role == Qt.DecorationRole:
-                return  QPixmap(os.path.join(os.getcwd(), "include", "add.png"))
+                picturePath = os.path.join(os.getcwd(), "plugins", plugin.plugin_object.name, "logo.png")
+                if picturePath and os.path.exists(picturePath):
+                    pixmap = QPixmap(picturePath)
+                    return QIcon(pixmap.scaled(30, 30, Qt.IgnoreAspectRatio, Qt.FastTransformation))
+                else:
+                    pixmap = QPixmap(os.path.join(os.getcwd(), "include", "generic_plugin.png"))
+                    pixmap.scaled(30, 30, Qt.IgnoreAspectRatio)
+                    return QIcon(pixmap)
             if role == Qt.CheckStateRole:
                 if plugin:
                     return (Qt.Checked if plugin.name in self.checkedPlugins else Qt.Unchecked)

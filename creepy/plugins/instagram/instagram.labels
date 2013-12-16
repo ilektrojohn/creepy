@@ -1,0 +1,6 @@
+[labels]
+hidden_client_secret = Client Secret
+hidden_access_token = Access Token
+hidden_client_id = Client ID
+redirect_uri = Redirect URI
+infowindow_html = HTML for Infowindow on map

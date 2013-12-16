@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+    <style type="text/css">
+      html { height: 100% }
+      body { height: 100%; margin: 0; padding: 0 }
+      #map_canvas { height: 100% }
+    </style>
+    <script type="text/javascript"
+      src="http://maps.googleapis.com/maps/api/js?key=AIzaSyCcUbHMTn2FZlsn7kaljhVKSy0L5IfZKxs&sensor=true&libraries=visualization">
+    </script>
+    <script type="text/javascript">
+        var map = null;
+        var marker = null;
+        var infowindow = new google.maps.InfoWindow({ 
+            size: new google.maps.Size(150,50)
+        });
+        
+		function centerMap(lat, lng) {
+ 			var myLatLng = new google.maps.LatLng(lat, lng);
+ 			map.setCenter(myLatLng);
+ 		}
+ 		function setZoom(level){
+ 		    map.setZoom(level);
+ 		}
+		// A function to create the marker and set up the event window function 
+		function createMarker(latlng, name, html) {
+		    myPyObj.setLatLng(latlng.toString());   
+		    var contentString = html;
+		    var marker = new google.maps.Marker({
+		        position: latlng,
+		        map: map,
+		        zIndex: Math.round(latlng.lat()*-100000)<<5
+		        });
+		
+		    google.maps.event.addListener(marker, 'click', function() {
+		        infowindow.setContent(contentString); 
+		        infowindow.open(map,marker);
+		        });
+		    google.maps.event.trigger(marker, 'click');
+		    
+		   
+		    return marker;
+		}
+  		  
+  		function createCircle(point,radius){
+  		
+  		
+  		
+  		}  
+  		  
+      function initialize() {
+        var mapOptions = {
+          center: new google.maps.LatLng(38.448244914157165, 24.004483222961426),
+          zoom: 2,
+          mapTypeId: google.maps.MapTypeId.ROADMAP
+        };
+        map = new google.maps.Map(document.getElementById("map_canvas"),
+            mapOptions);
+            
+            
+        google.maps.event.addListener(map, 'click', function() {
+        infowindow.close();
+        });
+
+  		google.maps.event.addListener(map, 'click', function(event) {
+		//call function to create marker
+        if (marker) {
+            marker.setMap(null);
+            marker = null;
+         }
+	 	marker = createMarker(event.latLng, "name", "<b>Location</b><br>"+event.latLng);
+	 	
+        });
+      }
+      
+    </script>
+  </head>
+  <body onload="initialize()">
+    <div id="map_canvas" style="width:100%; height:100%"></div>
+  </body>
+</html>

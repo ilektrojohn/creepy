@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'personProjectWizard.ui'
+# Form implementation generated from reading ui file '.\personProjectWizard.ui'
 #
-# Created: Sun Feb 17 21:59:17 2013
-#      by: PyQt4 UI code generator 4.9.1
+# Created: Sun Dec 15 18:07:10 2013
+#      by: PyQt4 UI code generator 4.9.4
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -18,6 +18,9 @@ class Ui_personProjectWizard(object):
     def setupUi(self, personProjectWizard):
         personProjectWizard.setObjectName(_fromUtf8("personProjectWizard"))
         personProjectWizard.resize(879, 658)
+        icon = QtGui.QIcon()
+        icon.addPixmap(QtGui.QPixmap(_fromUtf8(":/cr/003 User2.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        personProjectWizard.setWindowIcon(icon)
         personProjectWizard.setWizardStyle(QtGui.QWizard.ClassicStyle)
         personProjectWizard.setOptions(QtGui.QWizard.HelpButtonOnRight)
         self.personProjectWizardPage1 = QtGui.QWizardPage()
@@ -70,7 +73,7 @@ class Ui_personProjectWizard(object):
         self.personProjectAvailablePluginsScrollArea.setWidgetResizable(True)
         self.personProjectAvailablePluginsScrollArea.setObjectName(_fromUtf8("personProjectAvailablePluginsScrollArea"))
         self.scrollAreaWidgetContents = QtGui.QWidget()
-        self.scrollAreaWidgetContents.setGeometry(QtCore.QRect(0, 0, 102, 102))
+        self.scrollAreaWidgetContents.setGeometry(QtCore.QRect(0, 0, 98, 91))
         self.scrollAreaWidgetContents.setObjectName(_fromUtf8("scrollAreaWidgetContents"))
         self.verticalLayout = QtGui.QVBoxLayout(self.scrollAreaWidgetContents)
         self.verticalLayout.setObjectName(_fromUtf8("verticalLayout"))
@@ -180,4 +183,15 @@ class Ui_personProjectWizard(object):
         self.personProjectWizardPage3.setSubTitle(QtGui.QApplication.translate("personProjectWizard", "Provide the necessary search parameters for the plugins you are using", None, QtGui.QApplication.UnicodeUTF8))
         self.personProjectWizardPage4.setTitle(QtGui.QApplication.translate("personProjectWizard", "Step 4  - Finalize Project", None, QtGui.QApplication.UnicodeUTF8))
         self.personProjectWizardPage4.setSubTitle(QtGui.QApplication.translate("personProjectWizard", "Click Finish to save the Project Configuration ", None, QtGui.QApplication.UnicodeUTF8))
+
+import creepy_resources_rc
+
+if __name__ == "__main__":
+    import sys
+    app = QtGui.QApplication(sys.argv)
+    personProjectWizard = QtGui.QWizard()
+    ui = Ui_personProjectWizard()
+    ui.setupUi(personProjectWizard)
+    personProjectWizard.show()
+    sys.exit(app.exec_())
 

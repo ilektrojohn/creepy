@@ -1,43 +1,71 @@
-from InputPlugin import InputPlugin
+from models.InputPlugin import InputPlugin
 import tweepy
 import logging
 import os
 import urllib
-from configobj import ConfigObj
 from PyQt4 import QtGui, QtWebKit, QtCore
 from tweepy import Cursor, TweepError
+from configobj import ConfigObj
 
+#set up logging
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
+fh = logging.FileHandler('creepy_main.log')
+fh.setLevel(logging.DEBUG)
+formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+fh.setFormatter(formatter)
+logger.addHandler(fh)
 class Twitter(InputPlugin):
     
     name = "twitter"
     hasWizard = True
     
     def __init__(self):
+        #Try and read the labels file
+        labels_filename = self.name+".labels"
+        labels_file = os.path.join(os.getcwd(),'plugins', self.name, labels_filename)
+        labels_config = ConfigObj(infile=labels_file)
+        labels_config.create_empty=False
+        try:
+            logger.debug("Trying to load the labels file for the  "+self.name+" plugin .")
+            self.labels = labels_config['labels']
+        except Exception,err:
+            self.labels = None 
+            logger.error("Could not load the labels file for the  "+self.name+" plugin .")  
+            logger.exception(err) 
+        
+        
         
         self.config,self.options_string = self.readConfiguration("string_options")
+        self.options_boolean = self.readConfiguration("boolean_options")[1]
         self.api = self.getAuthenticatedAPI()
     
     def searchForTargets(self, search_term):
         possibleTargets = []
         logger.debug("Searching for Targets from Twitter Plugin. Search term is : "+search_term)
-        api = self.getAuthenticatedAPI()
-        search_results = api.search_users(q=search_term)
-        if search_results:
-            logger.debug("Twitter returned  "+str(len(search_results))+" results")
-            for i in search_results:
-                target = {'pluginName':'Twitter Plugin'}
-                target['targetUserid'] = i.id_str
-                target['targetUsername'] = i.screen_name
-                target['targetPicture'] = 'profile_pic_%s' % i.screen_name
-                target['targetFullname'] = i.name
-                #save the pic in the temp folder to show it later
-                filename = 'profile_pic_%s' % i.screen_name
-                temp_file = os.path.join(os.getcwd(), "temp", filename)
-                urllib.urlretrieve(i.profile_image_url, temp_file)
-                possibleTargets.append(target)
-            
+        try:
+            api = self.getAuthenticatedAPI()
+            search_results = api.search_users(q=search_term)
+            if search_results:
+                logger.debug("Twitter returned  "+str(len(search_results))+" results")
+                for i in search_results:
+                    if self.options_boolean['exclude_geo_disabled'] and not i.geo_enabled:
+                        continue
+                    target = {'pluginName':'Twitter Plugin'}
+                    target['targetUserid'] = i.id_str
+                    target['targetUsername'] = i.screen_name
+                    target['targetPicture'] = 'profile_pic_%s' % i.id_str
+                    target['targetFullname'] = i.name
+                    #save the pic in the temp folder to show it later
+                    filename = 'profile_pic_%s' % i.id_str
+                    temp_file = os.path.join(os.getcwd(), "temp", filename)
+                    #Retieve and save the profile phot only if it does not exist
+                    if not os.path.exists(temp_file):
+                        urllib.urlretrieve(i.profile_image_url, temp_file)
+                    possibleTargets.append(target)
+        except Exception, err:
+            logger.error(err)
+            logger.error("Error searching for targets in Twitter plugin.")
         return possibleTargets
     
     def getAuthenticatedAPI(self):
@@ -51,16 +79,7 @@ class Twitter(InputPlugin):
     
     def runConfigWizard(self):
         try:
-            config_filename = self.name+".conf"
-            config_file = os.path.join(os.getcwd(),'plugins',config_filename)
-            config = ConfigObj(infile=config_file)
-            config.create_empty=False
-           
-            options = config["string_options"]
-            
-                
-                 
-            oAuthHandler = tweepy.OAuthHandler(options['hidden_application_key'], options['hidden_application_secret'])
+            oAuthHandler = tweepy.OAuthHandler(self.options_string['hidden_application_key'], self.options_string['hidden_application_secret'])
             authorizationURL = oAuthHandler.get_authorization_url(True)
             
             
@@ -101,8 +120,8 @@ class Twitter(InputPlugin):
                     oAuthHandler.get_access_token(str(wizard.field("inputPin").toString()).strip())
                     access_token = oAuthHandler.access_token.key
                     access_token_secret = oAuthHandler.access_token.secret
-                    options['hidden_access_token'] = access_token
-                    options['hidden_access_token_secret'] = access_token_secret
+                    self.options_string['hidden_access_token'] = access_token
+                    self.options_string['hidden_access_token_secret'] = access_token_secret
                     self.config.write()
                 except Exception, err:
                     logger.error(err)
@@ -209,10 +228,11 @@ class Twitter(InputPlugin):
                         loc['lon'] = c[0]
                         loc['shortName'] = i.place.name
                         locations_list.append(loc)  
-            logger.debug(str(len(locations_list))+ " were retrieved from Twitter Plugin")           
-            return locations_list            
-        except TweepError, e:
-            logger.error(e)    
+            logger.debug(str(len(locations_list))+ " were retrieved from Twitter Plugin")                      
+        except Exception, e:
+            logger.error(e)
+            logger.error("Error getting locations from twitter plugin")
+        return locations_list    
     def returnPersonalInformation(self, search_params):
         pass
     
@@ -243,4 +263,17 @@ class Twitter(InputPlugin):
         lat = float(lat_list[0]) + ((float(lat_list[len(lat_list)-1]) - float(lat_list[0])) / 2)
         lon = float(lon_list[0]) + ((float(lon_list[len(lon_list)-1]) - float(lon_list[0])) / 2)
         return (lon, lat)
+    
+    
+    def getLabelForKey(self, key):
+        '''
+        read the plugin_name.labels 
+        file and try to get label text for the key that was asked
+        '''
+        if not self.labels:
+            return key
+        if not key in self.labels.keys():
+            return key
+        return self.labels[key]
+        
     

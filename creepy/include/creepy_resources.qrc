@@ -1,6 +1,34 @@
 <RCC>
   <qresource prefix="cr">
+    <file>143 Attention.png</file>
+    <file>200 CircledMinus.png</file>
+    <file>219 CircledSync.png</file>
+    <file>226 CircledGeo.png</file>
+    <file>020 DocumentCSV.png</file>
+    <file>020 DocumentKML.png</file>
+    <file>021 Document Text.png</file>
+    <file>022 Document Add.png</file>
+    <file>054 Preferences2.png</file>
+    <file>003 User2.png</file>
+    <file>005 CalendarDate.png</file>
+    <file>011 InboxDownload.png</file>
+    <file>013 MagnifyingGlass.png</file>
+    <file>059 CircledOff.png</file>
+    <file>060 Off.png</file>
+    <file>061 Sync.png</file>
+    <file>070 Minus.png</file>
+    <file>077 Location.png</file>
+    <file>078 Pin.png</file>
+    <file>079 Pin2.png</file>
+    <file>084 Photo.png</file>
+    <file>107 Flag.png</file>
+    <file>119 Eye.png</file>
+    <file>144 Forbidden.png</file>
+    <file>165 ExclamationMark.png</file>
+    <file>196 Time.png</file>
+    <file>197 Compass.png</file>
     <file>project_actionmenu_delete.png</file>
+    <file>heatmap.png</file>
     <file>project_actionmenu_edit.png</file>
     <file>analysis.png</file>
     <file>folder_locations.png</file>

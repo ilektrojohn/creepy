@@ -13,6 +13,10 @@
   <property name="windowTitle">
    <string>New Person Project</string>
   </property>
+  <property name="windowIcon">
+   <iconset resource="../creepy/include/creepy_resources.qrc">
+    <normaloff>:/cr/003 User2.png</normaloff>:/cr/003 User2.png</iconset>
+  </property>
   <property name="wizardStyle">
    <enum>QWizard::ClassicStyle</enum>
   </property>
@@ -338,6 +342,8 @@
    <layout class="QGridLayout" name="gridLayout_2"/>
   </widget>
  </widget>
- <resources/>
+ <resources>
+  <include location="../creepy/include/creepy_resources.qrc"/>
+ </resources>
  <connections/>
 </ui>

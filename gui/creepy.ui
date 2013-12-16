@@ -17,7 +17,7 @@
    </sizepolicy>
   </property>
   <property name="windowTitle">
-   <string>Greepy Geolocation Aggregator</string>
+   <string>cree.py - Geolocation OSINT tool</string>
   </property>
   <property name="windowIcon">
    <iconset>
@@ -55,7 +55,7 @@
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
-       <layout class="QHBoxLayout" name="horizontalLayout">
+       <layout class="QVBoxLayout" name="verticalLayout_4">
         <item>
          <widget class="QWebView" name="mapWebView">
           <property name="autoFillBackground">
@@ -93,9 +93,18 @@
       <string>New Project</string>
      </property>
      <addaction name="actionNewPersonProject"/>
-     <addaction name="actionNewLocationBasedProject"/>
+    </widget>
+    <widget class="QMenu" name="menuExport">
+     <property name="title">
+      <string>Export</string>
+     </property>
+     <addaction name="actionExportKML"/>
+     <addaction name="actionExportCSV"/>
+     <addaction name="actionExportFilteredKML"/>
+     <addaction name="actionExportFilteredCSV"/>
     </widget>
     <addaction name="menuNewProject"/>
+    <addaction name="menuExport"/>
     <addaction name="actionExit"/>
    </widget>
    <widget class="QMenu" name="menuEdit">
@@ -103,13 +112,12 @@
      <string>Edit</string>
     </property>
     <addaction name="actionPluginsConfiguration"/>
-    <addaction name="actionSettings"/>
    </widget>
    <widget class="QMenu" name="menuAbout">
     <property name="title">
      <string>Help</string>
     </property>
-    <addaction name="actionReport_a_problem_bug"/>
+    <addaction name="actionReportProblem"/>
     <addaction name="actionAbout"/>
    </widget>
    <widget class="QMenu" name="menuView">
@@ -117,11 +125,19 @@
      <string>View</string>
     </property>
     <addaction name="separator"/>
-    <addaction name="actionToolbars"/>
+   </widget>
+   <widget class="QMenu" name="menuFilters">
+    <property name="title">
+     <string>Filters</string>
+    </property>
+    <addaction name="actionFilterLocationsDate"/>
+    <addaction name="actionFilterLocationsPosition"/>
+    <addaction name="actionRemoveFilters"/>
    </widget>
    <addaction name="menuCreepy"/>
    <addaction name="menuEdit"/>
    <addaction name="menuView"/>
+   <addaction name="menuFilters"/>
    <addaction name="menuAbout"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
@@ -148,6 +164,9 @@
        <property name="selectionBehavior">
         <enum>QAbstractItemView::SelectRows</enum>
        </property>
+       <attribute name="verticalHeaderStretchLastSection">
+        <bool>false</bool>
+       </attribute>
       </widget>
      </item>
     </layout>
@@ -197,23 +216,23 @@
        <item>
         <widget class="QLabel" name="currentTargetDetailsDetailsDateLabel">
          <property name="sizePolicy">
-          <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+          <sizepolicy hsizetype="Fixed" vsizetype="Maximum">
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
          </property>
          <property name="text">
-          <string>Date: </string>
+          <string>&lt;b&gt;Date:       &lt;/b&gt;        </string>
          </property>
          <property name="textFormat">
-          <enum>Qt::AutoText</enum>
+          <enum>Qt::RichText</enum>
          </property>
         </widget>
        </item>
        <item>
         <widget class="QLabel" name="currentTargetDetailsDateValue">
          <property name="sizePolicy">
-          <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+          <sizepolicy hsizetype="Minimum" vsizetype="Maximum">
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
@@ -233,18 +252,24 @@
        <item>
         <widget class="QLabel" name="currentTargetDetailsLocationLabel">
          <property name="sizePolicy">
-          <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+          <sizepolicy hsizetype="Fixed" vsizetype="Maximum">
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
          </property>
          <property name="text">
-          <string>Location: </string>
+          <string>&lt;b&gt;Location: &lt;/b&gt;</string>
          </property>
         </widget>
        </item>
        <item>
         <widget class="QLabel" name="currentTargetDetailsLocationValue">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Minimum" vsizetype="Maximum">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
          <property name="text">
           <string/>
          </property>
@@ -257,20 +282,65 @@
        <item>
         <widget class="QLabel" name="currentTargetDetailsSourceLabel">
          <property name="sizePolicy">
-          <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+          <sizepolicy hsizetype="Fixed" vsizetype="Maximum">
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
          </property>
          <property name="text">
-          <string>From: </string>
+          <string>&lt;b&gt;From:       &lt;b&gt;</string>
          </property>
         </widget>
        </item>
        <item>
         <widget class="QLabel" name="currentTargetDetailsSourceValue">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Minimum" vsizetype="Maximum">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
          <property name="text">
           <string/>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item>
+      <layout class="QHBoxLayout" name="horizontalLayout_5">
+       <item>
+        <widget class="QLabel" name="currentTargetDetailsContextLabel">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Fixed" vsizetype="Maximum">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="text">
+          <string>&lt;b&gt;Context:  &lt;b&gt;</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="currentTargetDetailsContextValue">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+         <property name="textFormat">
+          <enum>Qt::RichText</enum>
+         </property>
+         <property name="wordWrap">
+          <bool>true</bool>
+         </property>
+         <property name="openExternalLinks">
+          <bool>true</bool>
          </property>
         </widget>
        </item>
@@ -279,7 +349,7 @@
     </layout>
    </widget>
   </widget>
-  <widget class="QToolBar" name="toolBar">
+  <widget class="QToolBar" name="mainToolbar">
    <property name="windowTitle">
     <string>toolBar</string>
    </property>
@@ -287,49 +357,81 @@
     <enum>TopToolBarArea</enum>
    </attribute>
    <attribute name="toolBarBreak">
-    <bool>false</bool>
+    <bool>true</bool>
    </attribute>
    <addaction name="actionNewPersonProject"/>
    <addaction name="actionPluginsConfiguration"/>
-   <addaction name="actionExport_as_kml"/>
-   <addaction name="actionExport_as_csv"/>
+   <addaction name="actionAnalyzeCurrentProject"/>
+   <addaction name="actionDrawCurrentProject"/>
+   <addaction name="actionExportKML"/>
+   <addaction name="actionExportCSV"/>
    <addaction name="separator"/>
-   <addaction name="actionGeolocateCurrentTarget"/>
-   <addaction name="actionAnalyzeCurrentTarget"/>
-   <addaction name="actionCurrent_Target_Details"/>
   </widget>
-  <action name="actionExport_as_kml">
+  <widget class="QToolBar" name="locationsActionsToolbar">
+   <property name="windowTitle">
+    <string>toolBar_2</string>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+   <addaction name="actionFilterLocationsDate"/>
+   <addaction name="actionFilterLocationsPosition"/>
+   <addaction name="actionShowHeatMap"/>
+   <addaction name="actionRemoveFilters"/>
+  </widget>
+  <action name="actionExportKML">
    <property name="checkable">
     <bool>false</bool>
    </property>
    <property name="icon">
     <iconset resource="../creepy/include/creepy_resources.qrc">
-     <normaloff>:/cr/save.png</normaloff>:/cr/save.png</iconset>
+     <normaloff>:/cr/020 DocumentKML.png</normaloff>:/cr/020 DocumentKML.png</iconset>
    </property>
    <property name="text">
-    <string>Export as kml</string>
+    <string>Export Project Locations as KML</string>
+   </property>
+   <property name="toolTip">
+    <string>Export project locations in KML format</string>
    </property>
   </action>
-  <action name="actionExport_as_csv">
+  <action name="actionExportCSV">
    <property name="icon">
     <iconset resource="../creepy/include/creepy_resources.qrc">
-     <normaloff>:/cr/cvs.png</normaloff>:/cr/cvs.png</iconset>
+     <normaloff>:/cr/020 DocumentCSV.png</normaloff>:/cr/020 DocumentCSV.png</iconset>
    </property>
    <property name="text">
-    <string>Export as csv</string>
+    <string>Export Project Locations as CSV</string>
+   </property>
+   <property name="toolTip">
+    <string>Export project locations in CSV format</string>
    </property>
   </action>
   <action name="actionExit">
+   <property name="icon">
+    <iconset resource="../creepy/include/creepy_resources.qrc">
+     <normaloff>:/cr/059 CircledOff.png</normaloff>:/cr/059 CircledOff.png</iconset>
+   </property>
    <property name="text">
     <string>Exit</string>
    </property>
   </action>
-  <action name="actionReport_a_problem_bug">
+  <action name="actionReportProblem">
+   <property name="icon">
+    <iconset resource="../creepy/include/creepy_resources.qrc">
+     <normaloff>:/cr/107 Flag.png</normaloff>:/cr/107 Flag.png</iconset>
+   </property>
    <property name="text">
     <string>Report a problem / bug</string>
    </property>
   </action>
   <action name="actionAbout">
+   <property name="icon">
+    <iconset resource="../creepy/include/creepy_resources.qrc">
+     <normaloff>:/cr/creepy32.png</normaloff>:/cr/creepy32.png</iconset>
+   </property>
    <property name="text">
     <string>About</string>
    </property>
@@ -337,7 +439,7 @@
   <action name="actionPluginsConfiguration">
    <property name="icon">
     <iconset resource="../creepy/include/creepy_resources.qrc">
-     <normaloff>:/cr/plugins_config.png</normaloff>:/cr/plugins_config.png</iconset>
+     <normaloff>:/cr/054 Preferences2.png</normaloff>:/cr/054 Preferences2.png</iconset>
    </property>
    <property name="text">
     <string>Plugins Configuration</string>
@@ -379,23 +481,6 @@
     <string>Available Plugins</string>
    </property>
   </action>
-  <action name="actionCurrent_Target_Details">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="icon">
-    <iconset>
-     <normaloff>:/toolbarIcons/creepy32.png</normaloff>:/toolbarIcons/creepy32.png</iconset>
-   </property>
-   <property name="text">
-    <string>Current Target Details</string>
-   </property>
-  </action>
-  <action name="actionToolbars">
-   <property name="text">
-    <string>Toolbars</string>
-   </property>
-  </action>
   <action name="actionSettings">
    <property name="text">
     <string>Settings</string>
@@ -404,7 +489,7 @@
   <action name="actionNewPersonProject">
    <property name="icon">
     <iconset resource="../creepy/include/creepy_resources.qrc">
-     <normaloff>:/cr/add.png</normaloff>:/cr/add.png</iconset>
+     <normaloff>:/cr/003 User2.png</normaloff>:/cr/003 User2.png</iconset>
    </property>
    <property name="text">
     <string>Person Based Project</string>
@@ -415,25 +500,125 @@
     <string>Location Based Project</string>
    </property>
   </action>
-  <action name="actionGeolocateCurrentTarget">
+  <action name="actionAnalyzeCurrentProject">
    <property name="icon">
     <iconset resource="../creepy/include/creepy_resources.qrc">
      <normaloff>:/cr/creepy32.png</normaloff>:/cr/creepy32.png</iconset>
    </property>
    <property name="text">
-    <string>Geolocate Current Target</string>
+    <string>Analyze Current Project</string>
    </property>
    <property name="toolTip">
-    <string>Geolocate Current Target</string>
+    <string>Analyze Current Project</string>
    </property>
   </action>
-  <action name="actionAnalyzeCurrentTarget">
+  <action name="actionDrawCurrentProject">
    <property name="icon">
     <iconset resource="../creepy/include/creepy_resources.qrc">
-     <normaloff>:/cr/analyze.png</normaloff>:/cr/analyze.png</iconset>
+     <normaloff>:/cr/079 Pin2.png</normaloff>:/cr/079 Pin2.png</iconset>
    </property>
    <property name="text">
-    <string>Analyze Current Target</string>
+    <string>Draw Locations for Current Project</string>
+   </property>
+   <property name="toolTip">
+    <string>Draw Locations for the currently selected project</string>
+   </property>
+  </action>
+  <action name="actionFilterLocationsDate">
+   <property name="icon">
+    <iconset resource="../creepy/include/creepy_resources.qrc">
+     <normaloff>:/cr/005 CalendarDate.png</normaloff>:/cr/005 CalendarDate.png</iconset>
+   </property>
+   <property name="text">
+    <string>Filter Locations by Date</string>
+   </property>
+   <property name="toolTip">
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;You can filter the retrieved locations from a project based on a date range within which they have been created&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+   </property>
+  </action>
+  <action name="actionFilterLocationsPosition">
+   <property name="icon">
+    <iconset resource="../creepy/include/creepy_resources.qrc">
+     <normaloff>:/cr/226 CircledGeo.png</normaloff>:/cr/226 CircledGeo.png</iconset>
+   </property>
+   <property name="text">
+    <string>Filter Locations by Position</string>
+   </property>
+   <property name="toolTip">
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;You can filter the retrieved locations based on their distance from a given point in the map&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+   </property>
+  </action>
+  <action name="actionRemoveFilters">
+   <property name="icon">
+    <iconset resource="../creepy/include/creepy_resources.qrc">
+     <normaloff>:/cr/070 Minus.png</normaloff>:/cr/070 Minus.png</iconset>
+   </property>
+   <property name="text">
+    <string>Remove Filters</string>
+   </property>
+   <property name="toolTip">
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Remove all the filters on date and locations and show all the retreived locations on the map&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+   </property>
+  </action>
+  <action name="actionShowHeatMap">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../creepy/include/creepy_resources.qrc">
+     <normaloff>:/cr/107 Flag.png</normaloff>:/cr/107 Flag.png</iconset>
+   </property>
+   <property name="text">
+    <string>Show HeatMap</string>
+   </property>
+   <property name="toolTip">
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Show a heatmap with the selected locations instead of pointers.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+   </property>
+  </action>
+  <action name="actionLocation_Actions">
+   <property name="text">
+    <string>Location Actions</string>
+   </property>
+  </action>
+  <action name="actionMain_Toolbar">
+   <property name="text">
+    <string>Main Toolbar</string>
+   </property>
+  </action>
+  <action name="actionDeleteCurrentProject">
+   <property name="icon">
+    <iconset resource="../creepy/include/creepy_resources.qrc">
+     <normaloff>:/cr/200 CircledMinus.png</normaloff>:/cr/200 CircledMinus.png</iconset>
+   </property>
+   <property name="text">
+    <string>Delete Current Project</string>
+   </property>
+   <property name="toolTip">
+    <string>Delete this project</string>
+   </property>
+  </action>
+  <action name="actionExportFilteredKML">
+   <property name="icon">
+    <iconset resource="../creepy/include/creepy_resources.qrc">
+     <normaloff>:/cr/020 DocumentKML.png</normaloff>:/cr/020 DocumentKML.png</iconset>
+   </property>
+   <property name="text">
+    <string>Export Filtered Locations as KML</string>
+   </property>
+   <property name="toolTip">
+    <string>Export  currently visible locations as a KML file</string>
+   </property>
+  </action>
+  <action name="actionExportFilteredCSV">
+   <property name="icon">
+    <iconset resource="../creepy/include/creepy_resources.qrc">
+     <normaloff>:/cr/020 DocumentCSV.png</normaloff>:/cr/020 DocumentCSV.png</iconset>
+   </property>
+   <property name="text">
+    <string>Export Filtered Locations as CSV</string>
+   </property>
+   <property name="toolTip">
+    <string>Export currently visible locations as CSV</string>
    </property>
   </action>
  </widget>

@@ -31,6 +31,10 @@
   <property name="windowTitle">
    <string>Plugins Configuration</string>
   </property>
+  <property name="windowIcon">
+   <iconset resource="../creepy/include/creepy_resources.qrc">
+    <normaloff>:/cr/054 Preferences2.png</normaloff>:/cr/054 Preferences2.png</iconset>
+  </property>
   <widget class="QDialogButtonBox" name="BtnBox">
    <property name="geometry">
     <rect>
@@ -61,7 +65,9 @@
    </property>
   </widget>
  </widget>
- <resources/>
+ <resources>
+  <include location="../creepy/include/creepy_resources.qrc"/>
+ </resources>
  <connections>
   <connection>
    <sender>BtnBox</sender>

@@ -1,0 +1,9 @@
+[labels]
+include_retweets = Include retweets in search
+exclude_replies = Exclude replies from search
+exclude_geo_disabled = Exclude users with geo disabled from search
+hidden_access_token = Access Token
+hidden_access_token_secret = Access Token Secret
+hidden_application_key = Consumer Key
+hidden_application_secret = Consumer Secret
+infowindow_html = HTML for Infowindow on map
