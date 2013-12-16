@@ -1,325 +1,40 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
-	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
 
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<head>
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print" />
 
-	<title>ilektrojohn/creepy @ GitHub</title>
-	
-	<style type="text/css">
-		body {
-  		margin-top: 1.0em;
-  		background-color: #040404;
-		  font-family: "Helvetica,Arial,FreeSans";
-  		color: #F6E7E1;
-    }
-    #left {	
-	float: left;
-	margin: 0 0 0 0;
-	padding-top: 100px;
-	width: 300px;
-	font-size: 0.8em;
-    }
-    #container {
-      margin: 0 auto;
-      width: 700px;
-    }
-		h1 { font-size: 3.8em; color: #FC5003; margin-bottom: 3px; }
-		h1 .small { font-size: 0.4em; }
-		h1 a { text-decoration: none }
-		h2 { font-size: 1.5em; color: #FC5003; }
-    h3 { text-align: center; color: #FC5003; }
-    a { color: #2b343b; }
-    .description { font-size: 1.2em; margin-bottom: 30px; margin-top: 30px; font-style: italic;}
-    .download { float: center; }
-		pre { background: #000; color: #fff; padding: 15px;}
-    hr { border: 0; width: 80%; border-bottom: 1px solid #aaa}
-    .footer { text-align:center; padding-top:30px; font-style: italic; }
-	</style>
-<script type="text/javascript">
+    <title>Creepy by ilektrojohn</title>
+  </head>
 
-  var _gaq = _gaq || [];
-  _gaq.push(['_setAccount', 'UA-21750785-1']);
-  _gaq.push(['_trackPageview']);
+  <body>
 
-  (function() {
-    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-  })();
+    <header>
+      <div class="container">
+        <h1>Creepy</h1>
+        <h2>A Geolocation OSINT Tool. Offers geolocation information gathering through social networking platforms.</h2>
 
-</script>	
-</head>
+        <section id="downloads">
+          <a href="https://github.com/ilektrojohn/creepy/zipball/master" class="btn">Download as .zip</a>
+          <a href="https://github.com/ilektrojohn/creepy/tarball/master" class="btn">Download as .tar.gz</a>
+          <a href="https://github.com/ilektrojohn/creepy" class="btn btn-github"><span class="icon"></span>View on GitHub</a>
+        </section>
+      </div>
+    </header>
 
-<body>
-<a href="http://github.com/ilektrojohn/creepy"><img style="position: absolute; top: 0; right: 0; border: 0;" src="http://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub" /></a>
-<div id="wrapper">
-<div id="left">
-<a href="https://twitter.com/ilektrojohn" class="twitter-follow-button" data-button="grey" data-text-color="#FFFFFF" data-link-color="#00AEFF" data-show-count="false">Follow @ilektrojohn</a>
-<script src="//platform.twitter.com/widgets.js" type="text/javascript"></script>
-</br>
-</br>
-<p>Creepy is and always will be free and open source software. If you find it helpful enough consider donating a small amount to keep the development going. Thanks 
-</br>
-  
-<form action="https://www.paypal.com/cgi-bin/webscr" method="post">
-<input type="hidden" name="cmd" value="_s-xclick">
-<input type="hidden" name="encrypted" value="-----BEGIN PKCS7-----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-----END PKCS7-----
-">
-<div style="text-align: center;">
-<input type="image" src="https://www.paypalobjects.com/WEBSCR-640-20110429-1/en_US/i/btn/btn_donateCC_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
-<img alt="" border="0" src="https://www.paypalobjects.com/WEBSCR-640-20110429-1/en_US/i/scr/pixel.gif" width="1" height="1">
-</div>
-</form>
-</div>
+    <div class="container">
+      <section id="main_content">
+        <h3>
+<a name="creepy" class="anchor" href="#creepy"><span class="octicon octicon-link"></span></a>Creepy</h3>
 
-  <div id="container">
+<p>Creepy is a geolocation OSINT Tool </p>
+      </section>
+    </div>
 
     
-
-    <h1><a href="http://github.com/ilektrojohn/creepy">creepy</a>
-      <span class="small">by <a href="http://github.com/ilektrojohn">ilektrojohn</a></span></h1>
-
-    <div class="description">
-      A geolocation information aggregator.
-    </div>
-      <p>creepy is an application that allows you to gather geolocation related information 
-      about users from social networking platforms and image hosting services. The information
-      is presented in a map inside the application where all the retrieved data is shown
-      accompanied with relevant information (i.e. what was posted from that specific location) to 
-      provide context to the presentation.</p>
-<h2>Current Situation With Twitter - Update </h2>
-Version 0.1.94 resolves the issue with twitter.
-Download it from <a href="https://github.com/downloads/ilektrojohn/creepy/CreepySetup_0.1.94.exe">here</a> .
-</br>
-Be sure to delete the folder named creepy that lies on your user home folder before installing, if you are updating from former versions
-</br>
-<h2>F.A.Q.</h2>
-Please read through the <a href="faq.html">FAQ</a> :)
-<h2>Screenshots</h2>
-<p><img src="creepy_mapview.png"/>
-</br>
-mapview with results
-</br>
-<p><img src="creepy_settings.png"/>
-</br>
-settings
-</br>
-<p><img src="windows.png"/>
-</br>
-creepy running on windows XP
-</br>
-
-<h2>Features</h2>
-<br/>
-Map providers available :
-<ul>
-<li>Google Maps</li>
-<li>Virtual Maps</li>
-<li>Open Street Maps</li>
-</ul>
-</br>
-Location information retieval from :
-<ul><li>Twitter's tweet location</li>
-<ul> 
-   <li>Coordinates when tweet was posted from mobile device</li>
-   <li>Place (geographical name) derived from users ip when posting on twitter's
-    web interface. Place gets translated into coordinates using geonames.com</li>
-   <li>Bounding Box derived from users ip when posting on twitter's
-    web interface.The less accurate source , a corner of the bounding box is 
-    selected randomly.</li>
-</ul>
-
-<li>Geolocation information accessible through image hosting services API</li>
-<li>EXIF tags from the photos posted.</li>
-</ul>
-<br/>
-Social networking platforms currently supported :
-<ul>
-<li> Twitter </li>
-<li> Foursquare (only checkins that are posted to twitter)</li>
-<li> Gowalla (only checkins that are posted to twitter)</li>
-</ul>
-<br/>
-Image hosting services currently supported : 
-<ul>
-<li>flickr - information retrieved from API</li>
-<li>twitpic.com - information retrieved from API and photo exif tags</li>
-<li>yfrog.com - information retrieved from photo exif tags</li>
-<li>img.ly - information retrieved from photo exif tags</li>
-<li>plixi.com - information retrieved from photo exif tags</li>
-<li>twitrpix.com - information retrieved from photo exif tags</li>
-<li>foleext.com - information retrieved from photo exif tags</li>
-<li>shozu.com - information retrieved from photo exif tags</li>
-<li>pickhur.com - information retrieved from photo exif tags</li>
-<li>moby.to - information retrieved from API and photo exif tags</li>
-<li>twitsnaps.com - information retrieved from photo exif tags</li>
-<li>twitgoo.com - information retrieved from photo exif tags</li>
-</ul>
-<br/>
-<p>Automatic caching of retrieved information in order to reduce API calls
-and the possibility of hiting limit rates.
-<br/>
-<p>GUI with navigateable map for better overview of the accumulated information
-<br/>
-<p>4 Maps providers (including Google Maps) to use.
-<br/>
-<p>Open locations in Google Maps in your browser
-<br/>
-<p>Export retrieved locations list as kmz (for Google Earth) or csv files. 
-<br/>
-<p>Handling twitter authentication in an easy way using oAuth. User credentials
-are not shared with the application.
-<br/>
-<p>User/target search for twitter and flickr. 
-<br/>
-
-<h2>Disclaimer</h2>
-<p> Creepy is provided as a PoC tool. Usage of the tool for malicious purposes such as stalking is not endorsed or promoted.</p>
-<p> By using this software, you accept that its intention is to raise awareness and to be used as an educational tool .Using creepy 
-for any illegal or unethical purposes is strictly forbidden and the developer assumes no liability. The author disclaim any responsibility for any action of final users. It is the final user’s responsibility to obey all applicable government and legal laws.
-<p>Downloading and installing the software signifies that you have read and aggreed to the above disclaimer and the software license.</p>
-
-<h2>Install Instructions</h2>
-<h3>Ubuntu 11.10 </h3>
-<br>
-creepy is in the universe repository 
-<br>
-<pre>$ sudo apt-get install creepy</pre>
-<h3>Ubuntu 11.04 </h3>
-
-
-</br>
-<p>Add creepy's ppa repository with :
-<pre>$ sudo add-apt-repository ppa:jkakavas/creepy</pre>
-</br>
-Update package list
-<pre>$ sudo apt-get update</pre>
-</br>
-Install creepy
-<pre>$ sudo apt-get install creepy</pre>
-</br>
-<p>Creepy is now in the global menu under Applications-> Internet.
-</br>
-
-<h3>Ubuntu 10.10 </h3>
-
-
-</br>
-<p>Add creepy's ppa repository with :
-<pre>$ sudo add-apt-repository ppa:jkakavas/creepy</pre>
-</br>
-Update package list
-<pre>$ sudo apt-get update</pre>
-</br>
-Install creepy
-<pre>$ sudo apt-get install creepy</pre>
-</br>
-<p>Creepy is now in the global menu under Applications-> Internet.
-</br>
-<h3>Ubuntu 10.04 </h3>
-
-
-</br>
-<p>Add creepy's ppa repository with :
-<pre>$ sudo add-apt-repository ppa:jkakavas/creepy-lucid</pre>
-</br>
-Update package list
-<pre>$ sudo apt-get update</pre>
-</br>
-Install creepy
-<pre>$ sudo apt-get install creepy</pre>
-</br>
-<p>Creepy is now in the global menu under Applications-> Internet.
-</br>
-<p>Alternatively download and install  the .deb from <a href="https://github.com/ilektrojohn/creepy/downloads"> github </a>
-
-<h3>Backtrack 5</h3>
-<p> Creepy is included in the official BT5 repositories. Install it with :
-<pre># apt-get install creepy</pre>
-</br>
-<p>creepy is under Backtrack -> Information gathering -> Network analysis -> OSINT Analysis
-<h3>Backtrack 4</h3>
-<p>Add the repository 
-<pre>deb http://people.dsv.su.se/~kakavas/creepy/ binary/</pre>
-to your <pre>/etc/apt/sources.list</pre> file.
-</br>
-Update package list
-<pre># apt-get update</pre>
-</br>
-Install creepy
-<pre># apt-get install creepy</pre>
-</br>
-<p>Creepy is now in the global menu under Applications-> Internet.
-</br>    
-<h3>Debian unstable (sid) </h3>
-</br>
-Install creepy
-<pre>$ sudo apt-get install creepy</pre>
-</br>
-<p>Creepy is now in the global menu under Applications-> Internet.
-</br>
-
-<h3>MS Windows</h3>
-<p>Download the installer for the latest version from <a href="https://github.com/ilektrojohn/creepy/downloads">gituhub</a> .
-All dependencies have been bundled in the executable, nothing more to install.
-</br>Enjoy creeping!
-<h2>License</h2>
-<p>creepy is available under GPLv3</p>
-<h2>Authors</h2>
-<p>Yiannis Kakavas (jkakavas_AT_gmail_DOT_com)
-<br/>
-<a href="https://twitter.com/ilektrojohn">@ilektrojohn</a>
-<br/>      </p>
-<h2>Contact - Support</h2>
-<p>Yiannis Kakavas (jkakavas_AT_gmail_DOT_com)
-<br/>
-<p> creepy.app__AT__googlemail__DOT__com
-</br>
-<a href="https://twitter.com/cree_py">Cree_pi on twitter</a>
-      </p>
-
-
-    <h2>Download Source Code</h2>
-    <p>
-      You can download the source code of this project in either
-      <a href="http://github.com/ilektrojohn/creepy/zipball/master">zip</a> or
-      <a href="http://github.com/ilektrojohn/creepy/tarball/master">tar</a> formats.
-    </p>
-    <p>You can also clone the project with <a href="http://git-scm.com">Git</a>
-      by running:
-      <pre>$ git clone git://github.com/ilektrojohn/creepy</pre>
-    </p>
-
-	
-    <div class="footer">
-<div class="download">
-      <a href="http://github.com/ilektrojohn/creepy/zipball/master">
-        <img border="0" width="90" src="http://github.com/images/modules/download/zip.png"></a>
-      <a href="http://github.com/ilektrojohn/creepy/tarball/master">
-        <img border="0" width="90" src="http://github.com/images/modules/download/tar.png"></a>
-    </div>
-      get the source code on GitHub : <a href="http://github.com/ilektrojohn/creepy">ilektrojohn/creepy</a>
-    </div>
-
-  </div>
-</div>
-<!-- Start of StatCounter Code -->
-<script type="text/javascript">
-var sc_project=6602808; 
-var sc_invisible=1; 
-var sc_security="2dd1003a"; 
-</script>
-
-<script type="text/javascript"
-src="http://www.statcounter.com/counter/counter.js"></script><noscript><div
-class="statcounter"><a title="weebly reliable statistics"
-href="http://statcounter.com/weebly/" target="_blank"><img
-class="statcounter"
-src="http://c.statcounter.com/6602808/0/2dd1003a/1/"
-alt="weebly reliable statistics" ></a></div></noscript>
-<!-- End of StatCounter Code -->
-  
-</body>
+  </body>
 </html>
