@@ -6,10 +6,11 @@ import re
 import os
 from configobj import ConfigObj
 from flickrapi.exceptions import FlickrError
+from utilities import GeneralUtilities
 #set up logging
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
-fh = logging.FileHandler('creepy_main.log')
+fh = logging.FileHandler(os.path.join(GeneralUtilities.getUserHome(),'creepy_logs','creepy_main.log'))
 fh.setLevel(logging.DEBUG)
 formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 fh.setFormatter(formatter)
@@ -96,9 +97,9 @@ class Flickr(InputPlugin):
             logger.error(e)
             return (False, "Error establishing connection to Flickr API. ")
     
-    def getPhotosByPage(self, id, page_nr):
+    def getPhotosByPage(self, userid, page_nr):
         try:
-            results = self.api.people_getPublicPhotos(user_id=id, extras="geo, date_taken", per_page=500, page=page_nr)
+            results = self.api.people_getPublicPhotos(user_id=userid, extras="geo, date_taken", per_page=500, page=page_nr)
             if results.attrib['stat'] == 'ok':
                 return results.find('photos').findall('photo')
         except Exception , err:

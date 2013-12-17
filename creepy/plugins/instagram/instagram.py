@@ -6,11 +6,11 @@ import logging
 import urllib
 from urlparse import urlparse, parse_qs
 from configobj import ConfigObj
-
+from utilities import GeneralUtilities
 #set up logging
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
-fh = logging.FileHandler('creepy_main.log')
+fh = logging.FileHandler(os.path.join(GeneralUtilities.getUserHome(),'creepy_logs','creepy_main.log'))
 fh.setLevel(logging.DEBUG)
 formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 fh.setFormatter(formatter)
@@ -72,6 +72,7 @@ class Instagram(InputPlugin):
             logger.debug(str(len(possibleTargets))+" possible targets were found matching the search query")
         except Exception, err:
             logger.error("Error searching for targets with instagram plugin.")
+            logger.error(err)
         return possibleTargets
    
     def getAllPhotos(self, uid, count, max_id, photos):

@@ -22,17 +22,18 @@ from models.ProjectWizardPossibleTargetsTable import ProjectWizardPossibleTarget
 from models.ProjectWizardSelectedTargetsTable import ProjectWizardSelectedTargetsTable
 from models.InputPlugin import InputPlugin
 from models.ProjectTree import *
+from utilities import GeneralUtilities
 import functools
 import webbrowser
 import csv
 import codecs
 import types
-from math import radians, cos, sin, asin, sqrt
+
 
 # set up logging
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
-fh = logging.FileHandler('creepy_main.log')
+fh = logging.FileHandler(os.path.join(GeneralUtilities.getUserHome(),'creepy_logs','creepy_main.log'))
 fh.setLevel(logging.DEBUG)
 formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 fh.setFormatter(formatter)
@@ -414,7 +415,7 @@ class MainWindow(QtGui.QMainWindow):
         self.ui.actionFilterLocationsPosition.triggered.connect(self.showFilterLocationsPointDialog)
         self.ui.actionRemoveFilters.triggered.connect(self.removeAllFilters)
         self.ui.actionShowHeatMap.toggled.connect(self.toggleHeatMap)
-        self.ui.actionReportProblem.triggered.connect(self.reportProblem)
+        self.ui.actionReportProblem.triggered.connect(GeneralUtilities.reportProblem)
         self.ui.actionAbout.triggered.connect(self.showAboutDialog)
         
         self.ui.actionExit.triggered.connect(self.close)
@@ -470,32 +471,14 @@ class MainWindow(QtGui.QMainWindow):
             else:
                 l.visible = False
         self.presentLocations([])
-    def calcDistance(self, lat1, lng1, lat2, lng2):
-        """
-        Calculate the great circle distance between two points 
-        on the earth (specified in decimal degrees)
-        Original Code from Mickael Dunn <Michael.Dunn@mpi.nl> 
-        on http://stackoverflow.com/a/4913653/983244
-        """
-        # convert decimal degrees to radians 
-        lng1, lat1, lng2, lat2 = map(radians, [lng1, lat1, lng2, lat2])
     
-        # haversine formula 
-        dlng = lng2 - lng1 
-        dlat = lat2 - lat1 
-        a = sin(dlat / 2) ** 2 + cos(lat1) * cos(lat2) * sin(dlng / 2) ** 2
-        c = 2 * asin(sqrt(a)) 
-    
-        # 6378100 m is the mean radius of the Earth
-        meters = 6378100 * c
-        return meters     
     def filterLocationsByPoint(self, lat, lng, radius):
         if not self.currentProject:
             self.showWarning(self.tr("No project selected"), self.tr("Please select a project !"))
             self.ui.statusbar.showMessage(self.tr("Please select a project !"))
             return
         for l in self.currentProject.locations:
-            if self.calcDistance(float(lat), float(lng), float(l.latitude), float(l.longitude)) > radius:
+            if GeneralUtilities.calcDistance(float(lat), float(lng), float(l.latitude), float(l.longitude)) > radius:
                 l.visible = False
         self.presentLocations([])
         
@@ -510,9 +493,7 @@ class MainWindow(QtGui.QMainWindow):
         self.presentLocations([])    
     
     
-    def reportProblem(self):
-        webbrowser.open_new_tab('https://github.com/ilektrojohn/creepy/issues')  
-    
+       
     def showAboutDialog(self):
         aboutDialog = AboutDialog()
         aboutDialog.show()
@@ -596,16 +577,6 @@ class MainWindow(QtGui.QMainWindow):
             self.showWarning(self.tr("No project selected"), self.tr("Please select a project !"))
             self.ui.statusbar.showMessage(self.tr("Please select a project !"))
             
-    def html_escape(self, text):
-        html_escape_table = {
-                             "&": "&amp;",
-                             '"': "&quot;",
-                             "'": "&apos;",
-                             ">": "&gt;",
-                             "<": "&lt;",
-                             }
-        return "".join(html_escape_table.get(c, c) for c in text)
-            
     def exportProjectKML(self, project, filter=False):
         # If the project was not provided explicitly, analyze the currently selected one
         if not project:
@@ -638,7 +609,7 @@ class MainWindow(QtGui.QMainWindow):
                             #handle unicode now that we are writing to a file                            
                             if isinstance(loc.context,unicode):
                                 try:
-                                    kml.append('    <description> %s' % self.html_escape(loc.context.encode("utf-8")))
+                                    kml.append('    <description> %s' % GeneralUtilities.html_escape(loc.context.encode("utf-8")))
                                 except Exception, err:
                                     logger.error(err)
                                     try:
