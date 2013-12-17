@@ -1,14 +1,18 @@
 # creepy
 
-## Current Version : 1.0RC
+### Current Version 
+1.0RC
 
-## Author : Yiannis Kakavas <jkakavas__AT__gmail__dot__com>
+### Author 
+Yiannis Kakavas <jkakavas__AT__gmail__dot__com>
 
-## Homepage : http://www.geocreepy.com
+### Homepage 
+http://www.geocreepy.com
 
-## Installation Instructions : See INSTALL file
+### Installation Instructions 
+See INSTALL file (To be updated)
 
-## Description: 
+### Description 
 Geolocation OSINT tool.
 
 creepy is an application that allows you to gather geolocation related information 
