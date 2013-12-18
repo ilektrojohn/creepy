@@ -387,7 +387,7 @@
     <bool>false</bool>
    </property>
    <property name="icon">
-    <iconset resource="../creepy/include/creepy_resources.qrc">
+    <iconset>
      <normaloff>:/cr/020 DocumentKML.png</normaloff>:/cr/020 DocumentKML.png</iconset>
    </property>
    <property name="text">
@@ -399,7 +399,7 @@
   </action>
   <action name="actionExportCSV">
    <property name="icon">
-    <iconset resource="../creepy/include/creepy_resources.qrc">
+    <iconset>
      <normaloff>:/cr/020 DocumentCSV.png</normaloff>:/cr/020 DocumentCSV.png</iconset>
    </property>
    <property name="text">
@@ -411,7 +411,7 @@
   </action>
   <action name="actionExit">
    <property name="icon">
-    <iconset resource="../creepy/include/creepy_resources.qrc">
+    <iconset>
      <normaloff>:/cr/059 CircledOff.png</normaloff>:/cr/059 CircledOff.png</iconset>
    </property>
    <property name="text">
@@ -420,7 +420,7 @@
   </action>
   <action name="actionReportProblem">
    <property name="icon">
-    <iconset resource="../creepy/include/creepy_resources.qrc">
+    <iconset>
      <normaloff>:/cr/107 Flag.png</normaloff>:/cr/107 Flag.png</iconset>
    </property>
    <property name="text">
@@ -429,7 +429,7 @@
   </action>
   <action name="actionAbout">
    <property name="icon">
-    <iconset resource="../creepy/include/creepy_resources.qrc">
+    <iconset>
      <normaloff>:/cr/creepy32.png</normaloff>:/cr/creepy32.png</iconset>
    </property>
    <property name="text">
@@ -438,7 +438,7 @@
   </action>
   <action name="actionPluginsConfiguration">
    <property name="icon">
-    <iconset resource="../creepy/include/creepy_resources.qrc">
+    <iconset>
      <normaloff>:/cr/054 Preferences2.png</normaloff>:/cr/054 Preferences2.png</iconset>
    </property>
    <property name="text">
@@ -488,7 +488,7 @@
   </action>
   <action name="actionNewPersonProject">
    <property name="icon">
-    <iconset resource="../creepy/include/creepy_resources.qrc">
+    <iconset>
      <normaloff>:/cr/003 User2.png</normaloff>:/cr/003 User2.png</iconset>
    </property>
    <property name="text">
@@ -502,7 +502,7 @@
   </action>
   <action name="actionAnalyzeCurrentProject">
    <property name="icon">
-    <iconset resource="../creepy/include/creepy_resources.qrc">
+    <iconset>
      <normaloff>:/cr/creepy32.png</normaloff>:/cr/creepy32.png</iconset>
    </property>
    <property name="text">
@@ -514,7 +514,7 @@
   </action>
   <action name="actionDrawCurrentProject">
    <property name="icon">
-    <iconset resource="../creepy/include/creepy_resources.qrc">
+    <iconset>
      <normaloff>:/cr/079 Pin2.png</normaloff>:/cr/079 Pin2.png</iconset>
    </property>
    <property name="text">
@@ -526,7 +526,7 @@
   </action>
   <action name="actionFilterLocationsDate">
    <property name="icon">
-    <iconset resource="../creepy/include/creepy_resources.qrc">
+    <iconset>
      <normaloff>:/cr/005 CalendarDate.png</normaloff>:/cr/005 CalendarDate.png</iconset>
    </property>
    <property name="text">
@@ -538,7 +538,7 @@
   </action>
   <action name="actionFilterLocationsPosition">
    <property name="icon">
-    <iconset resource="../creepy/include/creepy_resources.qrc">
+    <iconset>
      <normaloff>:/cr/226 CircledGeo.png</normaloff>:/cr/226 CircledGeo.png</iconset>
    </property>
    <property name="text">
@@ -550,7 +550,7 @@
   </action>
   <action name="actionRemoveFilters">
    <property name="icon">
-    <iconset resource="../creepy/include/creepy_resources.qrc">
+    <iconset>
      <normaloff>:/cr/070 Minus.png</normaloff>:/cr/070 Minus.png</iconset>
    </property>
    <property name="text">
@@ -565,7 +565,7 @@
     <bool>true</bool>
    </property>
    <property name="icon">
-    <iconset resource="../creepy/include/creepy_resources.qrc">
+    <iconset>
      <normaloff>:/cr/107 Flag.png</normaloff>:/cr/107 Flag.png</iconset>
    </property>
    <property name="text">
@@ -587,7 +587,7 @@
   </action>
   <action name="actionDeleteCurrentProject">
    <property name="icon">
-    <iconset resource="../creepy/include/creepy_resources.qrc">
+    <iconset>
      <normaloff>:/cr/200 CircledMinus.png</normaloff>:/cr/200 CircledMinus.png</iconset>
    </property>
    <property name="text">
@@ -599,7 +599,7 @@
   </action>
   <action name="actionExportFilteredKML">
    <property name="icon">
-    <iconset resource="../creepy/include/creepy_resources.qrc">
+    <iconset>
      <normaloff>:/cr/020 DocumentKML.png</normaloff>:/cr/020 DocumentKML.png</iconset>
    </property>
    <property name="text">
@@ -611,7 +611,7 @@
   </action>
   <action name="actionExportFilteredCSV">
    <property name="icon">
-    <iconset resource="../creepy/include/creepy_resources.qrc">
+    <iconset>
      <normaloff>:/cr/020 DocumentCSV.png</normaloff>:/cr/020 DocumentCSV.png</iconset>
    </property>
    <property name="text">

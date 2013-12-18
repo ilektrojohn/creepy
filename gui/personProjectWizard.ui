@@ -6,15 +6,15 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>879</width>
-    <height>658</height>
+    <width>898</width>
+    <height>702</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>New Person Project</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="../creepy/include/creepy_resources.qrc">
+   <iconset>
     <normaloff>:/cr/003 User2.png</normaloff>:/cr/003 User2.png</iconset>
   </property>
   <property name="wizardStyle">
@@ -118,99 +118,10 @@
     <string>Search for the person you want to track using the available plugins and add it to the selected targets</string>
    </property>
    <layout class="QGridLayout" name="gridLayout">
-    <item row="3" column="2">
-     <spacer name="horizontalSpacer_2">
-      <property name="orientation">
-       <enum>Qt::Horizontal</enum>
-      </property>
-      <property name="sizeHint" stdset="0">
-       <size>
-        <width>40</width>
-        <height>20</height>
-       </size>
-      </property>
-     </spacer>
-    </item>
-    <item row="4" column="0">
-     <widget class="QLabel" name="personProjectSearchResultsLabel">
-      <property name="text">
-       <string>Search Results </string>
-      </property>
-     </widget>
-    </item>
-    <item row="1" column="2" colspan="2">
-     <widget class="QScrollArea" name="personProjectAvailablePluginsScrollArea">
-      <property name="widgetResizable">
-       <bool>true</bool>
-      </property>
-      <widget class="QWidget" name="scrollAreaWidgetContents">
-       <property name="geometry">
-        <rect>
-         <x>0</x>
-         <y>0</y>
-         <width>98</width>
-         <height>91</height>
-        </rect>
-       </property>
-       <layout class="QVBoxLayout" name="verticalLayout">
-        <item>
-         <widget class="QListView" name="personProjectAvailablePluginsListView"/>
-        </item>
-       </layout>
-      </widget>
-     </widget>
-    </item>
-    <item row="0" column="3">
-     <widget class="QLabel" name="personProjectSearchForDetailsLabel">
-      <property name="sizePolicy">
-       <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
-        <horstretch>0</horstretch>
-        <verstretch>0</verstretch>
-       </sizepolicy>
-      </property>
-      <property name="text">
-       <string>Search by username, mail, full name, id</string>
-      </property>
-     </widget>
-    </item>
-    <item row="0" column="0" colspan="2">
-     <widget class="QLabel" name="personProjectSearchForLabel">
-      <property name="text">
-       <string>Search for</string>
-      </property>
-     </widget>
-    </item>
-    <item row="5" column="1" colspan="3">
-     <widget class="Line" name="personProjectTargetSeperatorLine">
-      <property name="lineWidth">
-       <number>4</number>
-      </property>
-      <property name="orientation">
-       <enum>Qt::Horizontal</enum>
-      </property>
-     </widget>
-    </item>
-    <item row="1" column="0" colspan="2">
-     <widget class="QLabel" name="personProjectSearchInLabel">
-      <property name="text">
-       <string>Search In</string>
-      </property>
-     </widget>
-    </item>
-    <item row="0" column="2">
-     <widget class="QLineEdit" name="personProjectSearchForValue"/>
-    </item>
-    <item row="7" column="0">
-     <widget class="QLabel" name="personProjectSelectedTargetsLabel">
-      <property name="text">
-       <string>Selected Targets</string>
-      </property>
-     </widget>
-    </item>
-    <item row="3" column="3">
-     <layout class="QHBoxLayout" name="horizontalLayout_2">
+    <item row="5" column="3">
+     <layout class="QHBoxLayout" name="horizontalLayout">
       <item>
-       <spacer name="horizontalSpacer">
+       <spacer name="horizontalSpacer_4">
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
         </property>
@@ -223,49 +134,15 @@
        </spacer>
       </item>
       <item>
-       <widget class="QPushButton" name="personProjectSearchButton">
+       <widget class="QPushButton" name="btnAddTarget">
         <property name="text">
-         <string>Search</string>
+         <string>Add Target</string>
         </property>
        </widget>
       </item>
      </layout>
     </item>
-    <item row="4" column="2" colspan="2">
-     <widget class="QTableView" name="personProjectSearchResultsTable">
-      <property name="dragEnabled">
-       <bool>true</bool>
-      </property>
-      <property name="dragDropMode">
-       <enum>QAbstractItemView::DragOnly</enum>
-      </property>
-      <property name="selectionBehavior">
-       <enum>QAbstractItemView::SelectRows</enum>
-      </property>
-      <property name="sortingEnabled">
-       <bool>true</bool>
-      </property>
-      <attribute name="horizontalHeaderCascadingSectionResizes">
-       <bool>true</bool>
-      </attribute>
-      <attribute name="horizontalHeaderStretchLastSection">
-       <bool>true</bool>
-      </attribute>
-      <attribute name="verticalHeaderVisible">
-       <bool>false</bool>
-      </attribute>
-      <attribute name="verticalHeaderCascadingSectionResizes">
-       <bool>true</bool>
-      </attribute>
-      <attribute name="verticalHeaderMinimumSectionSize">
-       <number>19</number>
-      </attribute>
-      <attribute name="verticalHeaderStretchLastSection">
-       <bool>false</bool>
-      </attribute>
-     </widget>
-    </item>
-    <item row="7" column="2" colspan="2">
+    <item row="8" column="2" colspan="2">
      <widget class="QTableView" name="personProjectSelectedTargetsTable">
       <property name="dragEnabled">
        <bool>false</bool>
@@ -301,6 +178,206 @@
        <bool>true</bool>
       </attribute>
      </widget>
+    </item>
+    <item row="6" column="1" colspan="3">
+     <widget class="Line" name="personProjectTargetSeperatorLine">
+      <property name="lineWidth">
+       <number>4</number>
+      </property>
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+     </widget>
+    </item>
+    <item row="4" column="2" colspan="2">
+     <widget class="QTableView" name="personProjectSearchResultsTable">
+      <property name="dragEnabled">
+       <bool>true</bool>
+      </property>
+      <property name="dragDropMode">
+       <enum>QAbstractItemView::DragDrop</enum>
+      </property>
+      <property name="selectionBehavior">
+       <enum>QAbstractItemView::SelectRows</enum>
+      </property>
+      <property name="sortingEnabled">
+       <bool>true</bool>
+      </property>
+      <attribute name="horizontalHeaderCascadingSectionResizes">
+       <bool>true</bool>
+      </attribute>
+      <attribute name="horizontalHeaderStretchLastSection">
+       <bool>true</bool>
+      </attribute>
+      <attribute name="verticalHeaderVisible">
+       <bool>false</bool>
+      </attribute>
+      <attribute name="verticalHeaderCascadingSectionResizes">
+       <bool>true</bool>
+      </attribute>
+      <attribute name="verticalHeaderMinimumSectionSize">
+       <number>19</number>
+      </attribute>
+      <attribute name="verticalHeaderStretchLastSection">
+       <bool>false</bool>
+      </attribute>
+     </widget>
+    </item>
+    <item row="0" column="0" colspan="2">
+     <widget class="QLabel" name="personProjectSearchForLabel">
+      <property name="text">
+       <string>Search for</string>
+      </property>
+     </widget>
+    </item>
+    <item row="4" column="0">
+     <widget class="QLabel" name="personProjectSearchResultsLabel">
+      <property name="text">
+       <string>Search Results </string>
+      </property>
+     </widget>
+    </item>
+    <item row="8" column="0">
+     <widget class="QLabel" name="personProjectSelectedTargetsLabel">
+      <property name="text">
+       <string>Selected Targets</string>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="0" colspan="2">
+     <widget class="QLabel" name="personProjectSearchInLabel">
+      <property name="text">
+       <string>Search In</string>
+      </property>
+     </widget>
+    </item>
+    <item row="3" column="2">
+     <spacer name="horizontalSpacer_2">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>40</width>
+        <height>20</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+    <item row="0" column="3">
+     <widget class="QLabel" name="personProjectSearchForDetailsLabel">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="text">
+       <string>Search by username, mail, full name, id</string>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="2" colspan="2">
+     <widget class="QScrollArea" name="personProjectAvailablePluginsScrollArea">
+      <property name="widgetResizable">
+       <bool>true</bool>
+      </property>
+      <widget class="QWidget" name="scrollAreaWidgetContents">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>0</y>
+         <width>760</width>
+         <height>153</height>
+        </rect>
+       </property>
+       <layout class="QVBoxLayout" name="verticalLayout">
+        <item>
+         <widget class="QListView" name="personProjectAvailablePluginsListView"/>
+        </item>
+       </layout>
+      </widget>
+     </widget>
+    </item>
+    <item row="0" column="2">
+     <widget class="QLineEdit" name="personProjectSearchForValue"/>
+    </item>
+    <item row="3" column="3">
+     <layout class="QHBoxLayout" name="horizontalLayout_2">
+      <item>
+       <spacer name="horizontalSpacer">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item>
+       <widget class="QPushButton" name="personProjectSearchButton">
+        <property name="text">
+         <string>Search</string>
+        </property>
+        <property name="default">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item row="5" column="2">
+     <spacer name="horizontalSpacer_3">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>40</width>
+        <height>20</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+    <item row="9" column="2">
+     <spacer name="horizontalSpacer_5">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>40</width>
+        <height>20</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+    <item row="9" column="3">
+     <layout class="QHBoxLayout" name="horizontalLayout_3">
+      <item>
+       <spacer name="horizontalSpacer_6">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item>
+       <widget class="QPushButton" name="btnRemoveTarget">
+        <property name="text">
+         <string>Remove Target</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
     </item>
    </layout>
   </widget>

@@ -1,7 +1,7 @@
 # import main libraries
 import sys, datetime, os
 import shelve, logging
-from PyQt4 import QtCore, QtGui, QtWebKit, Qt
+from PyQt4 import QtCore, QtGui, QtWebKit
 # import the UI
 from ui.CreepyUI import Ui_CreepyMainWindow
 from ui.CreepyPluginsConfigurationDialog import Ui_PluginsConfigurationDialog
@@ -10,7 +10,6 @@ from ui.CreepyPluginConfigurationCheckdialog import Ui_checkPluginConfigurationD
 from ui.FilterLocationsDateDialog import Ui_FilterLocationsDateDialog
 from ui.FilterLocationsPointDialog import Ui_FilteLocationsPointDialog
 from ui.AboutDialog import Ui_aboutDialog
-import ui.creepy_resources_rc
 # import creepy related modules
 from yapsy.PluginManager import PluginManagerSingleton
 from models.LocationsList import LocationsTableModel
@@ -24,20 +23,22 @@ from models.InputPlugin import InputPlugin
 from models.ProjectTree import *
 from utilities import GeneralUtilities
 import functools
-import webbrowser
 import csv
-import codecs
-import types
+from tkMessageBox import showwarning
+
+
 
 
 # set up logging
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
-fh = logging.FileHandler(os.path.join(GeneralUtilities.getUserHome(),'creepy_logs','creepy_main.log'))
+fh = logging.FileHandler(os.path.join(GeneralUtilities.getUserHome(),'creepy_main.log'))
 fh.setLevel(logging.DEBUG)
 formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 fh.setFormatter(formatter)
 logger.addHandler(fh)
+sys.stdout = open(os.path.join(GeneralUtilities.getUserHome(),'creepy_stdout.log'), 'w')
+sys.stderr = open(os.path.join(GeneralUtilities.getUserHome(),'creepy_stderr.log'), 'w')
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
 except AttributeError:
@@ -66,6 +67,14 @@ class PersonProjectWizard(QtGui.QWizard):
         # Register the project name field so that it will become mandatory
         self.page(0).registerField('name*', self.ui.personProjectNameValue)
         
+        self.ui.btnAddTarget.clicked.connect(self.addTargetsToSelected)
+        self.ui.btnRemoveTarget.clicked.connect(self.removeTargetsFromSelected)
+        self.ui.personProjectSearchForValue.textChanged.connect(self.ui.personProjectSearchButton.setFocus)
+        
+    def addTargetsToSelected(self):
+        pass
+    def removeTargetsFromSelected(self):
+        pass  
     def showWarning(self, title, text):
         QtGui.QMessageBox.warning(self, title, text)
         
@@ -73,15 +82,22 @@ class PersonProjectWizard(QtGui.QWizard):
         """
         If the page to be loaded is the page containing the search
         options for our plugins, store the selected targets and load the relative search options based on the 
-        selected target
-        If the page is the search page, set focus to the search button instead of the next
+        selected target.
+        Also check if the selected plugins are empty and return the user back. 
+        <TODO>
+        This should be done with registering a field for the selectedTargets TableView 
         """
         if i == 2:
+            self.checkIfSelectedTargets()
             self.storeSelectedTargets()
             self.showPluginsSearchOptions()
-        if i == 1:
-            self.ui.personProjectSearchButton.setFocus()
+            
         
+    def checkIfSelectedTargets(self):
+        if not self.ProjectWizardSelectedTargetsTable.targets:
+            self.showWarning("No target selected", "Please drag and drop your targets to the selected targets before proceeding")
+            self.back()
+            self.next()
     
     def storeSelectedTargets(self):
         """
@@ -407,8 +423,8 @@ class MainWindow(QtGui.QMainWindow):
         
         self.ui.actionExportCSV.triggered.connect(self.exportProjectCSV)
         self.ui.actionExportKML.triggered.connect(self.exportProjectKML)
-        self.ui.actionExportFilteredCSV.triggered.connect(functools.partial(self.exportProjectCSV, filter=True))
-        self.ui.actionExportFilteredKML.triggered.connect(functools.partial(self.exportProjectKML, filter=True))
+        self.ui.actionExportFilteredCSV.triggered.connect(functools.partial(self.exportProjectCSV, filtering=True))
+        self.ui.actionExportFilteredKML.triggered.connect(functools.partial(self.exportProjectKML, filtering=True))
         self.ui.actionDeleteCurrentProject.triggered.connect(self.deleteCurrentProject)
         
         self.ui.actionFilterLocationsDate.triggered.connect(self.showFilterLocationsDateDialog)
@@ -529,11 +545,10 @@ class MainWindow(QtGui.QMainWindow):
     def deleteCurrentProject(self, project):
         if not project:
             project = self.currentProject
-        pr = Project()
         projectName = project.projectName+".db"
         project.deleteProject(projectName)
         self.loadProjectsFromStorage()
-    def exportProjectCSV(self, project,filter=False):
+    def exportProjectCSV(self, project,filtering=False):
         # If the project was not provided explicitly, analyze the currently selected one
         if not project:
             project = self.currentProject
@@ -549,22 +564,18 @@ class MainWindow(QtGui.QMainWindow):
             fileName = QtGui.QFileDialog.getSaveFileName(None, 'Save CSV export as...', os.getcwd(), 'All files (*.*)')
             if fileName:
                 try:
-                    fileobj = codecs.open(fileName, 'wb', encoding="utf-8")
+                    fileobj = open(fileName, 'wb')
                     writer = csv.writer(fileobj, quoting=csv.QUOTE_ALL)
                     writer.writerow(('Timestamp', 'Latitude', 'Longitude', 'Location Name', 'Retrieved from', 'Context'))
                     for loc in project.locations:
-                        if (filter and loc.visible) or not filter:
+                        if (filtering and loc.visible) or not filtering:
                             #handle unicode now that we are writing to a file                            
                             if isinstance(loc.context,unicode):
                                 try:
                                     writer.writerow((loc.datetime.strftime("%Y-%m-%d %H:%M:%S %z"), loc.latitude, loc.longitude,loc.shortName.encode("utf-8"), loc.plugin, loc.context.encode("utf-8"))) 
                                 except Exception,err:
                                     logger.error(err)
-                                    try:
-                                        writer.writerow((loc.datetime.strftime("%Y-%m-%d %H:%M:%S %z"), loc.latitude, loc.longitude,loc.shortName.encode("iso-8859-1"), loc.plugin, loc.context.encode("iso-8859-1")))
-                                    except Exception, err:
-                                        logger.error(err)
-                                        writer.writerow((loc.datetime.strftime("%Y-%m-%d %H:%M:%S %z"), loc.latitude, loc.longitude,"Non printable characters in string", loc.plugin, "Non printable characters in string"))
+                                    writer.writerow((loc.datetime.strftime("%Y-%m-%d %H:%M:%S %z"), loc.latitude, loc.longitude,"Non printable characters in string", loc.plugin, "Non printable characters in string"))
                             else:
                                 writer.writerow((loc.datetime.strftime("%Y-%m-%d %H:%M:%S %z"), loc.latitude, loc.longitude,loc.shortName, loc.plugin, loc.context))                 
                     fileobj.close()
@@ -577,7 +588,7 @@ class MainWindow(QtGui.QMainWindow):
             self.showWarning(self.tr("No project selected"), self.tr("Please select a project !"))
             self.ui.statusbar.showMessage(self.tr("Please select a project !"))
             
-    def exportProjectKML(self, project, filter=False):
+    def exportProjectKML(self, project, filtering=False):
         # If the project was not provided explicitly, analyze the currently selected one
         if not project:
             project = self.currentProject
@@ -593,7 +604,7 @@ class MainWindow(QtGui.QMainWindow):
             fileName = QtGui.QFileDialog.getSaveFileName(None, 'Save KML export as...', os.getcwd(), 'All files (*.*)')
             if fileName:
                 try:
-                    fileobj = codecs.open(fileName, 'wb', encoding="utf-8")
+                    fileobj = open(fileName, 'wb')
                     # kml is the list to hold all xml attribs. it will be joined in a string later
                     kml = []
                     kml.append('<?xml version=\"1.0\" encoding=\"UTF-8\"?>')
@@ -601,9 +612,8 @@ class MainWindow(QtGui.QMainWindow):
                     kml.append('<Document>')
                     kml.append('  <name>%s.kml</name>' % id)
                     for loc in project.locations:
-                        if (filter and loc.visible) or not filter:
+                        if (filtering and loc.visible) or not filtering:
                             #handle unicode now that we are writing to a file
-                            context = loc.context.encode("utf-8") if isinstance(loc.context,unicode) else loc.context
                             kml.append('  <Placemark>')
                             kml.append('  <name>%s</name>' % loc.datetime.strftime("%Y-%m-%d %H:%M:%S %z"))
                             #handle unicode now that we are writing to a file                            
@@ -612,11 +622,9 @@ class MainWindow(QtGui.QMainWindow):
                                     kml.append('    <description> %s' % GeneralUtilities.html_escape(loc.context.encode("utf-8")))
                                 except Exception, err:
                                     logger.error(err)
-                                    try:
-                                        kml.append('    <description> %s' % self.html_escape(loc.context.encode("iso-8859-1")))
-                                    except Exception, err:
-                                        logger.error(err)
-                                        kml.append('    <description> non printable characters in context')
+                                    kml.append('    <description> non printable characters in context')
+                            else:
+                                kml.append('    <description> %s' % GeneralUtilities.html_escape(loc.context))
                             kml.append('    </description>') 
                             kml.append('    <Point>')
                             kml.append('       <coordinates>%s, %s, 0</coordinates>' % (loc.longitude, loc.latitude))

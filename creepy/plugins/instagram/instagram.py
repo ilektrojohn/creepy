@@ -10,7 +10,7 @@ from utilities import GeneralUtilities
 #set up logging
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
-fh = logging.FileHandler(os.path.join(GeneralUtilities.getUserHome(),'creepy_logs','creepy_main.log'))
+fh = logging.FileHandler(os.path.join(GeneralUtilities.getUserHome(),'creepy_main.log'))
 fh.setLevel(logging.DEBUG)
 formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 fh.setFormatter(formatter)
@@ -103,7 +103,7 @@ class Instagram(InputPlugin):
                 if hasattr(i, 'location'):
                     loc = {}
                     loc['plugin'] = "instagram"
-                    loc['context'] = i.caption.text if i.caption else "No Caption"
+                    loc['context'] = i.caption.text if i.caption else u'No Caption'
                     loc['infowindow'] = self.constructContextInfoWindow(i)                                 
                     loc['date'] = i.created_time
                     loc['lat'] = i.location.point.latitude

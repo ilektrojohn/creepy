@@ -2,11 +2,12 @@ from yapsy.IPlugin import IPlugin
 from configobj import ConfigObj
 import logging
 import os
+from utilities import GeneralUtilities
 
 #set up logging
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
-fh = logging.FileHandler('creepy_main.log')
+fh = logging.FileHandler(os.path.join(GeneralUtilities.getUserHome(),'creepy_main.log'))
 fh.setLevel(logging.DEBUG)
 formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 fh.setFormatter(formatter)
