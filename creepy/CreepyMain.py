@@ -69,10 +69,13 @@ class PersonProjectWizard(QtGui.QWizard):
         
         self.ui.btnAddTarget.clicked.connect(self.addTargetsToSelected)
         self.ui.btnRemoveTarget.clicked.connect(self.removeTargetsFromSelected)
-        self.ui.personProjectSearchForValue.textChanged.connect(self.ui.personProjectSearchButton.setFocus)
+        self.ui.personProjectSearchForValue.returnPressed.connect(self.ui.personProjectSearchButton.setFocus)
         
     def addTargetsToSelected(self):
-        pass
+        selected = self.ui.personProjectSearchResultsTable.selectionModel().selectedRows()
+        newTargets = [self.ui.personProjectSearchResultsTable.model().targets[i.row()] for i in selected]
+        self.ui.personProjectSelectedTargetsTable.model().insertRows(newTargets, len(newTargets))
+
     def removeTargetsFromSelected(self):
         pass  
     def showWarning(self, title, text):
