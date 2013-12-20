@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from models.InputPlugin import InputPlugin
 import tweepy
 import logging
@@ -189,6 +190,7 @@ class Twitter(InputPlugin):
                     if i.coordinates['type'] == 'Point':
                         loc = {}
                         loc['plugin'] = "twitter"
+                        #this returns unicode!
                         loc['context'] = i.text
                         loc['infowindow'] = self.constructContextInfoWindow(i)                                 
                         loc['date'] = i.created_at
@@ -234,12 +236,11 @@ class Twitter(InputPlugin):
             logger.error(e)
             logger.error("Error getting locations from twitter plugin")
         return locations_list    
-    def returnPersonalInformation(self, search_params):
-        pass
-    
+
     def constructContextInfoWindow(self, tweet):
         
         html = self.options_string['infowindow_html']
+        #returned value also becomes unicode since tweet.text is unicode, and carries the encoding also
         return html.replace("@TEXT@",tweet.text).replace("@DATE@",tweet.created_at.strftime("%a %b %d,%H:%M:%S %z")).replace("@PLUGIN@", "twitter")
     
     def getCenterOfPolygon(self, coord):

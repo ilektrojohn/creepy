@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from os.path import expanduser
 import webbrowser
 from math import radians, cos, sin, asin, sqrt

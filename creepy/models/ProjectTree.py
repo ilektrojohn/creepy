@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from PyQt4.QtCore import QAbstractItemModel
 from PyQt4.QtCore import QModelIndex
 from PyQt4.QtCore import Qt
@@ -26,20 +27,20 @@ class ProjectTreeModel(QAbstractItemModel):
             if role == Qt.DisplayRole:
                 return QVariant(node.name())
             if role == Qt.DecorationRole:
-                if node.nodeType() == "PROJECT":
-                    return QIcon(QPixmap(":/cr/project_icon.png"))
+                if node.nodeType() == 'PROJECT':
+                    return QIcon(QPixmap(':/cr/project_icon.png'))
                 if node.nodeType() == "LOCATIONS":
-                    return QIcon(QPixmap(":/cr/folder_locations.png"))
-                if node.nodeType() == "ANALYSIS":
-                    return QIcon(QPixmap(":/cr/analysis.png"))
-                if node.nodeType() == "LOCATION":
-                    return QIcon(QPixmap(":/cr/index.png"))
+                    return QIcon(QPixmap(':/cr/folder_locations.png'))
+                if node.nodeType() == 'ANALYSIS':
+                    return QIcon(QPixmap(':/cr/analysis.png'))
+                if node.nodeType() == 'LOCATION':
+                    return QIcon(QPixmap(':/cr/index.png'))
         else:
             return QVariant()
     
     def headerData(self, section, orientation, role=Qt.DisplayRole):
         if role == Qt.DisplayRole:
-            return "Projects"
+            return 'Projects'
     
     def flags(self, index):
         return Qt.ItemIsEnabled | Qt.ItemIsSelectable
@@ -87,7 +88,7 @@ class ProjectTreeModel(QAbstractItemModel):
         parentNode = self.getNode(parent)
         self.beginInsertRows(parent, position, position+rows-1)
         for row in range(rows):
-            childNode = ProjectNode("newNode")
+            childNode = ProjectNode('newNode')
             success = parentNode.insertChild(childNode, position)
         self.endInsertRows()
         return success
@@ -106,7 +107,7 @@ class ProjectTreeNode(object):
         self._name = name
         self._children = []
         self._parent = parent
-        self._type = "ROOT"
+        self._type = 'ROOT'
         
         if parent is not None:
             parent.addChild(self)
@@ -156,23 +157,23 @@ class ProjectTreeNode(object):
 class ProjectNode(ProjectTreeNode):
     def __init__(self, name, project, parent=None):
         super(ProjectNode, self).__init__(name, parent)
-        self._type = "PROJECT"
+        self._type = 'PROJECT'
         self.project = project 
         
 class LocationsNode(ProjectTreeNode):
     def __init__(self, name, parent=None):
         super(LocationsNode, self).__init__(name, parent)
-        self._type = "LOCATIONS"
+        self._type = 'LOCATIONS'
         self.locations = []
 
 class AnalysisNode(ProjectTreeNode):
     def __init__(self, name, parent=None):
         super(AnalysisNode, self).__init__(name, parent)
-        self._type = "ANALYSIS"
+        self._type = 'ANALYSIS'
         self.analysis = ""
         
 class LocationNode(ProjectTreeNode):
     def __init__(self, name, location, parent=None):
         super(LocationNode, self).__init__(name, parent)
-        self._type = "Location"   
+        self._type = 'Location'   
         self.location = location

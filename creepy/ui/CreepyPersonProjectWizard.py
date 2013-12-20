@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file '.\gui\personProjectWizard.ui'
 #
-# Created: Wed Dec 18 23:27:26 2013
+# Created: Thu Dec 19 20:38:35 2013
 #      by: PyQt4 UI code generator 4.9.4
 #
 # WARNING! All changes made in this file will be lost!
@@ -77,7 +77,7 @@ class Ui_personProjectWizard(object):
         self.personProjectSelectedTargetsTable.setDragDropOverwriteMode(True)
         self.personProjectSelectedTargetsTable.setDragDropMode(QtGui.QAbstractItemView.DropOnly)
         self.personProjectSelectedTargetsTable.setDefaultDropAction(QtCore.Qt.CopyAction)
-        self.personProjectSelectedTargetsTable.setSelectionMode(QtGui.QAbstractItemView.SingleSelection)
+        self.personProjectSelectedTargetsTable.setSelectionMode(QtGui.QAbstractItemView.MultiSelection)
         self.personProjectSelectedTargetsTable.setSelectionBehavior(QtGui.QAbstractItemView.SelectRows)
         self.personProjectSelectedTargetsTable.setSortingEnabled(True)
         self.personProjectSelectedTargetsTable.setObjectName(_fromUtf8("personProjectSelectedTargetsTable"))
@@ -131,7 +131,7 @@ class Ui_personProjectWizard(object):
         self.personProjectAvailablePluginsScrollArea.setWidgetResizable(True)
         self.personProjectAvailablePluginsScrollArea.setObjectName(_fromUtf8("personProjectAvailablePluginsScrollArea"))
         self.scrollAreaWidgetContents = QtGui.QWidget()
-        self.scrollAreaWidgetContents.setGeometry(QtCore.QRect(0, 0, 760, 153))
+        self.scrollAreaWidgetContents.setGeometry(QtCore.QRect(0, 0, 744, 153))
         self.scrollAreaWidgetContents.setObjectName(_fromUtf8("scrollAreaWidgetContents"))
         self.verticalLayout = QtGui.QVBoxLayout(self.scrollAreaWidgetContents)
         self.verticalLayout.setObjectName(_fromUtf8("verticalLayout"))
@@ -193,15 +193,15 @@ class Ui_personProjectWizard(object):
         self.personProjectDescriptionLabel.setText(QtGui.QApplication.translate("personProjectWizard", "Description", None, QtGui.QApplication.UnicodeUTF8))
         self.personProkectKeywordsLabel.setText(QtGui.QApplication.translate("personProjectWizard", "Keywords", None, QtGui.QApplication.UnicodeUTF8))
         self.personProjectWizardPage2.setTitle(QtGui.QApplication.translate("personProjectWizard", "Step 2 - Set the target", None, QtGui.QApplication.UnicodeUTF8))
-        self.personProjectWizardPage2.setSubTitle(QtGui.QApplication.translate("personProjectWizard", "Search for the person you want to track using the available plugins and add it to the selected targets", None, QtGui.QApplication.UnicodeUTF8))
-        self.btnAddTarget.setText(QtGui.QApplication.translate("personProjectWizard", "Add Target", None, QtGui.QApplication.UnicodeUTF8))
-        self.personProjectSearchForLabel.setText(QtGui.QApplication.translate("personProjectWizard", "Search for", None, QtGui.QApplication.UnicodeUTF8))
-        self.personProjectSearchResultsLabel.setText(QtGui.QApplication.translate("personProjectWizard", "Search Results ", None, QtGui.QApplication.UnicodeUTF8))
-        self.personProjectSelectedTargetsLabel.setText(QtGui.QApplication.translate("personProjectWizard", "Selected Targets", None, QtGui.QApplication.UnicodeUTF8))
-        self.personProjectSearchInLabel.setText(QtGui.QApplication.translate("personProjectWizard", "Search In", None, QtGui.QApplication.UnicodeUTF8))
+        self.personProjectWizardPage2.setSubTitle(QtGui.QApplication.translate("personProjectWizard", "Search for the person you want to track using the available plugins and add it to the <font color=\"red\">selected targets</font> by drag and drop or by clicking \"Add To Targets\"", None, QtGui.QApplication.UnicodeUTF8))
+        self.btnAddTarget.setText(QtGui.QApplication.translate("personProjectWizard", "Add To Targets", None, QtGui.QApplication.UnicodeUTF8))
+        self.personProjectSearchForLabel.setText(QtGui.QApplication.translate("personProjectWizard", "<html><head/><body><p><span style=\" font-weight:600;\">Search for</span></p></body></html>", None, QtGui.QApplication.UnicodeUTF8))
+        self.personProjectSearchResultsLabel.setText(QtGui.QApplication.translate("personProjectWizard", "<html><head/><body><p><span style=\" font-weight:600;\">Search Results </span></p></body></html>", None, QtGui.QApplication.UnicodeUTF8))
+        self.personProjectSelectedTargetsLabel.setText(QtGui.QApplication.translate("personProjectWizard", "<html><head/><body><p><span style=\" font-weight:600; color:#ff0000;\">Selected Targets</span></p></body></html>", None, QtGui.QApplication.UnicodeUTF8))
+        self.personProjectSearchInLabel.setText(QtGui.QApplication.translate("personProjectWizard", "<html><head/><body><p><span style=\" font-weight:600;\">Search In</span></p></body></html>", None, QtGui.QApplication.UnicodeUTF8))
         self.personProjectSearchForDetailsLabel.setText(QtGui.QApplication.translate("personProjectWizard", "Search by username, mail, full name, id", None, QtGui.QApplication.UnicodeUTF8))
         self.personProjectSearchButton.setText(QtGui.QApplication.translate("personProjectWizard", "Search", None, QtGui.QApplication.UnicodeUTF8))
-        self.btnRemoveTarget.setText(QtGui.QApplication.translate("personProjectWizard", "Remove Target", None, QtGui.QApplication.UnicodeUTF8))
+        self.btnRemoveTarget.setText(QtGui.QApplication.translate("personProjectWizard", "Remove Selected", None, QtGui.QApplication.UnicodeUTF8))
         self.personProjectWizardPage3.setTitle(QtGui.QApplication.translate("personProjectWizard", "Step 3 - Set Parameters", None, QtGui.QApplication.UnicodeUTF8))
         self.personProjectWizardPage3.setSubTitle(QtGui.QApplication.translate("personProjectWizard", "Provide the necessary search parameters for the plugins you are using", None, QtGui.QApplication.UnicodeUTF8))
         self.personProjectWizardPage4.setTitle(QtGui.QApplication.translate("personProjectWizard", "Step 4  - Finalize Project", None, QtGui.QApplication.UnicodeUTF8))

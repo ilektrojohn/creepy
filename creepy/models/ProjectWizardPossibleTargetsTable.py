@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from PyQt4.QtCore import QVariant, QAbstractTableModel, Qt
 from PyQt4.Qt import QPixmap, QIcon, QMimeData, QByteArray, QDataStream, QIODevice
 import os
@@ -21,15 +22,15 @@ class ProjectWizardPossibleTargetsTable(QAbstractTableModel):
             return QVariant()
         if orientation == Qt.Horizontal:
             if section == 0:
-                return QVariant("Plugin")
+                return QVariant('Plugin')
             elif section == 1:
-                return QVariant("Picture")
+                return QVariant('Picture')
             elif section == 2:
-                return QVariant("Username")
+                return QVariant('Username')
             elif section == 3:
-                return QVariant("Full Name")
+                return QVariant('Full Name')
             elif section == 4:
-                return QVariant("User Id")
+                return QVariant('User Id')
         return QVariant(int(section + 1))
 
     
@@ -39,12 +40,12 @@ class ProjectWizardPossibleTargetsTable(QAbstractTableModel):
             column = index.column()
             if role == Qt.DecorationRole:
                 if column == 1:
-                    picturePath = os.path.join(os.getcwd(), "temp", target['targetPicture'])
+                    picturePath = os.path.join(os.getcwd(), 'temp', target['targetPicture'])
                     if picturePath and os.path.exists(picturePath):
                         pixmap = QPixmap(picturePath)
                         return QIcon(pixmap.scaled(30, 30, Qt.IgnoreAspectRatio, Qt.FastTransformation))
                     else:
-                        pixmap = QPixmap(os.path.join(os.getcwd(), "include", "generic_user.png"))
+                        pixmap = QPixmap(os.path.join(os.getcwd(), 'include', 'generic_user.png'))
                         pixmap.scaled(20, 20, Qt.IgnoreAspectRatio)
                         return QIcon(pixmap)
             if role == Qt.DisplayRole:
@@ -69,7 +70,7 @@ class ProjectWizardPossibleTargetsTable(QAbstractTableModel):
         return Qt.ItemFlags(QAbstractTableModel.flags(self, index)|Qt.ItemIsDragEnabled|Qt.ItemIsDropEnabled)
         
     def mimeTypes(self):
-        return [ "application/target.tableitem.creepy" ] 
+        return [ 'application/target.tableitem.creepy' ] 
     
     def mimeData(self, indices):
         mimeData = QMimeData()
@@ -81,5 +82,5 @@ class ProjectWizardPossibleTargetsTable(QAbstractTableModel):
             else:
                 d = QVariant(self.data(index, Qt.DisplayRole).toString())
             stream << d
-        mimeData.setData("application/target.tableitem.creepy", encodedData)
+        mimeData.setData('application/target.tableitem.creepy', encodedData)
         return mimeData

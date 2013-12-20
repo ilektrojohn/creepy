@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from PyQt4.QtCore import QVariant, QAbstractListModel, Qt
 from PyQt4.Qt import QPixmap, QIcon
 import os
@@ -27,21 +28,12 @@ class PluginConfigurationListModel(QAbstractListModel):
             if role == Qt.DisplayRole:
                 return QVariant(pluginListItem[0].name)
             if role == Qt.DecorationRole:
-                if pluginListItem[1]:
-                    picturePath = os.path.join(os.getcwd(), "plugins", pluginListItem[0].plugin_object.name, "logo.png")
-                    if picturePath and os.path.exists(picturePath):
-                        pixmap = QPixmap(picturePath)
-                        return QIcon(pixmap)
-                    else:
-                        pixmap = QPixmap(os.path.join(os.getcwd(), "include", "generic_plugin.png"))
-                        return QIcon(pixmap)
+                picturePath = os.path.join(os.getcwd(), 'plugins', pluginListItem[0].plugin_object.name, 'logo.png')
+                if picturePath and os.path.exists(picturePath):
+                    pixmap = QPixmap(picturePath)
+                    return QIcon(pixmap)
                 else:
-                    picturePath = os.path.join(os.getcwd(), "plugins", pluginListItem[0].plugin_object.name, "logo.png")
-                    if picturePath and os.path.exists(picturePath):
-                        pixmap = QPixmap(picturePath)
-                        return QIcon(pixmap)
-                    else:
-                        pixmap = QPixmap(os.path.join(os.getcwd(), "include", "generic_plugin.png"))
-                        return QIcon(pixmap)
+                    pixmap = QPixmap(os.path.join(os.getcwd(), 'include', 'generic_plugin.png'))
+                    return QIcon(pixmap)
         else: 
             return QVariant()

@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from PyQt4.QtCore import QAbstractTableModel
 from PyQt4.QtCore import Qt, QVariant
 
@@ -23,9 +24,9 @@ class LocationsTableModel(QAbstractTableModel):
             return QVariant()
         if orientation == Qt.Horizontal:
             if section == 0:
-                return QVariant("Date")
+                return QVariant('Date')
             elif section == 1:
-                return QVariant("Location")
+                return QVariant('Location')
         return QVariant(int(section + 1))
     
     def data(self, index, role):

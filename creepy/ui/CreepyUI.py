@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file '.\gui\creepy.ui'
 #
-# Created: Wed Dec 18 20:53:36 2013
+# Created: Fri Dec 20 00:18:21 2013
 #      by: PyQt4 UI code generator 4.9.4
 #
 # WARNING! All changes made in this file will be lost!
@@ -214,7 +214,6 @@ class Ui_CreepyMainWindow(object):
         self.mainToolbar = QtGui.QToolBar(CreepyMainWindow)
         self.mainToolbar.setObjectName(_fromUtf8("mainToolbar"))
         CreepyMainWindow.addToolBar(QtCore.Qt.TopToolBarArea, self.mainToolbar)
-        CreepyMainWindow.insertToolBarBreak(self.mainToolbar)
         self.locationsActionsToolbar = QtGui.QToolBar(CreepyMainWindow)
         self.locationsActionsToolbar.setObjectName(_fromUtf8("locationsActionsToolbar"))
         CreepyMainWindow.addToolBar(QtCore.Qt.TopToolBarArea, self.locationsActionsToolbar)
@@ -313,6 +312,9 @@ class Ui_CreepyMainWindow(object):
         self.actionExportFilteredCSV = QtGui.QAction(CreepyMainWindow)
         self.actionExportFilteredCSV.setIcon(icon2)
         self.actionExportFilteredCSV.setObjectName(_fromUtf8("actionExportFilteredCSV"))
+        self.actionReanalyzeCurrentProject = QtGui.QAction(CreepyMainWindow)
+        self.actionReanalyzeCurrentProject.setIcon(icon5)
+        self.actionReanalyzeCurrentProject.setObjectName(_fromUtf8("actionReanalyzeCurrentProject"))
         self.menuNewProject.addAction(self.actionNewPersonProject)
         self.menuExport.addAction(self.actionExportKML)
         self.menuExport.addAction(self.actionExportCSV)
@@ -402,6 +404,8 @@ class Ui_CreepyMainWindow(object):
         self.actionExportFilteredKML.setToolTip(QtGui.QApplication.translate("CreepyMainWindow", "Export  currently visible locations as a KML file", None, QtGui.QApplication.UnicodeUTF8))
         self.actionExportFilteredCSV.setText(QtGui.QApplication.translate("CreepyMainWindow", "Export Filtered Locations as CSV", None, QtGui.QApplication.UnicodeUTF8))
         self.actionExportFilteredCSV.setToolTip(QtGui.QApplication.translate("CreepyMainWindow", "Export currently visible locations as CSV", None, QtGui.QApplication.UnicodeUTF8))
+        self.actionReanalyzeCurrentProject.setText(QtGui.QApplication.translate("CreepyMainWindow", "Reanalyze Current Project", None, QtGui.QApplication.UnicodeUTF8))
+        self.actionReanalyzeCurrentProject.setToolTip(QtGui.QApplication.translate("CreepyMainWindow", "Reanalyze Current Project", None, QtGui.QApplication.UnicodeUTF8))
 
 from PyQt4 import QtWebKit
 import creepy_resources_rc

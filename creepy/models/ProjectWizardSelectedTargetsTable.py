@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from PyQt4.QtCore import QVariant, QAbstractTableModel, Qt
 from PyQt4.Qt import QDataStream, QIODevice, QModelIndex
 
@@ -22,15 +23,15 @@ class ProjectWizardSelectedTargetsTable(QAbstractTableModel):
             return QVariant()
         if orientation == Qt.Horizontal:
             if section == 0:
-                return QVariant("Plugin")
+                return QVariant('Plugin')
             elif section == 1:
-                return QVariant("Picture")
+                return QVariant('Picture')
             elif section == 2:
-                return QVariant("Username")
+                return QVariant('Username')
             elif section == 3:
-                return QVariant("Full Name")
+                return QVariant('Full Name')
             elif section == 4:
-                return QVariant("User Id")
+                return QVariant('User Id')
         return QVariant(int(section + 1))
 
     
@@ -59,6 +60,12 @@ class ProjectWizardSelectedTargetsTable(QAbstractTableModel):
             else: 
                 return QVariant()
 
+    def removeRows(self, rows, count, parent=QModelIndex()):
+        for row in rows:
+            if row in self.targets:
+                self.targets.remove(row)
+                self.beginRemoveRows(parent, len(self.targets), len(self.targets))
+                self.endRemoveRows()
     
     def insertRow(self, row, parent=QModelIndex()):
         self.insertRows(row, 1, parent)
@@ -76,11 +83,11 @@ class ProjectWizardSelectedTargetsTable(QAbstractTableModel):
         return Qt.ItemFlags(QAbstractTableModel.flags(self, index)|Qt.ItemIsDropEnabled)
         
     def mimeTypes(self):
-        return [ "application/target.tableitem.creepy" ] 
+        return [ 'application/target.tableitem.creepy' ] 
         
     def dropMimeData(self, data, action, row, column, parent):
-        if data.hasFormat("application/target.tableitem.creepy"):
-            encodedData = data.data("application/target.tableitem.creepy")
+        if data.hasFormat('application/target.tableitem.creepy'):
+            encodedData = data.data('application/target.tableitem.creepy')
             stream = QDataStream(encodedData, QIODevice.ReadOnly)
             columnsList = []
             qVariant = QVariant()

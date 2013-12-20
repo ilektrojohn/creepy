@@ -357,7 +357,7 @@
     <enum>TopToolBarArea</enum>
    </attribute>
    <attribute name="toolBarBreak">
-    <bool>true</bool>
+    <bool>false</bool>
    </attribute>
    <addaction name="actionNewPersonProject"/>
    <addaction name="actionPluginsConfiguration"/>
@@ -619,6 +619,18 @@
    </property>
    <property name="toolTip">
     <string>Export currently visible locations as CSV</string>
+   </property>
+  </action>
+  <action name="actionReanalyzeCurrentProject">
+   <property name="icon">
+    <iconset>
+     <normaloff>:/cr/creepy32.png</normaloff>:/cr/creepy32.png</iconset>
+   </property>
+   <property name="text">
+    <string>Reanalyze Current Project</string>
+   </property>
+   <property name="toolTip">
+    <string>Reanalyze Current Project</string>
    </property>
   </action>
  </widget>

@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import hashlib
 class Location(object):
     def __init__(self, plugin=None, datetime=None, longitude=0, latitude=0,context=None, shortName=None,longName=None,streetNumber=None,route=None,locality=None,postalCode=None,country=None, visible=True):

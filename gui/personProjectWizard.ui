@@ -115,7 +115,7 @@
     <string>Step 2 - Set the target</string>
    </property>
    <property name="subTitle">
-    <string>Search for the person you want to track using the available plugins and add it to the selected targets</string>
+    <string>Search for the person you want to track using the available plugins and add it to the &lt;font color=&quot;red&quot;&gt;selected targets&lt;/font&gt; by drag and drop or by clicking &quot;Add To Targets&quot;</string>
    </property>
    <layout class="QGridLayout" name="gridLayout">
     <item row="5" column="3">
@@ -136,7 +136,7 @@
       <item>
        <widget class="QPushButton" name="btnAddTarget">
         <property name="text">
-         <string>Add Target</string>
+         <string>Add To Targets</string>
         </property>
        </widget>
       </item>
@@ -157,7 +157,7 @@
        <enum>Qt::CopyAction</enum>
       </property>
       <property name="selectionMode">
-       <enum>QAbstractItemView::SingleSelection</enum>
+       <enum>QAbstractItemView::MultiSelection</enum>
       </property>
       <property name="selectionBehavior">
        <enum>QAbstractItemView::SelectRows</enum>
@@ -226,28 +226,28 @@
     <item row="0" column="0" colspan="2">
      <widget class="QLabel" name="personProjectSearchForLabel">
       <property name="text">
-       <string>Search for</string>
+       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Search for&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
       </property>
      </widget>
     </item>
     <item row="4" column="0">
      <widget class="QLabel" name="personProjectSearchResultsLabel">
       <property name="text">
-       <string>Search Results </string>
+       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Search Results &lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
       </property>
      </widget>
     </item>
     <item row="8" column="0">
      <widget class="QLabel" name="personProjectSelectedTargetsLabel">
       <property name="text">
-       <string>Selected Targets</string>
+       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600; color:#ff0000;&quot;&gt;Selected Targets&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
       </property>
      </widget>
     </item>
     <item row="1" column="0" colspan="2">
      <widget class="QLabel" name="personProjectSearchInLabel">
       <property name="text">
-       <string>Search In</string>
+       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Search In&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
       </property>
      </widget>
     </item>
@@ -287,7 +287,7 @@
         <rect>
          <x>0</x>
          <y>0</y>
-         <width>760</width>
+         <width>744</width>
          <height>153</height>
         </rect>
        </property>
@@ -373,7 +373,7 @@
       <item>
        <widget class="QPushButton" name="btnRemoveTarget">
         <property name="text">
-         <string>Remove Target</string>
+         <string>Remove Selected</string>
         </property>
        </widget>
       </item>

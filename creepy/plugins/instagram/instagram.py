@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from models.InputPlugin import InputPlugin
 import os
 from PyQt4 import QtGui

@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import shelve
 import os
 import logging
@@ -26,24 +27,24 @@ class Project(object):
         self.isAnalysisRunning = False
         
     def storeProject(self, projectNodeObject):
-        """
+        '''
         Receives a projectNodeObject and stores it using the selected data persistence method. 
         Decoupled here for flexibility
-        """
-        projectName = projectNodeObject.name()+".db"
+        '''
+        projectName = projectNodeObject.name()+'.db'
         
-        storedProject = shelve.open(os.path.join(os.getcwd(),"projects",projectName))
+        storedProject = shelve.open(os.path.join(os.getcwd(),'projects',projectName))
         try:
             storedProject['project'] = projectNodeObject
         except Exception,err:
-            logging.log(logging.ERROR, "Error saving the project ")
-            logging.exception(err)
+            logger.error('Error saving the project ')
+            logger.exception(err)
         finally:
             storedProject.close()
     
     def deleteProject(self, projectName):
         try:
-            os.remove(os.path.join(os.getcwd(),"projects",projectName))
+            os.remove(os.path.join(os.getcwd(),'projects',projectName))
         except Exception,err:
-            logging.log(logging.ERROR, "Error deleting the project ")
-            logging.exception(err)
+            logger.error('Error deleting the project')
+            logger.exception(err)

@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from models.InputPlugin import InputPlugin
 import flickrapi
 import datetime
@@ -50,14 +51,16 @@ class Flickr(InputPlugin):
             for userid in results.find('user').items():
                 possibleTargets.append(self.getUserInfo(userid[1]))
                 
-        except FlickrError, e:
+        except Exception, e:
             logger.error(e)
             if e.message == 'Error: 1: User not found':
                 logger.info("No results for search query "+search_term+" from Flickr Plugin")
-            return None
         logger.debug(str(len(possibleTargets))+" possible targets were found matching the search query")
         #Flickr returns 2 entries per user, one with nsid and one with id , they are exactly the same
-        return [dict(t) for t in set([tuple(d.items()) for d in possibleTargets])]
+        if possibleTargets:
+            return [dict(t) for t in set([tuple(d.items()) for d in possibleTargets])]
+        else:
+            return []
     
     def getUserInfo(self, userId):
         """

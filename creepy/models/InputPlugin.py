@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from yapsy.IPlugin import IPlugin
 from configobj import ConfigObj
 import logging
@@ -13,16 +14,7 @@ formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(messag
 fh.setFormatter(formatter)
 logger.addHandler(fh)
 
-'''
-Created on Jan 19, 2013
-
-@author: ioannis
-'''
-
 class InputPlugin(IPlugin):
-    '''
-    classdocs
-    '''
 
     def __init__(self):
         pass
@@ -54,43 +46,41 @@ class InputPlugin(IPlugin):
         return config
     
     def readConfiguration(self, category):
-        config_filename = self.name+".conf"
+        config_filename = self.name+'.conf'
         config_file = os.path.join(os.getcwd(),'plugins', self.name, config_filename)
         config = ConfigObj(infile=config_file)
         config.create_empty=False
         try:
-            logger.debug("Trying to load the "+category+" for the "+self.name+" plugin .")
             options = config[category]
         except Exception,err:
             options = None 
-            logger.error("Could not load the "+category+" for the "+self.name+" plugin .")  
-            logger.exception(err) 
+            logger.error('Could not load the '+category+' for the '+self.name+' plugin .')
+            logger.exception(err)
         return config,options
+
     def saveConfiguration(self, new_config):
-        config_filename = self.name+".conf"
+        config_filename = self.name+'.conf'
         config_file = os.path.join(os.getcwd(),'plugins',self.name, config_filename)
         config = ConfigObj(infile=config_file)
         config.create_empty=False
         try:
-            logger.debug("Trying to save the configuration for the "+self.name+" plugin .")
             config['string_options'] = new_config['string_options']
             config['boolean_options'] = new_config['boolean_options']
             config.write()
         except Exception, err:
-            logger.error("Could not save the configuration for the "+self.name+" plugin .")
+            logger.error('Could not save the configuration for the '+self.name+' plugin.')
             logger.exception(err)
-            
+
     def loadSearchConfigurationParameters(self):
-        config_filename = self.name+".conf"
+        config_filename = self.name+'.conf'
         config_file = os.path.join(os.getcwd(),  'plugins', self.name, config_filename)
         config = ConfigObj(infile=config_file)
         config.create_empty = False
         try:
-            logger.debug("Trying to load the search configuration parameters for the "+self.name+" plugin .")
             params = config['search_options']
         except Exception, err:
             params= None
-            logger.error("Could not load the search configuration parameters for the "+self.name+" plugin .")
+            logger.error('Could not load the search configuration parameters for the '+self.name+' plugin.')
             logger.exception(err)
         
         return params    
