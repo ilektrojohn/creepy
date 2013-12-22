@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from models.InputPlugin import InputPlugin
 import os
-from PyQt4 import QtGui
+from PyQt4.QtGui import QLabel, QLineEdit, QWizard, QWizardPage, QVBoxLayout, QTextEdit, QMessageBox
 from instagram.client import InstagramAPI
 import logging
 import urllib
@@ -126,12 +126,12 @@ class Instagram(InputPlugin):
             
             
             
-            wizard = QtGui.QWizard()
-            page1 = QtGui.QWizardPage()
+            wizard = QWizard()
+            page1 = QWizardPage()
             
-            layout1 = QtGui.QVBoxLayout()
+            layout1 = QVBoxLayout()
             
-            txtArea = QtGui.QTextEdit()
+            txtArea = QTextEdit()
             txtArea.setReadOnly(True)
             txtArea.setText("Please copy the following link to your browser window. \n \n"+
                             url +"\n \n"
@@ -139,9 +139,9 @@ class Instagram(InputPlugin):
                             "https://creepy.ilektrojohn.com?code=xxxxxxxxxxxxxxx . \n \n"+
                             "Copy this link to the text box below and click on Finish to complete authorization");
 #            label1a = QtGui.QLabel("Click next to connect to instagram.com . Please login with your account in order to authorize creepy")
-            inputLink = QtGui.QLineEdit()
+            inputLink = QLineEdit()
             inputLink.setObjectName("inputLink")
-            labelLink = QtGui.QLabel("Link from browser:")
+            labelLink = QLabel("Link from browser:")
             '''
             html = QtWebKit.QWebView()
             html.load(QtCore.QUrl(url))
@@ -179,7 +179,7 @@ class Instagram(InputPlugin):
             return None
         
     def showWarning(self, title, text):
-        QtGui.QMessageBox.warning(self, title, text)   
+        QMessageBox.warning(self, title, text)   
         
     def constructContextInfoWindow(self, photo):
         html = self.options_string['infowindow_html']

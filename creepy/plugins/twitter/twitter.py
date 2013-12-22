@@ -4,7 +4,9 @@ import tweepy
 import logging
 import os
 import urllib
-from PyQt4 import QtGui, QtWebKit, QtCore
+from PyQt4.QtGui import QWizard, QWizardPage, QLabel, QLineEdit, QVBoxLayout, QHBoxLayout, QMessageBox
+from PyQt4.QtCore import QUrl
+from PyQt4.QtWebKit import QWebView
 from tweepy import Cursor
 from utilities import GeneralUtilities
 from configobj import ConfigObj
@@ -86,22 +88,22 @@ class Twitter(InputPlugin):
             
             
             
-            wizard = QtGui.QWizard()
-            page1 = QtGui.QWizardPage()
-            page2 = QtGui.QWizardPage()
-            layout1 = QtGui.QVBoxLayout()
-            layout2 = QtGui.QVBoxLayout()
-            layoutInputPin = QtGui.QHBoxLayout()
+            wizard = QWizard()
+            page1 = QWizardPage()
+            page2 = QWizardPage()
+            layout1 = QVBoxLayout()
+            layout2 = QVBoxLayout()
+            layoutInputPin = QHBoxLayout()
             
-            label1a = QtGui.QLabel("Click next to connect to twitter.com . Please login with your account and follow the instructions in order to authorize creepy")
-            label2a = QtGui.QLabel("Copy the PIN that you will receive once you authorize cree.py in the field below and click finish")
-            pinLabel = QtGui.QLabel("PIN")
-            inputPin = QtGui.QLineEdit()
+            label1a = QLabel("Click next to connect to twitter.com . Please login with your account and follow the instructions in order to authorize creepy")
+            label2a = QLabel("Copy the PIN that you will receive once you authorize cree.py in the field below and click finish")
+            pinLabel = QLabel("PIN")
+            inputPin = QLineEdit()
             inputPin.setObjectName("inputPin")
             
             
-            html = QtWebKit.QWebView()
-            html.load(QtCore.QUrl(authorizationURL))
+            html = QWebView()
+            html.load(QUrl(authorizationURL))
             
             layout1.addWidget(label1a)
             layout2.addWidget(html)
@@ -134,7 +136,7 @@ class Twitter(InputPlugin):
         
         
     def showWarning(self, title, text):
-        QtGui.QMessageBox.warning(self, title, text)  
+        QMessageBox.warning(self, title, text)  
         
     """
     Returns the authorization URL for Twitter or None if there was an exception

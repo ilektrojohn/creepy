@@ -1,33 +1,32 @@
 # -*- coding: utf-8 -*-
-# import main libraries
-import sys, datetime, os
-import shelve, logging
-from PyQt4 import QtCore, QtGui, QtWebKit
-# import the UI
+import sys
+import datetime
+import os
+import logging
+import shelve
+import functools
+import csv
+from PyQt4.QtCore import QString, QThread, SIGNAL, QUrl, QDateTime, QDate, QRect, Qt
+from PyQt4.QtGui import QMainWindow, QApplication, QMessageBox, QFileDialog, QWidget, QScrollArea, QVBoxLayout
+from PyQt4.QtGui import QHBoxLayout, QLabel, QLineEdit, QCheckBox, QPushButton, QStackedWidget,QGridLayout, QMenu
+from PyQt4.QtWebKit import QWebPage
 from ui.CreepyUI import Ui_CreepyMainWindow
-from ui.CreepyPluginsConfigurationDialog import Ui_PluginsConfigurationDialog
-from ui.CreepyPersonProjectWizard import Ui_personProjectWizard
-from ui.CreepyPluginConfigurationCheckdialog import Ui_checkPluginConfigurationDialog
-from ui.FilterLocationsDateDialog import Ui_FilterLocationsDateDialog
-from ui.FilterLocationsPointDialog import Ui_FilteLocationsPointDialog
-from ui.AboutDialog import Ui_aboutDialog
-from ui.VerifyDeleteDialog import Ui_verifyDeleteDialog
-# import creepy related modules
 from yapsy.PluginManager import PluginManagerSingleton
 from models.LocationsList import LocationsTableModel
 from models.Project import Project
 from models.Location import Location
 from models.PluginConfigurationListModel import PluginConfigurationListModel
 from models.ProjectWizardPluginListModel import ProjectWizardPluginListModel
-from models.ProjectWizardPossibleTargetsTable import ProjectWizardPossibleTargetsTable
 from models.ProjectWizardSelectedTargetsTable import ProjectWizardSelectedTargetsTable
 from models.InputPlugin import InputPlugin
-from models.ProjectTree import *
+from models.ProjectTree import ProjectNode, AnalysisNode, LocationsNode, ProjectTreeModel,ProjectTreeNode
+from components.PersonProjectWizard import PersonProjectWizard
+from components.PluginsConfigurationDialog import PluginsConfigurationDialog
+from components.FilterLocationsDateDialog import FilterLocationsDateDialog
+from components.FilterLocationsPointDialog import FilterLocationsPointDialog
+from components.AboutDialog import AboutDialog
+from components.VerifyDeleteDialog import VerifyDeleteDialog
 from utilities import GeneralUtilities
-import functools
-import csv
-
-
 # set up logging
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
@@ -40,324 +39,16 @@ logger.addHandler(fh)
 #sys.stdout = open(os.path.join(GeneralUtilities.getUserHome(),'creepy_stdout.log'), 'w')
 #sys.stderr = open(os.path.join(GeneralUtilities.getUserHome(),'creepy_stderr.log'), 'w')
 try:
-    _fromUtf8 = QtCore.QString.fromUtf8
+    _fromUtf8 = QString.fromUtf8
 except AttributeError:
     _fromUtf8 = lambda s: s
 
-class PluginConfigurationCheckdialog(QtGui.QDialog):
-    """
-    Loads the Plugin Configuration Check Dialog that provides information indicating
-    if a plugin is configured or not
-    """
-    def __init__(self, parent=None):
-        # Load the UI from the python file
-        QtGui.QDialog.__init__(self, parent)
-        self.ui = Ui_checkPluginConfigurationDialog()
-        self.ui.setupUi(self)
-        self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
-
-class PersonProjectWizard(QtGui.QWizard):
-    """ Loads the Person Based Project Wizard from the ui and shows it """
-    def __init__(self, parent=None):
-        QtGui.QWizard.__init__(self, parent)
-        self.ui = Ui_personProjectWizard()
-        self.ui.setupUi(self)
-        self.selectedTargets = []
-        self.enabledPlugins = []
-        # Register the project name field so that it will become mandatory
-        self.page(0).registerField('name*', self.ui.personProjectNameValue)
-        
-        self.ui.btnAddTarget.clicked.connect(self.addTargetsToSelected)
-        self.ui.btnRemoveTarget.clicked.connect(self.removeTargetsFromSelected)
-        self.ui.personProjectSearchForValue.returnPressed.connect(self.ui.personProjectSearchButton.setFocus)
-        
-    def addTargetsToSelected(self):
-        selected = self.ui.personProjectSearchResultsTable.selectionModel().selectedRows()
-        newTargets = [self.ui.personProjectSearchResultsTable.model().targets[i.row()] for i in selected]
-        self.ui.personProjectSelectedTargetsTable.model().insertRows(newTargets, len(newTargets))
-
-    def removeTargetsFromSelected(self):
-        selected = self.ui.personProjectSelectedTargetsTable.selectionModel().selectedRows()
-        toRemove = [self.ui.personProjectSelectedTargetsTable.model().targets[i.row()] for i in selected]
-        self.ui.personProjectSelectedTargetsTable.model().removeRows(toRemove, len(toRemove))
-    def showWarning(self, title, text):
-        QtGui.QMessageBox.warning(self, title, text)
-        
-    def initializePage(self, i):
-        """
-        If the page to be loaded is the page containing the search
-        options for our plugins, store the selected targets and load the relative search options based on the 
-        selected target.
-        Also check if the selected plugins are empty and return the user back. 
-        <TODO>
-        This should be done with registering a field for the selectedTargets TableView 
-        """
-        if i == 2:
-            self.checkIfSelectedTargets()
-            self.storeSelectedTargets()
-            self.showPluginsSearchOptions()
-            
-        
-    def checkIfSelectedTargets(self):
-        if not self.ProjectWizardSelectedTargetsTable.targets:
-            self.showWarning('No target selected', 'Please drag and drop your targets to the selected targets before proceeding')
-            self.back()
-            self.next()
-    
-    def storeSelectedTargets(self):
-        '''
-        Stores a list of the selected targets for future use
-        '''
-        self.selectedTargets = []
-        for target in self.ProjectWizardSelectedTargetsTable.targets:
-            self.selectedTargets.append({'pluginName':target['pluginName'],
-                                         'targetUsername':target['targetUsername'],
-                                         'targetUserid':target['targetUserid'],
-                                         'targetFullname':target['targetFullname']
-                                         })
-
-    def searchForTargets(self):
-        '''
-        Iterates the selected plugins and for each one performs a search with the given criteria. It
-        then populates the PossibleTargets ListModel with the results
-        '''
-        search_term = self.ui.personProjectSearchForValue.text().toUtf8()
-        if not search_term:
-            self.showWarning(self.trUtf8('Empty Search Term'), self.trUtf8('Please enter a search term'))
-        else:
-            selectedPlugins = list(self.ProjectWizardPluginListModel.checkedPlugins)
-            possibleTargets = []
-            for i in selectedPlugins:
-                pluginTargets = self.PluginManager.getPluginByName(i, 'Input').plugin_object.searchForTargets(search_term)
-                
-                if pluginTargets:
-                    possibleTargets.extend(pluginTargets)
-                
-            self.ProjectWizardPossibleTargetsTable = ProjectWizardPossibleTargetsTable(possibleTargets, self)
-            self.ui.personProjectSearchResultsTable.setModel(self.ProjectWizardPossibleTargetsTable)
-            
-            self.ui.personProjectSelectedTargetsTable.setModel(self.ProjectWizardSelectedTargetsTable)
-        
-    
-    def loadConfiguredPlugins(self):
-        '''
-        Returns a list with the configured plugins that can be used
-        '''
-        self.PluginManager = PluginManagerSingleton.get()
-        self.PluginManager.setCategoriesFilter({ 'Input': InputPlugin})
-        self.PluginManager.setPluginPlaces([os.path.join(os.getcwd(), 'plugins')])
-        self.PluginManager.locatePlugins()
-        self.PluginManager.loadPlugins()
-        pluginList = sorted(self.PluginManager.getAllPlugins(), key=lambda x: x.name)
-        return [[plugin, 0] for plugin in pluginList ]
-    
-    def getNameForConfigurationOption(self, key):
-        pass
-            
-    def showPluginsSearchOptions(self):
-        '''
-        Loads the search options of all the selected plugins and populates the relevant UI elements
-        with input fields for the string options and checkboxes for the boolean options
-        '''
-        pl = []
-        for pluginName in list(set([target['pluginName'] for target in self.ProjectWizardSelectedTargetsTable.targets])):
-            plugin = self.PluginManager.getPluginByName(pluginName, 'Input')
-            self.enabledPlugins.append(plugin)
-            pl.append(plugin)
-            '''
-            Build the configuration page from the available saerch options
-            and add the page to the stackwidget
-            '''
-            page = QtGui.QWidget()
-            page.setObjectName(_fromUtf8('searchconfig_page_' + plugin.name))
-            scroll = QtGui.QScrollArea()
-            scroll.setWidgetResizable(True)
-            layout = QtGui.QVBoxLayout()
-            titleLabel = QtGui.QLabel(_fromUtf8(plugin.name + self.trUtf8(' Search Options')))
-            layout.addWidget(titleLabel)    
-            vboxWidget = QtGui.QWidget()
-            vboxWidget.setObjectName(_fromUtf8('searchconfig_vboxwidget_container_' + plugin.name))
-            vbox = QtGui.QGridLayout()
-            vbox.setObjectName(_fromUtf8('searchconfig_vbox_container_' + plugin.name))
-            gridLayoutRowIndex = 0
-            '''
-            Load the String options first
-            '''
-            pluginStringOptions = plugin.plugin_object.readConfiguration('search_string_options')[1]
-            if pluginStringOptions:
-                for idx, item in enumerate(pluginStringOptions.keys()):
-                    itemLabel = plugin.plugin_object.getLabelForKey(item)
-                    label = QtGui.QLabel()
-                    label.setObjectName(_fromUtf8('searchconfig_string_label_' + item))
-                    label.setText(itemLabel)
-                    vbox.addWidget(label, idx, 0)
-                    value = QtGui.QLineEdit()
-                    value.setObjectName(_fromUtf8('searchconfig_string_value_' + item))
-                    value.setText(pluginStringOptions[item])
-                    vbox.addWidget(value, idx, 1)
-                    gridLayoutRowIndex = idx + 1
-            '''
-            Load the boolean options 
-            '''
-            pluginBooleanOptions = plugin.plugin_object.readConfiguration('search_boolean_options')[1]
-            if pluginBooleanOptions:
-                for idx, item in enumerate(pluginBooleanOptions.keys()):
-                    itemLabel = plugin.plugin_object.getLabelForKey(item)
-                    cb = QtGui.QCheckBox(itemLabel)
-                    cb.setObjectName(_fromUtf8('searchconfig_boolean_label_' + item))
-                    if pluginBooleanOptions[item] == 'True':
-                        cb.toggle()
-                    vbox.addWidget(cb, gridLayoutRowIndex + idx, 0)
-            #If there are no search options just show a message 
-            if not pluginBooleanOptions and not pluginStringOptions:
-                label = QtGui.QLabel()
-                label.setObjectName(_fromUtf8('no_search_config_options'))
-                label.setText(self.trUtf8('This plugin does not offer any search options.'))
-                vbox.addWidget(label,0,0)
-            
-            vboxWidget.setLayout(vbox)
-            scroll.setWidget(vboxWidget)
-            layout.addWidget(scroll)
-            layout.addStretch(1)
-            page.setLayout(layout)
-            self.ui.searchConfiguration.addWidget(page)
-            
-            
-        self.ui.searchConfiguration.setCurrentIndex(0)   
-            
-        self.SearchConfigPluginConfigurationListModel = PluginConfigurationListModel(pl, self)
-        self.SearchConfigPluginConfigurationListModel.checkPluginConfiguration()
-        self.ui.personProjectWizardSearchConfigPluginsList.setModel(self.SearchConfigPluginConfigurationListModel)
-        self.ui.personProjectWizardSearchConfigPluginsList.clicked.connect(self.changePluginConfigurationPage)
-
-
-    def changePluginConfigurationPage(self, modelIndex):
-        '''
-        Called when the user clicks on a plugin in the list of the PluginConfiguration. This shows
-        the relevant page with that plugin's configuration options
-        '''
-        self.ui.searchConfiguration.setCurrentIndex(modelIndex.row())   
-        
-    def readSearchConfiguration(self):  
-        '''
-        Reads all the search configuration options for the enabled plugins and and returns a list of the enabled plugins and their options.
-        ''' 
-        enabledPlugins = []
-        pages = (self.ui.searchConfiguration.widget(i) for i in range(self.ui.searchConfiguration.count()))
-        for page in pages:
-            for widg in [ scrollarea.children() for scrollarea in page.children() if type(scrollarea) == QtGui.QScrollArea]:
-                for i in widg[0].children():
-                    plugin_name = str(i.objectName().replace('searchconfig_vboxwidget_container_', ''))
-                    string_options = {}
-                    for j in i.findChildren(QtGui.QLabel):
-                        if str(j.text()).startswith('searchconfig'):
-                            string_options[str(j.objectName().replace('searchconfig_string_label_', ''))] = str(i.findChild(QtGui.QLineEdit, j.objectName().replace('label', 'value')).text())
-                    boolean_options = {}    
-                    for k in i.findChildren(QtGui.QCheckBox):
-                        boolean_options[str(k.objectName().replace('searchconfig_boolean_label_', ''))] = str(k.isChecked())  
-                    
-            enabledPlugins.append({'pluginName':plugin_name, 'searchOptions':{'string':string_options, 'boolean':boolean_options}})       
-        return enabledPlugins
-
-class FilterLocationsDateDialog(QtGui.QDialog):
-    def __init__(self, parent=None):
-        # Load the UI from the python file
-        QtGui.QDialog.__init__(self, parent)
-        self.ui = Ui_FilterLocationsDateDialog()
-        self.ui.setupUi(self)
-        
-class FilterLocationsPointDialog(QtGui.QDialog):
-    def __init__(self, parent=None):
-        # Load the UI from the python file
-        QtGui.QDialog.__init__(self, parent)
-        self.ui = Ui_FilteLocationsPointDialog()
-        self.ui.setupUi(self)
-        self.unit = 'km'
-    
-    def onUnitChanged(self, index):
-        self.unit = index 
-
-    class pyObj(QtCore.QObject):
-        def __init__(self, parent=None):
-            QtCore.QObject.__init__(self)
-            self.selectedLat = None
-            self.selectedLng = None
-        @QtCore.pyqtSlot(str)     
-        def setLatLng(self, latlng):
-            lat, lng = latlng.replace('(', '').replace(')', '').split(',')
-            self.lat = float(lat)
-            self.lng = float(lng)
-            
-class AboutDialog(QtGui.QDialog):
-    def __init__(self, parent=None):           
-        QtGui.QDialog.__init__(self, parent)
-        self.ui = Ui_aboutDialog()
-        self.ui.setupUi(self)
-
-class VerifyDeleteDialog(QtGui.QDialog):
-    def __init__(self, parent=None):
-        QtGui.QDialog.__init__(self, parent)
-        self.ui = Ui_verifyDeleteDialog()
-        self.ui.setupUi(self)
-                
-class PluginsConfigurationDialog(QtGui.QDialog):
-    def __init__(self, parent=None):
-        
-        # Load the installed plugins and read their metadata
-        self.PluginManager = PluginManagerSingleton.get()
-        self.PluginManager.setCategoriesFilter({'Input': InputPlugin})
-        self.PluginManager.setPluginPlaces([os.path.join(os.getcwd(), 'plugins')])
-        self.PluginManager.locatePlugins()
-        self.PluginManager.loadPlugins()
-        
-        # Load the UI from the python file
-        QtGui.QDialog.__init__(self, parent)
-        self.ui = Ui_PluginsConfigurationDialog()
-        self.ui.setupUi(self)
-        # self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
-        
-    def checkPluginConfiguration(self, plugin):
-        '''
-        Calls the isConfigured of the selected Plugin and provides a popup window with the result
-        '''
-        self.saveConfiguration()
-        checkPluginConfigurationResultDialog = PluginConfigurationCheckdialog()
-        isConfigured = plugin.plugin_object.isConfigured()
-        if isConfigured[0]:
-            checkPluginConfigurationResultDialog.ui.checkPluginConfigurationResultLabel.setText(plugin.name + self.trUtf8(' is correctly configured.') + isConfigured[1])
-        else:
-            checkPluginConfigurationResultDialog.ui.checkPluginConfigurationResultLabel.setText(plugin.name + self.trUtf8(' is not correctly configured.') + isConfigured[1])
-        checkPluginConfigurationResultDialog.exec_()
-    
-         
-    def saveConfiguration(self):  
-        '''
-        Reads all the configuration options for the plugins and calls the saveConfiguration method of all the plugins.
-        ''' 
-        pages = (self.ui.ConfigurationDetails.widget(i) for i in range(self.ui.ConfigurationDetails.count()))
-        for page in pages:
-            for widg in [ scrollarea.children() for scrollarea in page.children() if type(scrollarea) == QtGui.QScrollArea]:
-                for i in widg[0].children():
-                    config_options = {}
-                    plugin_name = i.objectName().replace('vboxwidget_container_', '')
-                    string_options = {}
-                    for j in i.findChildren(QtGui.QLabel):
-                        string_options[str(j.objectName().replace('string_label_', ''))] = str(i.findChild(QtGui.QLineEdit, j.objectName().replace('label', 'value')).text())
-                    boolean_options = {}    
-                    for k in i.findChildren(QtGui.QCheckBox):
-                        boolean_options[str(k.objectName().replace('boolean_label_', ''))] = str(k.isChecked())  
-                        
-                    config_options['string_options'] = string_options
-                    config_options['boolean_options'] = boolean_options
-                    plugin = self.PluginManager.getPluginByName(plugin_name, 'Input')
-                    if plugin:
-                        plugin.plugin_object.saveConfiguration(config_options)
                        
-class MainWindow(QtGui.QMainWindow):
+class MainWindow(QMainWindow):
     
-    class analyzeProjectThread(QtCore.QThread):
+    class analyzeProjectThread(QThread):
         def __init__(self, project):
-            QtCore.QThread.__init__(self)
+            QThread.__init__(self)
             self.project = project
         def run(self):
             pluginManager = PluginManagerSingleton.get()
@@ -392,11 +83,11 @@ class MainWindow(QtGui.QMainWindow):
             # sort on date 
             self.project.locations.sort(key=lambda x: x.datetime, reverse=True)
                    
-            self.emit(QtCore.SIGNAL('locations(PyQt_PyObject)'), self.project)
+            self.emit(SIGNAL('locations(PyQt_PyObject)'), self.project)
 
     def __init__(self, parent=None):
         # Load the UI Class as self.ui
-        QtGui.QWidget.__init__(self, parent)
+        QWidget.__init__(self, parent)
         self.ui = Ui_CreepyMainWindow()
         self.ui.setupUi(self)
         self.projectsList = []
@@ -407,8 +98,8 @@ class MainWindow(QtGui.QMainWindow):
        
         # Load the map in the mapWebView using GoogleMaps JS API
         
-        self.ui.webPage = QtWebKit.QWebPage()
-        self.ui.webPage.mainFrame().setUrl(QtCore.QUrl(os.path.join(os.getcwd(), 'include', 'map.html')))
+        self.ui.webPage = QWebPage()
+        self.ui.webPage.mainFrame().setUrl(QUrl(os.path.join(os.getcwd(), 'include', 'map.html')))
         self.ui.mapWebView.setPage(self.ui.webPage)
         
         # Add the toggleViewActions for the Docked widgets in the View Menu
@@ -442,12 +133,12 @@ class MainWindow(QtGui.QMainWindow):
         
     def showFilterLocationsPointDialog(self):
         filterLocationsPointDialog = FilterLocationsPointDialog()
-        filterLocationsPointDialog.ui.mapPage = QtWebKit.QWebPage()
+        filterLocationsPointDialog.ui.mapPage = QWebPage()
         myPyObj = filterLocationsPointDialog.pyObj()
         filterLocationsPointDialog.ui.mapPage.mainFrame().addToJavaScriptWindowObject('myPyObj', myPyObj)  
-        filterLocationsPointDialog.ui.mapPage.mainFrame().setUrl(QtCore.QUrl(os.path.join(os.getcwd(), 'include', 'mapSetPoint.html')))
-        filterLocationsPointDialog.ui.radiusUnitComboBox.insertItem(0, QtCore.QString('km'))
-        filterLocationsPointDialog.ui.radiusUnitComboBox.insertItem(1, QtCore.QString('m'))
+        filterLocationsPointDialog.ui.mapPage.mainFrame().setUrl(QUrl(os.path.join(os.getcwd(), 'include', 'mapSetPoint.html')))
+        filterLocationsPointDialog.ui.radiusUnitComboBox.insertItem(0, QString('km'))
+        filterLocationsPointDialog.ui.radiusUnitComboBox.insertItem(1, QString('m'))
         filterLocationsPointDialog.ui.radiusUnitComboBox.activated[str].connect(filterLocationsPointDialog.onUnitChanged)
         filterLocationsPointDialog.ui.webView.setPage(filterLocationsPointDialog.ui.mapPage)
         filterLocationsPointDialog.show()
@@ -463,11 +154,11 @@ class MainWindow(QtGui.QMainWindow):
     def showFilterLocationsDateDialog(self):
         filterLocationsDateDialog = FilterLocationsDateDialog()
         #Disable future dates
-        filterLocationsDateDialog.ui.endDateCalendarWidget.setMaximumDate(QtCore.QDate.currentDate())
+        filterLocationsDateDialog.ui.endDateCalendarWidget.setMaximumDate(QDate.currentDate())
         filterLocationsDateDialog.show()
         if filterLocationsDateDialog.exec_():
-            startDateTime = QtCore.QDateTime(filterLocationsDateDialog.ui.stardateCalendarWidget.selectedDate(), filterLocationsDateDialog.ui.startDateTimeEdit.time()).toPyDateTime()
-            endDateTime = QtCore.QDateTime(filterLocationsDateDialog.ui.endDateCalendarWidget.selectedDate(), filterLocationsDateDialog.ui.endDateTimeEdit.time()).toPyDateTime()
+            startDateTime = QDateTime(filterLocationsDateDialog.ui.stardateCalendarWidget.selectedDate(), filterLocationsDateDialog.ui.startDateTimeEdit.time()).toPyDateTime()
+            endDateTime = QDateTime(filterLocationsDateDialog.ui.endDateCalendarWidget.selectedDate(), filterLocationsDateDialog.ui.endDateTimeEdit.time()).toPyDateTime()
             if startDateTime > endDateTime:
                 self.showWarning(self.trUtf8('Invalid Dates'), self.trUtf8('The start date needs to be before the end date.<p> Please try again ! </p>'))
             else:
@@ -511,7 +202,7 @@ class MainWindow(QtGui.QMainWindow):
             pass
 
     def showWarning(self, title, text):
-        QtGui.QMessageBox.warning(self, title, text)
+        QMessageBox.warning(self, title, text)
 
     def toggleHeatMap(self, checked):
         mapFrame = self.ui.webPage.mainFrame()
@@ -531,16 +222,16 @@ class MainWindow(QtGui.QMainWindow):
         mapFrame.evaluateJavaScript('showMarkers()')
 
     def addMarkerToMap(self, mapFrame, location):
-        mapFrame.evaluateJavaScript(QtCore.QString('addMarker(' + str(location.latitude) + ',' + str(location.longitude) + ',\"' + location.infowindow.encode('utf-8') + '\")'))
+        mapFrame.evaluateJavaScript(QString('addMarker(' + str(location.latitude) + ',' + str(location.longitude) + ',\"' + location.infowindow.encode('utf-8') + '\")'))
 
     def centerMap(self, mapFrame, location):
-        mapFrame.evaluateJavaScript(QtCore.QString('centerMap(' + str(location.latitude) + ',' + str(location.longitude) + ')'))
+        mapFrame.evaluateJavaScript(QString('centerMap(' + str(location.latitude) + ',' + str(location.longitude) + ')'))
 
     def setMapZoom(self, mapFrame, level):
-        mapFrame.evaluateJavaScript(QtCore.QString('setZoom(' + str(level) + ')'))
+        mapFrame.evaluateJavaScript(QString('setZoom(' + str(level) + ')'))
 
     def clearMarkers(self, mapFrame):
-        mapFrame.evaluateJavaScript(QtCore.QString('clearMarkers()'))
+        mapFrame.evaluateJavaScript(QString('clearMarkers()'))
 
     def deleteCurrentProject(self, project):
         if not project:
@@ -568,7 +259,7 @@ class MainWindow(QtGui.QMainWindow):
             self.showWarning(self.trUtf8('No locations found'), self.trUtf8('The selected project has no locations to be exported'))
             self.ui.statusbar.showMessage(self.trUtf8('The selected project has no locations to be exported'))
             return
-        fileName = QtGui.QFileDialog.getSaveFileName(None, 'Save CSV export as...', os.getcwd(), 'All files (*.*)')
+        fileName = QFileDialog.getSaveFileName(None, 'Save CSV export as...', os.getcwd(), 'All files (*.*)')
         if fileName:
             try:
                 fileobj = open(fileName, 'wb')
@@ -604,7 +295,7 @@ class MainWindow(QtGui.QMainWindow):
             self.ui.statusbar.showMessage(self.trUtf8('The selected project has no locations to be exported'))
             return
         
-        fileName = QtGui.QFileDialog.getSaveFileName(None, 'Save KML export as...', os.getcwd(), 'All files (*.*)')
+        fileName = QFileDialog.getSaveFileName(None, 'Save KML export as...', os.getcwd(), 'All files (*.*)')
         if fileName:
             try:
                 fileobj = open(fileName, 'wb')
@@ -659,7 +350,7 @@ class MainWindow(QtGui.QMainWindow):
             self.ui.statusbar.showMessage('Analyzing project for locations. Please wait...')
             project.isAnalysisRunning = True
             self.analyzeProjectThreadInstance = self.analyzeProjectThread(project)
-            self.connect(self.analyzeProjectThreadInstance, QtCore.SIGNAL('locations(PyQt_PyObject)'), self.projectAnalysisFinished)
+            self.connect(self.analyzeProjectThreadInstance, SIGNAL('locations(PyQt_PyObject)'), self.projectAnalysisFinished)
             self.analyzeProjectThreadInstance.start()
         else:
             self.showWarning(self.trUtf8('No project selected'), self.trUtf8('Please select a project !'))
@@ -757,8 +448,8 @@ class MainWindow(QtGui.QMainWindow):
         '''
         # Show the stackWidget
         self.pluginsConfigurationDialog = PluginsConfigurationDialog()
-        self.pluginsConfigurationDialog.ui.ConfigurationDetails = QtGui.QStackedWidget(self.pluginsConfigurationDialog)
-        self.pluginsConfigurationDialog.ui.ConfigurationDetails.setGeometry(QtCore.QRect(260, 10, 511, 561))
+        self.pluginsConfigurationDialog.ui.ConfigurationDetails = QStackedWidget(self.pluginsConfigurationDialog)
+        self.pluginsConfigurationDialog.ui.ConfigurationDetails.setGeometry(QRect(260, 10, 511, 561))
         self.pluginsConfigurationDialog.ui.ConfigurationDetails.setObjectName(_fromUtf8('ConfigurationDetails'))
         pl = []
         for plugin in sorted(self.pluginsConfigurationDialog.PluginManager.getAllPlugins(), key=lambda x: x.name):
@@ -767,16 +458,16 @@ class MainWindow(QtGui.QMainWindow):
             Build the configuration page from the available configuration options
             and add the page to the stackwidget
             '''
-            page = QtGui.QWidget()
+            page = QWidget()
             page.setObjectName(_fromUtf8('page_' + plugin.name))
-            scroll = QtGui.QScrollArea()
+            scroll = QScrollArea()
             scroll.setWidgetResizable(True)
-            layout = QtGui.QVBoxLayout()
-            titleLabel = QtGui.QLabel(plugin.name + self.trUtf8(' Configuration Options'))
+            layout = QVBoxLayout()
+            titleLabel = QLabel(plugin.name + self.trUtf8(' Configuration Options'))
             layout.addWidget(titleLabel)    
-            vboxWidget = QtGui.QWidget()
+            vboxWidget = QWidget()
             vboxWidget.setObjectName(_fromUtf8('vboxwidget_container_' + plugin.name))
-            vbox = QtGui.QGridLayout()
+            vbox = QGridLayout()
             vbox.setObjectName(_fromUtf8('vbox_container_' + plugin.name))
             gridLayoutRowIndex = 0
             '''
@@ -786,13 +477,13 @@ class MainWindow(QtGui.QMainWindow):
             if pluginStringOptions != None:
                 for idx, item in enumerate(pluginStringOptions.keys()):
                     itemLabel = plugin.plugin_object.getLabelForKey(item)
-                    label = QtGui.QLabel()
+                    label = QLabel()
                     label.setObjectName(_fromUtf8('string_label_' + item))
                     label.setText(itemLabel)
                     vbox.addWidget(label, idx, 0)
-                    value = QtGui.QLineEdit()
+                    value = QLineEdit()
                     if item.startswith('hidden_'):
-                        value.setEchoMode(QtGui.QLineEdit.Password)
+                        value.setEchoMode(QLineEdit.Password)
                     value.setObjectName(_fromUtf8('string_value_' + item))
                     value.setText(pluginStringOptions[item])
                     vbox.addWidget(value, idx, 1)
@@ -804,7 +495,7 @@ class MainWindow(QtGui.QMainWindow):
             if pluginBooleanOptions != None:
                 for idx, item in enumerate(pluginBooleanOptions.keys()):
                     itemLabel = plugin.plugin_object.getLabelForKey(item)
-                    cb = QtGui.QCheckBox(itemLabel)
+                    cb = QCheckBox(itemLabel)
                     cb.setObjectName(_fromUtf8('boolean_label_' + item))
                     if pluginBooleanOptions[item] == 'True':
                         cb.toggle()
@@ -814,7 +505,7 @@ class MainWindow(QtGui.QMainWindow):
             Add the wizard button if the plugin has a configuration wizard
             '''
             if plugin.plugin_object.hasWizard:  
-                wizardButton = QtGui.QPushButton(self.trUtf8('Run Configuration Wizard'))
+                wizardButton = QPushButton(self.trUtf8('Run Configuration Wizard'))
                 wizardButton.setObjectName(_fromUtf8('wizardButton_' + plugin.name))
                 wizardButton.setToolTip(self.trUtf8('Click here to run the configuration wizard for the plugin'))
                 wizardButton.resize(wizardButton.sizeHint())
@@ -824,13 +515,13 @@ class MainWindow(QtGui.QMainWindow):
             scroll.setWidget(vboxWidget)
             layout.addWidget(scroll)
             layout.addStretch(1)
-            pluginsConfigButtonContainer = QtGui.QHBoxLayout()
-            checkConfigButton = QtGui.QPushButton(self.trUtf8('Test Plugin Configuration')) 
+            pluginsConfigButtonContainer = QHBoxLayout()
+            checkConfigButton = QPushButton(self.trUtf8('Test Plugin Configuration')) 
             checkConfigButton.setObjectName(_fromUtf8('checkConfigButton_' + plugin.name))
             checkConfigButton.setToolTip(self.trUtf8('Click here to test the plugin\'s configuration'))
             checkConfigButton.resize(checkConfigButton.sizeHint())
             checkConfigButton.clicked.connect(functools.partial(self.pluginsConfigurationDialog.checkPluginConfiguration, plugin))
-            applyConfigButton = QtGui.QPushButton('Apply Configuration')
+            applyConfigButton = QPushButton('Apply Configuration')
             applyConfigButton.setObjectName(_fromUtf8('applyConfigButton_' + plugin.name))
             applyConfigButton.setToolTip(self.trUtf8('Click here to save the plugin\'s configuration options'))
             applyConfigButton.resize(applyConfigButton.sizeHint())
@@ -948,7 +639,7 @@ class MainWindow(QtGui.QMainWindow):
                 # First make this the current project
                 self.currentProject = nodeObject.project
                 #now depending on if the project is analyzed or not add actions to the menu
-                rightClickMenu = QtGui.QMenu()
+                rightClickMenu = QMenu()
                 if nodeObject.project.locations:
                     rightClickMenu.addAction(self.ui.actionReanalyzeCurrentProject)
                     rightClickMenu.addAction(self.ui.actionDrawCurrentProject)
@@ -961,12 +652,9 @@ class MainWindow(QtGui.QMainWindow):
                     rightClickMenu.addAction(self.ui.actionAnalyzeCurrentProject)
                 if rightClickMenu.exec_(self.ui.treeViewProjects.viewport().mapToGlobal(pos)):
                     pass
-                
-               
-   
-        
+
 if __name__ == '__main__':
-    app = QtGui.QApplication(sys.argv)
+    app = QApplication(sys.argv)
     myapp = MainWindow()
     myapp.show()
     sys.exit(app.exec_())
