@@ -40,12 +40,12 @@ class ProjectWizardPossibleTargetsTable(QAbstractTableModel):
             column = index.column()
             if role == Qt.DecorationRole:
                 if column == 1:
-                    picturePath = os.path.join(os.getcwd(), 'temp', target['targetPicture'])
+                    picturePath = os.path.join(os.getcwdu(), 'temp', target['targetPicture'])
                     if picturePath and os.path.exists(picturePath):
                         pixmap = QPixmap(picturePath)
                         return QIcon(pixmap.scaled(30, 30, Qt.IgnoreAspectRatio, Qt.FastTransformation))
                     else:
-                        pixmap = QPixmap(os.path.join(os.getcwd(), 'include', 'generic_user.png'))
+                        pixmap = QPixmap(os.path.join(os.getcwdu(), 'include', 'generic_user.png'))
                         pixmap.scaled(20, 20, Qt.IgnoreAspectRatio)
                         return QIcon(pixmap)
             if role == Qt.DisplayRole:

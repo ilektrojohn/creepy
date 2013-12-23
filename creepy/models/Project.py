@@ -33,7 +33,7 @@ class Project(object):
         '''
         projectName = projectNodeObject.name()+'.db'
         
-        storedProject = shelve.open(os.path.join(os.getcwd(),'projects',projectName))
+        storedProject = shelve.open(os.path.join(os.getcwdu(),'projects',projectName))
         try:
             storedProject['project'] = projectNodeObject
         except Exception,err:
@@ -44,7 +44,7 @@ class Project(object):
     
     def deleteProject(self, projectName):
         try:
-            os.remove(os.path.join(os.getcwd(),'projects',projectName))
+            os.remove(os.path.join(os.getcwdu(),'projects',projectName))
         except Exception,err:
             logger.error('Error deleting the project')
             logger.exception(err)

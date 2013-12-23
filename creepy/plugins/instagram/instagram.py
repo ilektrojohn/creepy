@@ -25,7 +25,7 @@ class Instagram(InputPlugin):
     def __init__(self):
         #Try and read the labels file
         labels_filename = self.name+".labels"
-        labels_file = os.path.join(os.getcwd(),'plugins', self.name, labels_filename)
+        labels_file = os.path.join(os.getcwdu(),'plugins', self.name, labels_filename)
         labels_config = ConfigObj(infile=labels_file)
         labels_config.create_empty=False
         try:
@@ -66,7 +66,7 @@ class Instagram(InputPlugin):
                 target['targetFullname'] = i.full_name
                 #save the pic in the temp folder to show it later
                 filename = 'profile_pic_%s' % i.id
-                temp_file = os.path.join(os.getcwd(), "temp", filename)
+                temp_file = os.path.join(os.getcwdu(), "temp", filename)
                 if not os.path.exists(temp_file):
                     urllib.urlretrieve(i.profile_picture, temp_file)
                 possibleTargets.append(target)

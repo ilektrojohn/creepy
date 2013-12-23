@@ -135,6 +135,12 @@
       </item>
       <item>
        <widget class="QPushButton" name="btnAddTarget">
+        <property name="focusPolicy">
+         <enum>Qt::NoFocus</enum>
+        </property>
+        <property name="styleSheet">
+         <string notr="true"/>
+        </property>
         <property name="text">
          <string>Add To Targets</string>
         </property>
@@ -319,6 +325,9 @@
       </item>
       <item>
        <widget class="QPushButton" name="personProjectSearchButton">
+        <property name="toolTip">
+         <string>Search for targets in the selected plugins</string>
+        </property>
         <property name="text">
          <string>Search</string>
         </property>
@@ -372,6 +381,12 @@
       </item>
       <item>
        <widget class="QPushButton" name="btnRemoveTarget">
+        <property name="focusPolicy">
+         <enum>Qt::NoFocus</enum>
+        </property>
+        <property name="styleSheet">
+         <string notr="true"/>
+        </property>
         <property name="text">
          <string>Remove Selected</string>
         </property>

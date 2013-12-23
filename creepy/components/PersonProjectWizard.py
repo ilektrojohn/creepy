@@ -89,12 +89,10 @@ class PersonProjectWizard(QWizard):
                 
                 if pluginTargets:
                     possibleTargets.extend(pluginTargets)
-                
             self.ProjectWizardPossibleTargetsTable = ProjectWizardPossibleTargetsTable(possibleTargets, self)
             self.ui.personProjectSearchResultsTable.setModel(self.ProjectWizardPossibleTargetsTable)
-            
             self.ui.personProjectSelectedTargetsTable.setModel(self.ProjectWizardSelectedTargetsTable)
-        
+            
     
     def loadConfiguredPlugins(self):
         '''
@@ -102,7 +100,7 @@ class PersonProjectWizard(QWizard):
         '''
         self.PluginManager = PluginManagerSingleton.get()
         self.PluginManager.setCategoriesFilter({ 'Input': InputPlugin})
-        self.PluginManager.setPluginPlaces([os.path.join(os.getcwd(), 'plugins')])
+        self.PluginManager.setPluginPlaces([os.path.join(os.getcwdu(), 'plugins')])
         self.PluginManager.locatePlugins()
         self.PluginManager.loadPlugins()
         pluginList = sorted(self.PluginManager.getAllPlugins(), key=lambda x: x.name)

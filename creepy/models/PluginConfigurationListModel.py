@@ -28,12 +28,12 @@ class PluginConfigurationListModel(QAbstractListModel):
             if role == Qt.DisplayRole:
                 return QVariant(pluginListItem[0].name)
             if role == Qt.DecorationRole:
-                picturePath = os.path.join(os.getcwd(), 'plugins', pluginListItem[0].plugin_object.name, 'logo.png')
+                picturePath = os.path.join(os.getcwdu(), 'plugins', pluginListItem[0].plugin_object.name, 'logo.png')
                 if picturePath and os.path.exists(picturePath):
                     pixmap = QPixmap(picturePath)
                     return QIcon(pixmap)
                 else:
-                    pixmap = QPixmap(os.path.join(os.getcwd(), 'include', 'generic_plugin.png'))
+                    pixmap = QPixmap(os.path.join(os.getcwdu(), 'include', 'generic_plugin.png'))
                     return QIcon(pixmap)
         else: 
             return QVariant()

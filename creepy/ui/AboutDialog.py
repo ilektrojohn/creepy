@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file '.\aboutDialog.ui'
+# Form implementation generated from reading ui file '..\gui\aboutDialog.ui'
 #
-# Created: Sat Dec 14 23:25:37 2013
+# Created: Sun Dec 22 18:31:12 2013
 #      by: PyQt4 UI code generator 4.9.4
 #
 # WARNING! All changes made in this file will be lost!
@@ -45,7 +45,7 @@ class Ui_aboutDialog(object):
 
     def retranslateUi(self, aboutDialog):
         aboutDialog.setWindowTitle(QtGui.QApplication.translate("aboutDialog", "About", None, QtGui.QApplication.UnicodeUTF8))
-        self.label.setText(QtGui.QApplication.translate("aboutDialog", "<html><head/><body><p align=\"center\"><img src=\":/cr/creepy32.png\"/></p><p><br/></p><p align=\"center\"><span style=\" font-size:9pt;\">Creepy is a geolocation OSINT tool. </span></p><p><br/></p><p><span style=\" font-weight:600;\">Author</span> : Ioannis Kakavas &lt; jkakavas@gmail.com &gt;</p><p><span style=\" font-weight:600;\">Website</span>: www.geocreepy.net</p></body></html>", None, QtGui.QApplication.UnicodeUTF8))
+        self.label.setText(QtGui.QApplication.translate("aboutDialog", "<html><head/><body><p align=\"center\"><img src=\":/cr/creepy32.png\"/></p><p><br/></p><p align=\"center\"><span style=\" font-size:9pt;\">Creepy is a geolocation OSINT tool. </span></p><p><br/></p><p><span style=\" font-weight:600;\">Version : </span>1.0 - Codename &quot;<span style=\" font-style:italic;\">Diskbråck</span>&quot;</p><p><span style=\" font-weight:600;\">Author</span> : Ioannis Kakavas &lt; jkakavas@gmail.com &gt;</p><p><span style=\" font-weight:600;\">Website</span>: www.geocreepy.net</p></body></html>", None, QtGui.QApplication.UnicodeUTF8))
 
 import creepy_resources_rc
 

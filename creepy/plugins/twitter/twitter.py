@@ -27,7 +27,7 @@ class Twitter(InputPlugin):
     def __init__(self):
         #Try and read the labels file
         labels_filename = self.name+".labels"
-        labels_file = os.path.join(os.getcwd(),'plugins', self.name, labels_filename)
+        labels_file = os.path.join(os.getcwdu(),'plugins', self.name, labels_filename)
         labels_config = ConfigObj(infile=labels_file)
         labels_config.create_empty=False
         try:
@@ -62,7 +62,7 @@ class Twitter(InputPlugin):
                     target['targetFullname'] = i.name
                     #save the pic in the temp folder to show it later
                     filename = 'profile_pic_%s' % i.id_str
-                    temp_file = os.path.join(os.getcwd(), "temp", filename)
+                    temp_file = os.path.join(os.getcwdu(), "temp", filename)
                     #Retieve and save the profile phot only if it does not exist
                     if not os.path.exists(temp_file):
                         urllib.urlretrieve(i.profile_image_url, temp_file)
@@ -129,14 +129,17 @@ class Twitter(InputPlugin):
                     self.config.write()
                 except Exception, err:
                     logger.error(err)
-                    self.showWarning("Error completing the wizard", "We were unable to pbtain the access token for your account, please try to run the wizard again.")
+                    self.showWarning("Error completing the wizard", "We were unable to obtain the access token for your account, please try to run the wizard again.")
             
         except Exception,err:
             logger.exception(err)
         
         
     def showWarning(self, title, text):
-        QMessageBox.warning(self, title, text)  
+        try:
+            QMessageBox.warning(self, title, text)  
+        except Exception, err:
+            print err
         
     """
     Returns the authorization URL for Twitter or None if there was an exception

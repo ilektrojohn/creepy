@@ -30,14 +30,14 @@ from utilities import GeneralUtilities
 # set up logging
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
-fh = logging.FileHandler(os.path.join(GeneralUtilities.getUserHome(),'creepy_main.log'))
+fh = logging.FileHandler(os.path.join(os.getcwdu(),'creepy_main.log'))
 fh.setLevel(logging.DEBUG)
 formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 fh.setFormatter(formatter)
 logger.addHandler(fh)
-#Captude stderr and stdout to a file
-#sys.stdout = open(os.path.join(GeneralUtilities.getUserHome(),'creepy_stdout.log'), 'w')
-#sys.stderr = open(os.path.join(GeneralUtilities.getUserHome(),'creepy_stderr.log'), 'w')
+#Capture stderr and stdout to a file
+sys.stdout = open(os.path.join(os.getcwdu(),'creepy_stdout.log'), 'w')
+sys.stderr = open(os.path.join(os.getcwdu(),'creepy_stderr.log'), 'w')
 try:
     _fromUtf8 = QString.fromUtf8
 except AttributeError:
@@ -53,7 +53,7 @@ class MainWindow(QMainWindow):
         def run(self):
             pluginManager = PluginManagerSingleton.get()
             pluginManager.setCategoriesFilter({ 'Input': InputPlugin})
-            pluginManager.setPluginPlaces([os.path.join(os.getcwd(), 'plugins')])
+            pluginManager.setPluginPlaces([os.path.join(os.getcwdu(), 'plugins')])
             pluginManager.locatePlugins()
             pluginManager.loadPlugins()
             locationsList = []
@@ -81,54 +81,42 @@ class MainWindow(QMainWindow):
                 if l.id not in [loc.id for loc in self.project.locations]:
                     self.project.locations.append(l)
             # sort on date 
-            self.project.locations.sort(key=lambda x: x.datetime, reverse=True)
-                   
+            self.project.locations.sort(key=lambda x: x.datetime, reverse=True)                   
             self.emit(SIGNAL('locations(PyQt_PyObject)'), self.project)
 
     def __init__(self, parent=None):
-        # Load the UI Class as self.ui
         QWidget.__init__(self, parent)
         self.ui = Ui_CreepyMainWindow()
         self.ui.setupUi(self)
+        #Create folders for projects and temp if they do not exist
+        if not os.path.exists(os.path.join(os.getcwdu(),'projects')):
+            os.makedirs(os.path.join(os.getcwdu(),'projects'))
+        if not os.path.exists(os.path.join(os.getcwdu(),'temp')):
+            os.makedirs(os.path.join(os.getcwdu(),'temp'))
         self.projectsList = []
-        '''
-        indicates the currently selected project.
-        '''
         self.currentProject = None
-       
-        # Load the map in the mapWebView using GoogleMaps JS API
-        
         self.ui.webPage = QWebPage()
-        self.ui.webPage.mainFrame().setUrl(QUrl(os.path.join(os.getcwd(), 'include', 'map.html')))
+        self.ui.webPage.mainFrame().setUrl(QUrl(os.path.join(os.getcwdu(), 'include', 'map.html')))
         self.ui.mapWebView.setPage(self.ui.webPage)
-        
-        # Add the toggleViewActions for the Docked widgets in the View Menu
         self.ui.menuView.addAction(self.ui.dockWProjects.toggleViewAction())
         self.ui.menuView.addAction(self.ui.dockWLocationsList.toggleViewAction())
         self.ui.menuView.addAction(self.ui.dockWCurrentLocationDetails.toggleViewAction())
-        # Add the actions to show the PluginConfiguration Dialog
         self.ui.actionPluginsConfiguration.triggered.connect(self.showPluginsConfigurationDialog)
-        # Add actions for the "New .." wizards 
         self.ui.actionNewPersonProject.triggered.connect(self.showPersonProjectWizard)
-        
         self.ui.actionAnalyzeCurrentProject.triggered.connect(self.analyzeProject)
         self.ui.actionDrawCurrentProject.triggered.connect(self.presentLocations)
-        
         self.ui.actionExportCSV.triggered.connect(self.exportProjectCSV)
         self.ui.actionExportKML.triggered.connect(self.exportProjectKML)
         self.ui.actionExportFilteredCSV.triggered.connect(functools.partial(self.exportProjectCSV, filtering=True))
         self.ui.actionExportFilteredKML.triggered.connect(functools.partial(self.exportProjectKML, filtering=True))
         self.ui.actionDeleteCurrentProject.triggered.connect(self.deleteCurrentProject)
-        
         self.ui.actionFilterLocationsDate.triggered.connect(self.showFilterLocationsDateDialog)
         self.ui.actionFilterLocationsPosition.triggered.connect(self.showFilterLocationsPointDialog)
         self.ui.actionRemoveFilters.triggered.connect(self.removeAllFilters)
         self.ui.actionShowHeatMap.toggled.connect(self.toggleHeatMap)
         self.ui.actionReportProblem.triggered.connect(GeneralUtilities.reportProblem)
         self.ui.actionAbout.triggered.connect(self.showAboutDialog)
-        
         self.ui.actionExit.triggered.connect(self.close)
-        
         self.loadProjectsFromStorage()
         
     def showFilterLocationsPointDialog(self):
@@ -136,7 +124,7 @@ class MainWindow(QMainWindow):
         filterLocationsPointDialog.ui.mapPage = QWebPage()
         myPyObj = filterLocationsPointDialog.pyObj()
         filterLocationsPointDialog.ui.mapPage.mainFrame().addToJavaScriptWindowObject('myPyObj', myPyObj)  
-        filterLocationsPointDialog.ui.mapPage.mainFrame().setUrl(QUrl(os.path.join(os.getcwd(), 'include', 'mapSetPoint.html')))
+        filterLocationsPointDialog.ui.mapPage.mainFrame().setUrl(QUrl(os.path.join(os.getcwdu(), 'include', 'mapSetPoint.html')))
         filterLocationsPointDialog.ui.radiusUnitComboBox.insertItem(0, QString('km'))
         filterLocationsPointDialog.ui.radiusUnitComboBox.insertItem(1, QString('m'))
         filterLocationsPointDialog.ui.radiusUnitComboBox.activated[str].connect(filterLocationsPointDialog.onUnitChanged)
@@ -153,7 +141,6 @@ class MainWindow(QMainWindow):
 
     def showFilterLocationsDateDialog(self):
         filterLocationsDateDialog = FilterLocationsDateDialog()
-        #Disable future dates
         filterLocationsDateDialog.ui.endDateCalendarWidget.setMaximumDate(QDate.currentDate())
         filterLocationsDateDialog.show()
         if filterLocationsDateDialog.exec_():
@@ -259,7 +246,7 @@ class MainWindow(QMainWindow):
             self.showWarning(self.trUtf8('No locations found'), self.trUtf8('The selected project has no locations to be exported'))
             self.ui.statusbar.showMessage(self.trUtf8('The selected project has no locations to be exported'))
             return
-        fileName = QFileDialog.getSaveFileName(None, 'Save CSV export as...', os.getcwd(), 'All files (*.*)')
+        fileName = QFileDialog.getSaveFileName(None, self.trUtf8('Save CSV export as...'), os.getcwdu(), 'All files (*.*)')
         if fileName:
             try:
                 fileobj = open(fileName, 'wb')
@@ -295,7 +282,7 @@ class MainWindow(QMainWindow):
             self.ui.statusbar.showMessage(self.trUtf8('The selected project has no locations to be exported'))
             return
         
-        fileName = QFileDialog.getSaveFileName(None, 'Save KML export as...', os.getcwd(), 'All files (*.*)')
+        fileName = QFileDialog.getSaveFileName(None, self.trUtf8('Save KML export as...'), os.getcwdu(), 'All files (*.*)')
         if fileName:
             try:
                 fileobj = open(fileName, 'wb')
@@ -347,7 +334,7 @@ class MainWindow(QMainWindow):
             if project.isAnalysisRunning:
                 self.showWarning(self.trUtf8('Cannot Edit Project'), self.trUtf8('Please wait until analysis is finished before performing further actions on the project'))
                 return
-            self.ui.statusbar.showMessage('Analyzing project for locations. Please wait...')
+            self.ui.statusbar.showMessage(self.trUtf8('Analyzing project for locations. Please wait...'))
             project.isAnalysisRunning = True
             self.analyzeProjectThreadInstance = self.analyzeProjectThread(project)
             self.connect(self.analyzeProjectThreadInstance, SIGNAL('locations(PyQt_PyObject)'), self.projectAnalysisFinished)
@@ -359,10 +346,10 @@ class MainWindow(QMainWindow):
         '''
         Called when the analysis thread finishes. It saves the project with the locations and draws the map
         '''
-        self.ui.statusbar.showMessage('Project Analysis complete !')
+        self.ui.statusbar.showMessage(self.trUtf8('Project Analysis complete !'))
         projectNode = ProjectNode(project.projectName, project)
         locationsNode = LocationsNode(self.trUtf8('Locations'), projectNode)
-        analysisNode = AnalysisNode(self.trUtf8('Analysis'), projectNode)
+#        analysisNode = AnalysisNode(self.trUtf8('Analysis'), projectNode)
         project.isAnalysisRunning = False
         project.storeProject(projectNode)
         '''
@@ -521,7 +508,7 @@ class MainWindow(QMainWindow):
             checkConfigButton.setToolTip(self.trUtf8('Click here to test the plugin\'s configuration'))
             checkConfigButton.resize(checkConfigButton.sizeHint())
             checkConfigButton.clicked.connect(functools.partial(self.pluginsConfigurationDialog.checkPluginConfiguration, plugin))
-            applyConfigButton = QPushButton('Apply Configuration')
+            applyConfigButton = QPushButton(self.trUtf8('Apply Configuration'))
             applyConfigButton.setObjectName(_fromUtf8('applyConfigButton_' + plugin.name))
             applyConfigButton.setToolTip(self.trUtf8('Click here to save the plugin\'s configuration options'))
             applyConfigButton.resize(applyConfigButton.sizeHint())
@@ -572,7 +559,7 @@ class MainWindow(QMainWindow):
             project.selectedTargets = personProjectWizard.selectedTargets
             projectNode = ProjectNode(project.projectName, project)
             locationsNode = LocationsNode('Locations', projectNode)
-            analysisNode = AnalysisNode('Analysis', projectNode)
+#            analysisNode = AnalysisNode('Analysis', projectNode)
             project.storeProject(projectNode)
             # Now that we have saved the project, reload all projects to be shown in the UI
             self.loadProjectsFromStorage()
@@ -581,8 +568,8 @@ class MainWindow(QMainWindow):
         """
         Loads all the existing projects from the storage to be shown in the UI
         """
-        # Show the exisiting Projects 
-        projectsDir = os.path.join(os.getcwd(), 'projects')
+        # Show the existing Projects 
+        projectsDir = os.path.join(os.getcwdu(), 'projects')
         projectFileNames = [ os.path.join(projectsDir, f) for f in os.listdir(projectsDir) if (os.path.isfile(os.path.join(projectsDir, f)) and f.endswith('.db'))]
         rootNode = ProjectTreeNode(self.trUtf8('Projects'))
         for projectFile in projectFileNames:

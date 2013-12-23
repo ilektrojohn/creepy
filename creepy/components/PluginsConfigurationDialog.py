@@ -11,7 +11,7 @@ class PluginsConfigurationDialog(QDialog):
         # Load the installed plugins and read their metadata
         self.PluginManager = PluginManagerSingleton.get()
         self.PluginManager.setCategoriesFilter({'Input': InputPlugin})
-        self.PluginManager.setPluginPlaces([os.path.join(os.getcwd(), 'plugins')])
+        self.PluginManager.setPluginPlaces([os.path.join(os.getcwdu(), 'plugins')])
         self.PluginManager.locatePlugins()
         self.PluginManager.loadPlugins()
         

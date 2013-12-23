@@ -40,14 +40,14 @@ class InputPlugin(IPlugin):
         pass
     def getConfigObj(self):    
         config_filename = self.name+".conf"
-        config_file = os.path.join(os.getcwd(),'plugins', self.name, config_filename)
+        config_file = os.path.join(os.getcwdu(),'plugins', self.name, config_filename)
         config = ConfigObj(infile=config_file)
         config.create_empty=False
         return config
     
     def readConfiguration(self, category):
         config_filename = self.name+'.conf'
-        config_file = os.path.join(os.getcwd(),'plugins', self.name, config_filename)
+        config_file = os.path.join(os.getcwdu(),'plugins', self.name, config_filename)
         config = ConfigObj(infile=config_file)
         config.create_empty=False
         try:
@@ -60,7 +60,7 @@ class InputPlugin(IPlugin):
 
     def saveConfiguration(self, new_config):
         config_filename = self.name+'.conf'
-        config_file = os.path.join(os.getcwd(),'plugins',self.name, config_filename)
+        config_file = os.path.join(os.getcwdu(),'plugins',self.name, config_filename)
         config = ConfigObj(infile=config_file)
         config.create_empty=False
         try:
@@ -73,7 +73,7 @@ class InputPlugin(IPlugin):
 
     def loadSearchConfigurationParameters(self):
         config_filename = self.name+'.conf'
-        config_file = os.path.join(os.getcwd(),  'plugins', self.name, config_filename)
+        config_file = os.path.join(os.getcwdu(),  'plugins', self.name, config_filename)
         config = ConfigObj(infile=config_file)
         config.create_empty = False
         try:
