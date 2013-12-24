@@ -19,7 +19,7 @@ from models.PluginConfigurationListModel import PluginConfigurationListModel
 from models.ProjectWizardPluginListModel import ProjectWizardPluginListModel
 from models.ProjectWizardSelectedTargetsTable import ProjectWizardSelectedTargetsTable
 from models.InputPlugin import InputPlugin
-from models.ProjectTree import ProjectNode, AnalysisNode, LocationsNode, ProjectTreeModel,ProjectTreeNode
+from models.ProjectTree import ProjectNode, LocationsNode, ProjectTreeModel,ProjectTreeNode
 from components.PersonProjectWizard import PersonProjectWizard
 from components.PluginsConfigurationDialog import PluginsConfigurationDialog
 from components.FilterLocationsDateDialog import FilterLocationsDateDialog
