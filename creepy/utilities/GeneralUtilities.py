@@ -10,7 +10,7 @@ def getUserHome():
 def reportProblem():
     webbrowser.open_new_tab('https://github.com/ilektrojohn/creepy/issues')
     
-def calcDistance(self, lat1, lng1, lat2, lng2):
+def calcDistance(lat1, lng1, lat2, lng2):
     """
     Calculate the great circle distance between two points 
     on the earth (specified in decimal degrees)
@@ -30,7 +30,7 @@ def calcDistance(self, lat1, lng1, lat2, lng2):
     meters = 6378100 * c
     return meters     
 
-def html_escape(self, text):
+def html_escape(text):
         html_escape_table = {
                              "&": "&amp;",
                              '"': "&quot;",
