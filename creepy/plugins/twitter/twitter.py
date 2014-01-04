@@ -9,13 +9,12 @@ from PyQt4.QtGui import QWizard, QWizardPage, QLabel, QLineEdit, QVBoxLayout, QH
 from PyQt4.QtCore import QUrl
 from PyQt4.QtWebKit import QWebView
 from tweepy import Cursor
-from utilities import GeneralUtilities
 from configobj import ConfigObj
 
 #set up logging
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
-fh = logging.FileHandler(os.path.join(GeneralUtilities.getUserHome(),'creepy_main.log'))
+fh = logging.FileHandler(os.path.join(os.getcwdu(),'creepy_main.log'))
 fh.setLevel(logging.DEBUG)
 formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 fh.setFormatter(formatter)
@@ -89,7 +88,7 @@ class Twitter(InputPlugin):
             
             
             
-            wizard = QWizard()
+            self.wizard = QWizard()
             page1 = QWizardPage()
             page2 = QWizardPage()
             layout1 = QVBoxLayout()
@@ -116,13 +115,13 @@ class Twitter(InputPlugin):
             page1.setLayout(layout1)
             page2.setLayout(layout2)
             page2.registerField("inputPin*", inputPin)
-            wizard.addPage(page1)
-            wizard.addPage(page2)
-            wizard.resize(800,600)
+            self.wizard.addPage(page1)
+            self.wizard.addPage(page2)
+            self.wizard.resize(800,600)
             
-            if wizard.exec_():
+            if self.wizard.exec_():
                 try:
-                    oAuthHandler.get_access_token(str(wizard.field("inputPin").toString()).strip())
+                    oAuthHandler.get_access_token(str(self.wizard.field("inputPin").toString()).strip())
                     access_token = oAuthHandler.access_token.key
                     access_token_secret = oAuthHandler.access_token.secret
                     self.options_string['hidden_access_token'] = access_token
@@ -138,7 +137,7 @@ class Twitter(InputPlugin):
         
     def showWarning(self, title, text):
         try:
-            QMessageBox.warning(self, title, text)  
+            QMessageBox.warning(self.wizard, title, text)  
         except Exception, err:
             print err
         
@@ -247,7 +246,7 @@ class Twitter(InputPlugin):
         
         html = self.options_string['infowindow_html']
         #returned value also becomes unicode since tweet.text is unicode, and carries the encoding also
-        return html.replace("@TEXT@",tweet.text).replace("@DATE@",tweet.created_at.strftime("%a %b %d,%H:%M:%S %z")).replace("@PLUGIN@", "twitter")
+        return html.replace("@TEXT@",tweet.text.encode('utf-8')).replace("@DATE@",tweet.created_at.strftime("%a %b %d,%H:%M:%S %z")).replace("@PLUGIN@", "twitter")
     
     def getCenterOfPolygon(self, coord):
         '''

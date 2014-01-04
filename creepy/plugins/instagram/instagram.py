@@ -8,11 +8,10 @@ import logging
 import urllib
 from urlparse import urlparse, parse_qs
 from configobj import ConfigObj
-from utilities import GeneralUtilities
 #set up logging
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
-fh = logging.FileHandler(os.path.join(GeneralUtilities.getUserHome(),'creepy_main.log'))
+fh = logging.FileHandler(os.path.join(os.getcwdu(),'creepy_main.log'))
 fh.setLevel(logging.DEBUG)
 formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 fh.setFormatter(formatter)
@@ -127,7 +126,7 @@ class Instagram(InputPlugin):
             
             
             
-            wizard = QWizard()
+            self.wizard = QWizard()
             page1 = QWizardPage()
             
             layout1 = QVBoxLayout()
@@ -154,9 +153,9 @@ class Instagram(InputPlugin):
             layout1.addWidget(labelLink)
             layout1.addWidget(inputLink)
             page1.setLayout(layout1)
-            wizard.addPage(page1)
-            wizard.resize(600,400)
-            if wizard.exec_():
+            self.wizard.addPage(page1)
+            self.wizard.resize(600,400)
+            if self.wizard.exec_():
                 c = self.parseRedirectUrl(str(inputLink.text()))
                 if c:
                     try:
@@ -180,7 +179,7 @@ class Instagram(InputPlugin):
             return None
         
     def showWarning(self, title, text):
-        QMessageBox.warning(self, title, text)   
+        QMessageBox.warning(self.wizard, title, text)   
         
     def constructContextInfoWindow(self, photo):
         html = self.options_string['infowindow_html']

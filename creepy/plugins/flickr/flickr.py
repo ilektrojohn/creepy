@@ -8,11 +8,10 @@ import re
 import os
 from configobj import ConfigObj
 from flickrapi.exceptions import FlickrError
-from utilities import GeneralUtilities
 #set up logging
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
-fh = logging.FileHandler(os.path.join(GeneralUtilities.getUserHome(),'creepy_main.log'))
+fh = logging.FileHandler(os.path.join(os.getcwdu(),'creepy_main.log'))
 fh.setLevel(logging.DEBUG)
 formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 fh.setFormatter(formatter)
@@ -118,7 +117,11 @@ class Flickr(InputPlugin):
                     loc = {}
                     loc['plugin'] = "flickr"
                     photo_link = 'http://www.flickr.com/photos/%s/%s' % (photo.attrib['owner'], photo.attrib['id'])
-                    loc['context'] = 'Photo from flickr  \n Title : %s \n ' % (photo.attrib['title'])      
+                    title = photo.attrib['title']
+                    #If the title is a string, make it unicode
+                    if isinstance(title,str):
+                        title = title.decode('utf-8')
+                    loc['context'] = u'Photo from flickr  \n Title : %s \n ' % (title)
                     loc['date'] = datetime.datetime.strptime(photo.attrib['datetaken'], "%Y-%m-%d %H:%M:%S")
                     loc['lat'] = photo.attrib['latitude']
                     loc['lon'] = photo.attrib['longitude']
