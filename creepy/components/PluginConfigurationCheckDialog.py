@@ -1,6 +1,8 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
 from PyQt4.QtGui import QDialog
 from PyQt4.QtCore  import Qt
-from ui.pluginConfigCheckDialog import Ui_checkPluginConfigurationDialog
+from ui.CreepyPluginConfigurationCheckdialog import Ui_checkPluginConfigurationDialog
 class PluginConfigurationCheckdialog(QDialog):
     """
     Loads the Plugin Configuration Check Dialog that provides information indicating

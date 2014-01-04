@@ -1,3 +1,4 @@
+#!/usr/bin/python
 # -*- coding: utf-8 -*-
 from PyQt4.QtCore import QVariant, QAbstractTableModel, Qt
 from PyQt4.Qt import QPixmap, QIcon, QMimeData, QByteArray, QDataStream, QIODevice

@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file '.\pluginConfigCheckDialog.ui'
 #
-# Created: Sun Dec 15 18:10:10 2013
+# Created: Sat Jan 04 16:25:47 2014
 #      by: PyQt4 UI code generator 4.9.4
 #
 # WARNING! All changes made in this file will be lost!

@@ -1,3 +1,4 @@
+#!/usr/bin/python
 # -*- coding: utf-8 -*-
 from yapsy.IPlugin import IPlugin
 from configobj import ConfigObj

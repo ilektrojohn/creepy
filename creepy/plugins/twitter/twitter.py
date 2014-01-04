@@ -1,3 +1,4 @@
+#!/usr/bin/python
 # -*- coding: utf-8 -*-
 from models.InputPlugin import InputPlugin
 import tweepy

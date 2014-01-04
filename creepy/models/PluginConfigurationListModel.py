@@ -1,3 +1,4 @@
+#!/usr/bin/python
 # -*- coding: utf-8 -*-
 from PyQt4.QtCore import QVariant, QAbstractListModel, Qt
 from PyQt4.Qt import QPixmap, QIcon

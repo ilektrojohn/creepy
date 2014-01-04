@@ -1,3 +1,4 @@
+#!/usr/bin/python
 # -*- coding: utf-8 -*-
 from PyQt4.QtCore import QAbstractTableModel
 from PyQt4.QtCore import Qt, QVariant

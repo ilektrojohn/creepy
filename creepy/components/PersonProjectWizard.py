@@ -1,3 +1,5 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
 import os
 from PyQt4.QtGui import QWizard,QMessageBox,QWidget,QScrollArea,QLineEdit,QLabel,QVBoxLayout,QCheckBox,QGridLayout
 from PyQt4.QtCore import QString

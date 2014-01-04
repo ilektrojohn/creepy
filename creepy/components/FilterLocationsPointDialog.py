@@ -1,3 +1,5 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
 from PyQt4.QtGui import QDialog
 from PyQt4.QtCore import QObject, pyqtSlot
 from ui.FilterLocationsPointDialog import Ui_FilteLocationsPointDialog

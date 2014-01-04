@@ -1,3 +1,4 @@
+#!/usr/bin/python
 # -*- coding: utf-8 -*-
 from PyQt4.QtCore import QAbstractItemModel
 from PyQt4.QtCore import QModelIndex
