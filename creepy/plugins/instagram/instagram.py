@@ -184,7 +184,7 @@ class Instagram(InputPlugin):
     def constructContextInfoWindow(self, photo):
         html = unicode(self.options_string['infowindow_html'],'utf-8')
         caption = photo.caption.text if photo.caption else unicode('No Caption', 'utf-8')
-        return html.replace("@TEXT@",caption).replace("@DATE@",photo.created_time.strftime("%a %b %d,%H:%M:%S %z")).replace("@PLUGIN@", u"instagram").replace("@LINK@", photo.link)
+        return html.replace("@TEXT@",caption).replace("@DATE@",photo.created_time.strftime("%Y-%m-%d %H:%M:%S %z")).replace("@PLUGIN@", u"instagram").replace("@LINK@", photo.link)
     
     
     def getLabelForKey(self, key):

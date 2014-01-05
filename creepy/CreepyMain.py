@@ -408,7 +408,7 @@ class MainWindow(QMainWindow):
         '''
         location = self.locationsTableModel.locations[index.row()]
         self.ui.currentTargetDetailsLocationValue.setText(location.shortName)
-        self.ui.currentTargetDetailsDateValue.setText(location.datetime.strftime('%a %b %d,%H:%M:%S %z'))
+        self.ui.currentTargetDetailsDateValue.setText(location.datetime.strftime('%Y-%m-%d %H:%M:%S %z'))
         self.ui.currentTargetDetailsSourceValue.setText(location.plugin)
         self.ui.currentTargetDetailsContextValue.setText(location.context)
 
@@ -548,8 +548,8 @@ class MainWindow(QMainWindow):
         personProjectWizard.ProjectWizardSelectedTargetsTable = ProjectWizardSelectedTargetsTable([], self)
         if personProjectWizard.exec_():
             project = Project()
-            project.projectName = unicode(personProjectWizard.ui.personProjectNameValue.text(), 'utf-8')
-            project.projectKeywords = [keyword.strip() for keyword in unicode(personProjectWizard.ui.personProjectKeywordsValue.text(), 'utf-8').split(',')]
+            project.projectName = unicode(personProjectWizard.ui.personProjectNameValue.text().toUtf8(), 'utf-8')
+            project.projectKeywords = [keyword.strip() for keyword in unicode(personProjectWizard.ui.personProjectKeywordsValue.text().toUtf8(), 'utf-8').split(',')]
             project.projectDescription = personProjectWizard.ui.personProjectDescriptionValue.toPlainText()
             project.enabledPlugins = personProjectWizard.readSearchConfiguration()
             project.dateCreated = datetime.datetime.now()

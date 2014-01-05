@@ -243,7 +243,7 @@ class Twitter(InputPlugin):
         
         html = unicode(self.options_string['infowindow_html'], 'utf-8')
         #returned value also becomes unicode since tweet.text is unicode, and carries the encoding also
-        return html.replace("@TEXT@",tweet.text).replace("@DATE@",tweet.created_at.strftime("%a %b %d,%H:%M:%S %z")).replace("@PLUGIN@", u"twitter")
+        return html.replace("@TEXT@",tweet.text).replace("@DATE@",tweet.created_at.strftime("%Y-%m-%d %H:%M:%S %z")).replace("@PLUGIN@", u"twitter")
     
     def getCenterOfPolygon(self, coord):
         '''

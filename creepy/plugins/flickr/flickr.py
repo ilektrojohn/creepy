@@ -117,7 +117,7 @@ class Flickr(InputPlugin):
                     if photo.attrib['latitude'] != '0':
                         loc = {}
                         loc['plugin'] = "flickr"
-                        photo_link = 'http://www.flickr.com/photos/%s/%s' % (photo.attrib['owner'], photo.attrib['id'])
+                        photo_link = unicode('http://www.flickr.com/photos/%s/%s' % (photo.attrib['owner'], photo.attrib['id']), 'utf-8')
                         title = photo.attrib['title']
                         #If the title is a string, make it unicode
                         if isinstance(title,str):
@@ -160,7 +160,7 @@ class Flickr(InputPlugin):
             
     def constructContextInfoWindow(self, link, date):
         html = unicode(self.options_string['infowindow_html'], 'utf-8')
-        return html.replace("@LINK@",link).replace("@DATE@",date.strftime("%a %b %d,%H:%M:%S %z")).replace("@PLUGIN@", u"flickr")
+        return html.replace("@LINK@",link).replace("@DATE@",date.strftime("%Y-%m-%d %H:%M:%S %z")).replace("@PLUGIN@", u"flickr")
     
     def getLabelForKey(self, key):
         '''
