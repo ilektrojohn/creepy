@@ -14,7 +14,7 @@ from configobj import ConfigObj
 #set up logging
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
-fh = logging.FileHandler(os.path.join(os.getcwdu(),'creepy_main.log'))
+fh = logging.FileHandler(os.path.join(os.getcwd(),'creepy_main.log'))
 fh.setLevel(logging.DEBUG)
 formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 fh.setFormatter(formatter)
@@ -27,7 +27,7 @@ class Twitter(InputPlugin):
     def __init__(self):
         #Try and read the labels file
         labels_filename = self.name+".labels"
-        labels_file = os.path.join(os.getcwdu(),'plugins', self.name, labels_filename)
+        labels_file = os.path.join(os.getcwd(),'plugins', self.name, labels_filename)
         labels_config = ConfigObj(infile=labels_file)
         labels_config.create_empty=False
         try:
@@ -62,7 +62,7 @@ class Twitter(InputPlugin):
                     target['targetFullname'] = i.name
                     #save the pic in the temp folder to show it later
                     filename = 'profile_pic_%s' % i.id_str
-                    temp_file = os.path.join(os.getcwdu(), "temp", filename)
+                    temp_file = os.path.join(os.getcwd(), "temp", filename)
                     #Retieve and save the profile phot only if it does not exist
                     if not os.path.exists(temp_file):
                         urllib.urlretrieve(i.profile_image_url, temp_file)
@@ -85,9 +85,6 @@ class Twitter(InputPlugin):
         try:
             oAuthHandler = tweepy.OAuthHandler(self.options_string['hidden_application_key'], self.options_string['hidden_application_secret'])
             authorizationURL = oAuthHandler.get_authorization_url(True)
-            
-            
-            
             self.wizard = QWizard()
             page1 = QWizardPage()
             page2 = QWizardPage()
@@ -244,9 +241,9 @@ class Twitter(InputPlugin):
 
     def constructContextInfoWindow(self, tweet):
         
-        html = self.options_string['infowindow_html']
+        html = unicode(self.options_string['infowindow_html'], 'utf-8')
         #returned value also becomes unicode since tweet.text is unicode, and carries the encoding also
-        return html.replace("@TEXT@",tweet.text.encode('utf-8')).replace("@DATE@",tweet.created_at.strftime("%a %b %d,%H:%M:%S %z")).replace("@PLUGIN@", "twitter")
+        return html.replace("@TEXT@",tweet.text).replace("@DATE@",tweet.created_at.strftime("%a %b %d,%H:%M:%S %z")).replace("@PLUGIN@", u"twitter")
     
     def getCenterOfPolygon(self, coord):
         '''

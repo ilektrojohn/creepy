@@ -113,21 +113,24 @@ class Flickr(InputPlugin):
         locations = []
         if photos:
             for photo in photos:
-                if photo.attrib['latitude'] != '0':
-                    loc = {}
-                    loc['plugin'] = "flickr"
-                    photo_link = 'http://www.flickr.com/photos/%s/%s' % (photo.attrib['owner'], photo.attrib['id'])
-                    title = photo.attrib['title']
-                    #If the title is a string, make it unicode
-                    if isinstance(title,str):
-                        title = title.decode('utf-8')
-                    loc['context'] = u'Photo from flickr  \n Title : %s \n ' % (title)
-                    loc['date'] = datetime.datetime.strptime(photo.attrib['datetaken'], "%Y-%m-%d %H:%M:%S")
-                    loc['lat'] = photo.attrib['latitude']
-                    loc['lon'] = photo.attrib['longitude']
-                    loc['shortName'] = "Unavailable"
-                    loc['infowindow'] = self.constructContextInfoWindow(photo_link, loc['date'])
-                    locations.append(loc)
+                try:
+                    if photo.attrib['latitude'] != '0':
+                        loc = {}
+                        loc['plugin'] = "flickr"
+                        photo_link = 'http://www.flickr.com/photos/%s/%s' % (photo.attrib['owner'], photo.attrib['id'])
+                        title = photo.attrib['title']
+                        #If the title is a string, make it unicode
+                        if isinstance(title,str):
+                            title = title.decode('utf-8')
+                        loc['context'] = u'Photo from flickr  \n Title : %s \n ' % (title)
+                        loc['date'] = datetime.datetime.strptime(photo.attrib['datetaken'], "%Y-%m-%d %H:%M:%S")
+                        loc['lat'] = photo.attrib['latitude']
+                        loc['lon'] = photo.attrib['longitude']
+                        loc['shortName'] = "Unavailable"
+                        loc['infowindow'] = self.constructContextInfoWindow(photo_link, loc['date'])
+                        locations.append(loc)
+                except Exception,err:
+                    logger.error(err)
         return locations      
             
     def returnLocations(self, target, search_params):
@@ -156,8 +159,8 @@ class Flickr(InputPlugin):
             
             
     def constructContextInfoWindow(self, link, date):
-        html = self.options_string['infowindow_html']
-        return html.replace("@LINK@",link).replace("@DATE@",date.strftime("%a %b %d,%H:%M:%S %z")).replace("@PLUGIN@", "flickr")
+        html = unicode(self.options_string['infowindow_html'], 'utf-8')
+        return html.replace("@LINK@",link).replace("@DATE@",date.strftime("%a %b %d,%H:%M:%S %z")).replace("@PLUGIN@", u"flickr")
     
     def getLabelForKey(self, key):
         '''

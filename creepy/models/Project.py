@@ -32,9 +32,9 @@ class Project(object):
         Receives a projectNodeObject and stores it using the selected data persistence method. 
         Decoupled here for flexibility
         '''
-        projectName = projectNodeObject.name()+'.db'
+        projectName = projectNodeObject.name().encode('utf-8')+'.db'
         
-        storedProject = shelve.open(os.path.join(os.getcwdu(),'projects',projectName))
+        storedProject = shelve.open(os.path.join(os.getcwd(),'projects',projectName))
         try:
             storedProject['project'] = projectNodeObject
         except Exception,err:
@@ -44,8 +44,9 @@ class Project(object):
             storedProject.close()
     
     def deleteProject(self, projectName):
+        #projectName comes as a Unicode, so we need to encode it to a string for shelve to find it
         try:
-            os.remove(os.path.join(os.getcwdu(),'projects',projectName))
+            os.remove(os.path.join(os.getcwd(),'projects',projectName.encode('utf-8')))
         except Exception,err:
             logger.error('Error deleting the project')
             logger.exception(err)

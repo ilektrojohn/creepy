@@ -38,7 +38,7 @@ class LocationsTableModel(QAbstractTableModel):
                 if column == 0:
                     return QVariant(location.datetime.isoformat())
                 if column == 1:
-                    return QVariant(location.shortName.encode('utf-8'))
+                    return QVariant(location.shortName)
         else:
             return QVariant()
     

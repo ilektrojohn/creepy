@@ -31,14 +31,14 @@ from utilities import GeneralUtilities
 # set up logging
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
-fh = logging.FileHandler(os.path.join(os.getcwdu(),'creepy_main.log'))
+fh = logging.FileHandler(os.path.join(os.getcwd(),'creepy_main.log'))
 fh.setLevel(logging.DEBUG)
 formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 fh.setFormatter(formatter)
 logger.addHandler(fh)
 #Capture stderr and stdout to a file
-sys.stdout = open(os.path.join(os.getcwdu(),'creepy_stdout.log'), 'w')
-sys.stderr = open(os.path.join(os.getcwdu(),'creepy_stderr.log'), 'w')
+sys.stdout = open(os.path.join(os.getcwd(),'creepy_stdout.log'), 'w')
+sys.stderr = open(os.path.join(os.getcwd(),'creepy_stderr.log'), 'w')
 try:
     _fromUtf8 = QString.fromUtf8
 except AttributeError:
@@ -54,7 +54,7 @@ class MainWindow(QMainWindow):
         def run(self):
             pluginManager = PluginManagerSingleton.get()
             pluginManager.setCategoriesFilter({ 'Input': InputPlugin})
-            pluginManager.setPluginPlaces([os.path.join(os.getcwdu(), 'plugins')])
+            pluginManager.setPluginPlaces([os.path.join(os.getcwd(), 'plugins')])
             pluginManager.locatePlugins()
             pluginManager.loadPlugins()
             locationsList = []
@@ -90,14 +90,14 @@ class MainWindow(QMainWindow):
         self.ui = Ui_CreepyMainWindow()
         self.ui.setupUi(self)
         #Create folders for projects and temp if they do not exist
-        if not os.path.exists(os.path.join(os.getcwdu(),'projects')):
-            os.makedirs(os.path.join(os.getcwdu(),'projects'))
-        if not os.path.exists(os.path.join(os.getcwdu(),'temp')):
-            os.makedirs(os.path.join(os.getcwdu(),'temp'))
+        if not os.path.exists(os.path.join(os.getcwd(),'projects')):
+            os.makedirs(os.path.join(os.getcwd(),'projects'))
+        if not os.path.exists(os.path.join(os.getcwd(),'temp')):
+            os.makedirs(os.path.join(os.getcwd(),'temp'))
         self.projectsList = []
         self.currentProject = None
         self.ui.webPage = QWebPage()
-        self.ui.webPage.mainFrame().setUrl(QUrl(os.path.join(os.getcwdu(), 'include', 'map.html')))
+        self.ui.webPage.mainFrame().setUrl(QUrl(os.path.join(os.getcwd(), 'include', 'map.html')))
         self.ui.mapWebView.setPage(self.ui.webPage)
         self.ui.menuView.addAction(self.ui.dockWProjects.toggleViewAction())
         self.ui.menuView.addAction(self.ui.dockWLocationsList.toggleViewAction())
@@ -105,6 +105,7 @@ class MainWindow(QMainWindow):
         self.ui.actionPluginsConfiguration.triggered.connect(self.showPluginsConfigurationDialog)
         self.ui.actionNewPersonProject.triggered.connect(self.showPersonProjectWizard)
         self.ui.actionAnalyzeCurrentProject.triggered.connect(self.analyzeProject)
+        self.ui.actionReanalyzeCurrentProject.triggered.connect(self.analyzeProject)
         self.ui.actionDrawCurrentProject.triggered.connect(self.presentLocations)
         self.ui.actionExportCSV.triggered.connect(self.exportProjectCSV)
         self.ui.actionExportKML.triggered.connect(self.exportProjectKML)
@@ -125,7 +126,7 @@ class MainWindow(QMainWindow):
         filterLocationsPointDialog.ui.mapPage = QWebPage()
         myPyObj = filterLocationsPointDialog.pyObj()
         filterLocationsPointDialog.ui.mapPage.mainFrame().addToJavaScriptWindowObject('myPyObj', myPyObj)  
-        filterLocationsPointDialog.ui.mapPage.mainFrame().setUrl(QUrl(os.path.join(os.getcwdu(), 'include', 'mapSetPoint.html')))
+        filterLocationsPointDialog.ui.mapPage.mainFrame().setUrl(QUrl(os.path.join(os.getcwd(), 'include', 'mapSetPoint.html')))
         filterLocationsPointDialog.ui.radiusUnitComboBox.insertItem(0, QString('km'))
         filterLocationsPointDialog.ui.radiusUnitComboBox.insertItem(1, QString('m'))
         filterLocationsPointDialog.ui.radiusUnitComboBox.activated[str].connect(filterLocationsPointDialog.onUnitChanged)
@@ -210,7 +211,7 @@ class MainWindow(QMainWindow):
         mapFrame.evaluateJavaScript('showMarkers()')
 
     def addMarkerToMap(self, mapFrame, location):
-        mapFrame.evaluateJavaScript(QString('addMarker(' + str(location.latitude) + ',' + str(location.longitude) + ',\"' + location.infowindow.encode('utf-8') + '\")'))
+        mapFrame.evaluateJavaScript(QString('addMarker(' + str(location.latitude) + ',' + str(location.longitude) + ',\"' + location.infowindow + '\")'))
 
     def centerMap(self, mapFrame, location):
         mapFrame.evaluateJavaScript(QString('centerMap(' + str(location.latitude) + ',' + str(location.longitude) + ')'))
@@ -229,7 +230,7 @@ class MainWindow(QMainWindow):
             return
         projectName = project.projectName+'.db'
         verifyDeleteDialog = VerifyDeleteDialog()
-        verifyDeleteDialog.ui.label.setText(str(verifyDeleteDialog.ui.label.text()).replace('@project@', project.projectName))
+        verifyDeleteDialog.ui.label.setText(unicode(verifyDeleteDialog.ui.label.text(),'utf-8').replace('@project@', project.projectName))
         verifyDeleteDialog.show()
         if verifyDeleteDialog.exec_():
             project.deleteProject(projectName)
@@ -247,7 +248,7 @@ class MainWindow(QMainWindow):
             self.showWarning(self.trUtf8('No locations found'), self.trUtf8('The selected project has no locations to be exported'))
             self.ui.statusbar.showMessage(self.trUtf8('The selected project has no locations to be exported'))
             return
-        fileName = QFileDialog.getSaveFileName(None, self.trUtf8('Save CSV export as...'), os.getcwdu(), 'All files (*.*)')
+        fileName = QFileDialog.getSaveFileName(None, self.trUtf8('Save CSV export as...'), os.getcwd(), 'All files (*.*)')
         if fileName:
             try:
                 fileobj = open(fileName, 'wb')
@@ -283,7 +284,7 @@ class MainWindow(QMainWindow):
             self.ui.statusbar.showMessage(self.trUtf8('The selected project has no locations to be exported'))
             return
         
-        fileName = QFileDialog.getSaveFileName(None, self.trUtf8('Save KML export as...'), os.getcwdu(), 'All files (*.*)')
+        fileName = QFileDialog.getSaveFileName(None, self.trUtf8('Save KML export as...'), os.getcwd(), 'All files (*.*)')
         if fileName:
             try:
                 fileobj = open(fileName, 'wb')
@@ -406,10 +407,10 @@ class MainWindow(QMainWindow):
         displayed on the Current Target Details Window
         '''
         location = self.locationsTableModel.locations[index.row()]
-        self.ui.currentTargetDetailsLocationValue.setText(location.shortName.encode('utf-8'))
+        self.ui.currentTargetDetailsLocationValue.setText(location.shortName)
         self.ui.currentTargetDetailsDateValue.setText(location.datetime.strftime('%a %b %d,%H:%M:%S %z'))
         self.ui.currentTargetDetailsSourceValue.setText(location.plugin)
-        self.ui.currentTargetDetailsContextValue.setText(location.context.encode('utf-8'))
+        self.ui.currentTargetDetailsContextValue.setText(location.context)
 
     def changeMainWidgetPage(self, pageType):
         '''
@@ -547,9 +548,9 @@ class MainWindow(QMainWindow):
         personProjectWizard.ProjectWizardSelectedTargetsTable = ProjectWizardSelectedTargetsTable([], self)
         if personProjectWizard.exec_():
             project = Project()
-            project.projectName = str(personProjectWizard.ui.personProjectNameValue.text())
-            project.projectKeywords = [keyword.strip() for keyword in str(personProjectWizard.ui.personProjectKeywordsValue.text()).split(',')]
-            project.projectDescription = str(personProjectWizard.ui.personProjectDescriptionValue.toPlainText())
+            project.projectName = unicode(personProjectWizard.ui.personProjectNameValue.text(), 'utf-8')
+            project.projectKeywords = [keyword.strip() for keyword in unicode(personProjectWizard.ui.personProjectKeywordsValue.text(), 'utf-8').split(',')]
+            project.projectDescription = personProjectWizard.ui.personProjectDescriptionValue.toPlainText()
             project.enabledPlugins = personProjectWizard.readSearchConfiguration()
             project.dateCreated = datetime.datetime.now()
             project.dateEdited = datetime.datetime.now()
@@ -570,7 +571,7 @@ class MainWindow(QMainWindow):
         Loads all the existing projects from the storage to be shown in the UI
         """
         # Show the existing Projects 
-        projectsDir = os.path.join(os.getcwdu(), 'projects')
+        projectsDir = os.path.join(os.getcwd(), 'projects')
         projectFileNames = [ os.path.join(projectsDir, f) for f in os.listdir(projectsDir) if (os.path.isfile(os.path.join(projectsDir, f)) and f.endswith('.db'))]
         rootNode = ProjectTreeNode(self.trUtf8('Projects'))
         for projectFile in projectFileNames:
@@ -584,7 +585,7 @@ class MainWindow(QMainWindow):
         self.ui.treeViewProjects.setModel(self.projectTreeModel)
         self.ui.treeViewProjects.doubleClicked.connect(self.doubleClickProjectItem)
         self.ui.treeViewProjects.setContextMenuPolicy(Qt.CustomContextMenu)
-        self.ui.treeViewProjects.customContextMenuRequested.connect(self.rightClickMenu)
+        self.ui.treeViewProjects.customContextMenuRequested.connect(self.showRightClickMenu)
         self.ui.treeViewProjects.clicked.connect(self.currentProjectChanged)
     
     def currentProjectChanged(self, index):
@@ -599,6 +600,7 @@ class MainWindow(QMainWindow):
             self.currentProject = nodeObject.parent().project  
         elif nodeObject.nodeType() == 'ANALYSIS':
             self.currentProject = nodeObject.parent().project
+
     def doubleClickProjectItem(self):
         '''
         Called when the user double-clicks on an item in the tree of the existing projects
@@ -616,7 +618,7 @@ class MainWindow(QMainWindow):
             self.currentProject = nodeObject.parent().project
             self.changeMainWidgetPage('analysis')
         
-    def rightClickMenu(self, pos):
+    def showRightClickMenu(self, pos):
         '''
         Called when the user right-clicks somewhere in the area of the existing projects
         '''
@@ -638,6 +640,8 @@ class MainWindow(QMainWindow):
                     rightClickMenu.addAction(self.ui.actionExportFilteredKML)
                 else:
                     rightClickMenu.addAction(self.ui.actionAnalyzeCurrentProject)
+                    rightClickMenu.addAction(self.ui.actionDeleteCurrentProject)
+                    
                 if rightClickMenu.exec_(self.ui.treeViewProjects.viewport().mapToGlobal(pos)):
                     pass
 

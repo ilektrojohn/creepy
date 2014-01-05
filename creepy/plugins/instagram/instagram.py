@@ -104,8 +104,8 @@ class Instagram(InputPlugin):
                 if hasattr(i, 'location'):
                     loc = {}
                     loc['plugin'] = "instagram"
-                    loc['context'] = i.caption.text if i.caption else u'No Caption'
-                    loc['infowindow'] = self.constructContextInfoWindow(i)                                 
+                    loc['context'] = i.caption.text if i.caption else unicode('No Caption','utf-8')
+                    loc['infowindow'] = self.constructContextInfoWindow(i)
                     loc['date'] = i.created_time
                     loc['lat'] = i.location.point.latitude
                     loc['lon'] = i.location.point.longitude
@@ -182,9 +182,9 @@ class Instagram(InputPlugin):
         QMessageBox.warning(self.wizard, title, text)   
         
     def constructContextInfoWindow(self, photo):
-        html = self.options_string['infowindow_html']
-        caption = photo.caption.text if photo.caption else "No Caption"
-        return html.replace("@TEXT@",caption).replace("@DATE@",photo.created_time.strftime("%a %b %d,%H:%M:%S %z")).replace("@PLUGIN@", "instagram").replace("@LINK@", photo.link)
+        html = unicode(self.options_string['infowindow_html'],'utf-8')
+        caption = photo.caption.text if photo.caption else unicode('No Caption', 'utf-8')
+        return html.replace("@TEXT@",caption).replace("@DATE@",photo.created_time.strftime("%a %b %d,%H:%M:%S %z")).replace("@PLUGIN@", u"instagram").replace("@LINK@", photo.link)
     
     
     def getLabelForKey(self, key):
