@@ -53,7 +53,7 @@ class Twitter(InputPlugin):
             if search_results:
                 logger.debug("Twitter returned  "+str(len(search_results))+" results")
                 for i in search_results:
-                    if self.options_boolean['exclude_geo_disabled'] and not i.geo_enabled:
+                    if self.options_boolean['exclude_geo_disabled'] == 'True' and not i.geo_enabled:
                         continue
                     target = {'pluginName':'Twitter Plugin'}
                     target['targetUserid'] = i.id_str
