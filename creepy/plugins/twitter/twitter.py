@@ -74,7 +74,7 @@ class Twitter(InputPlugin):
     
     def getAuthenticatedAPI(self):
         try:
-            auth = tweepy.auth.OAuthHandler(self.options_string['hidden_application_key'], self.options_string['hidden_application_secret'])
+            auth = tweepy.auth.OAuthHandler(self.options_string['hidden_application_key'], self.options_string['hidden_application_secret'], secure=True)
             auth.set_access_token(self.options_string['hidden_access_token'], self.options_string['hidden_access_token_secret'])
             return tweepy.API(auth)
         except Exception,e:
