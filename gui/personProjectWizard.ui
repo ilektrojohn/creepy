@@ -14,8 +14,8 @@
    <string>New Person Project</string>
   </property>
   <property name="windowIcon">
-   <iconset>
-    <normaloff>:/cr/003 User2.png</normaloff>:/cr/003 User2.png</iconset>
+   <iconset resource="../creepy/include/creepy_resources.qrc">
+    <normaloff>:/creepy/user</normaloff>:/creepy/user</iconset>
   </property>
   <property name="wizardStyle">
    <enum>QWizard::ClassicStyle</enum>
@@ -293,8 +293,8 @@
         <rect>
          <x>0</x>
          <y>0</y>
-         <width>744</width>
-         <height>153</height>
+         <width>98</width>
+         <height>91</height>
         </rect>
        </property>
        <layout class="QVBoxLayout" name="verticalLayout">

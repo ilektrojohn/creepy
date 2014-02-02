@@ -83,7 +83,7 @@ class Twitter(InputPlugin):
     
     def runConfigWizard(self):
         try:
-            oAuthHandler = tweepy.OAuthHandler(self.options_string['hidden_application_key'], self.options_string['hidden_application_secret'])
+            oAuthHandler = tweepy.OAuthHandler(self.options_string['hidden_application_key'], self.options_string['hidden_application_secret'], secure=True)
             authorizationURL = oAuthHandler.get_authorization_url(True)
             self.wizard = QWizard()
             page1 = QWizardPage()

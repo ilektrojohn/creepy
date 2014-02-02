@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file '.\filterLocationsDateDialog.ui'
 #
-# Created: Sun Dec 15 18:06:22 2013
+# Created: Fri Jan 31 15:33:14 2014
 #      by: PyQt4 UI code generator 4.9.4
 #
 # WARNING! All changes made in this file will be lost!
@@ -19,7 +19,7 @@ class Ui_FilterLocationsDateDialog(object):
         FilterLocationsDateDialog.setObjectName(_fromUtf8("FilterLocationsDateDialog"))
         FilterLocationsDateDialog.resize(575, 403)
         icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap(_fromUtf8(":/cr/005 CalendarDate.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon.addPixmap(QtGui.QPixmap(_fromUtf8(":/creepy/calendar")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         FilterLocationsDateDialog.setWindowIcon(icon)
         FilterLocationsDateDialog.setModal(True)
         self.verticalLayout = QtGui.QVBoxLayout(FilterLocationsDateDialog)

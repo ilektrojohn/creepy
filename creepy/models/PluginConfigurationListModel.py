@@ -34,7 +34,7 @@ class PluginConfigurationListModel(QAbstractListModel):
                     pixmap = QPixmap(picturePath)
                     return QIcon(pixmap)
                 else:
-                    pixmap = QPixmap(os.path.join(os.getcwdu(), 'include', 'generic_plugin.png'))
+                    pixmap = QPixmap(':/creepy/folder')
                     return QIcon(pixmap)
         else: 
             return QVariant()

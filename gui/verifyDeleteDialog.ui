@@ -16,6 +16,10 @@
   <property name="windowTitle">
    <string>Delete Project</string>
   </property>
+  <property name="windowIcon">
+   <iconset resource="../creepy/include/creepy_resources.qrc">
+    <normaloff>:/creepy/cross-circle</normaloff>:/creepy/cross-circle</iconset>
+  </property>
   <property name="modal">
    <bool>true</bool>
   </property>
@@ -58,7 +62,9 @@
    </layout>
   </widget>
  </widget>
- <resources/>
+ <resources>
+  <include location="../creepy/include/creepy_resources.qrc"/>
+ </resources>
  <connections>
   <connection>
    <sender>buttonBox</sender>

@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file '.\filterLocationsPointDialog.ui'
 #
-# Created: Sun Dec 15 18:06:24 2013
+# Created: Fri Jan 31 15:33:25 2014
 #      by: PyQt4 UI code generator 4.9.4
 #
 # WARNING! All changes made in this file will be lost!
@@ -19,7 +19,7 @@ class Ui_FilteLocationsPointDialog(object):
         FilteLocationsPointDialog.setObjectName(_fromUtf8("FilteLocationsPointDialog"))
         FilteLocationsPointDialog.resize(758, 565)
         icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap(_fromUtf8(":/cr/226 CircledGeo.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon.addPixmap(QtGui.QPixmap(_fromUtf8(":/creepy/marker")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         FilteLocationsPointDialog.setWindowIcon(icon)
         self.buttonBox = QtGui.QDialogButtonBox(FilteLocationsPointDialog)
         self.buttonBox.setGeometry(QtCore.QRect(390, 520, 341, 32))

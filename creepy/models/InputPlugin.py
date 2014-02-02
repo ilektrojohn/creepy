@@ -44,7 +44,6 @@ class InputPlugin(IPlugin):
         config_file = os.path.join(os.getcwdu(),'plugins', self.name, config_filename)
         config = ConfigObj(infile=config_file)
         config.create_empty=False
-        return config
     
     def readConfiguration(self, category):
         config_filename = self.name+'.conf'

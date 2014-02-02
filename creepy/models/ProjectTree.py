@@ -29,13 +29,11 @@ class ProjectTreeModel(QAbstractItemModel):
                 return QVariant(node.name())
             if role == Qt.DecorationRole:
                 if node.nodeType() == 'PROJECT':
-                    return QIcon(QPixmap(':/cr/project_icon.png'))
+                    return QIcon(QPixmap(':/creepy/folder'))
                 if node.nodeType() == "LOCATIONS":
-                    return QIcon(QPixmap(':/cr/folder_locations.png'))
+                    return QIcon(QPixmap(':/creepy/marker'))
                 if node.nodeType() == 'ANALYSIS':
                     return QIcon(QPixmap(':/cr/analysis.png'))
-                if node.nodeType() == 'LOCATION':
-                    return QIcon(QPixmap(':/cr/index.png'))
         else:
             return QVariant()
     
@@ -173,8 +171,4 @@ class AnalysisNode(ProjectTreeNode):
         self._type = 'ANALYSIS'
         self.analysis = ""
         
-class LocationNode(ProjectTreeNode):
-    def __init__(self, name, location, parent=None):
-        super(LocationNode, self).__init__(name, parent)
-        self._type = 'Location'   
-        self.location = location
+

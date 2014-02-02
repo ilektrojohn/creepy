@@ -15,7 +15,7 @@
   </property>
   <property name="windowIcon">
    <iconset resource="../creepy/include/creepy_resources.qrc">
-    <normaloff>:/cr/005 CalendarDate.png</normaloff>:/cr/005 CalendarDate.png</iconset>
+    <normaloff>:/creepy/calendar</normaloff>:/creepy/calendar</iconset>
   </property>
   <property name="modal">
    <bool>true</bool>

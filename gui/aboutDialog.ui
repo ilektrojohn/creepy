@@ -10,12 +10,15 @@
     <height>338</height>
    </rect>
   </property>
+  <property name="cursor">
+   <cursorShape>ArrowCursor</cursorShape>
+  </property>
   <property name="windowTitle">
    <string>About</string>
   </property>
   <property name="windowIcon">
-   <iconset>
-    <normaloff>:/cr/creepy32.png</normaloff>:/cr/creepy32.png</iconset>
+   <iconset resource="../creepy/include/creepy_resources.qrc">
+    <normaloff>:/creepy/creepy</normaloff>:/creepy/creepy</iconset>
   </property>
   <property name="modal">
    <bool>false</bool>

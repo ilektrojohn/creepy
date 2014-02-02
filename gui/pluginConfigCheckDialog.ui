@@ -31,6 +31,10 @@
   <property name="windowTitle">
    <string>Plugin Configuration Test</string>
   </property>
+  <property name="windowIcon">
+   <iconset resource="../creepy/include/creepy_resources.qrc">
+    <normaloff>:/creepy/creepy</normaloff>:/creepy/creepy</iconset>
+  </property>
   <property name="modal">
    <bool>true</bool>
   </property>
@@ -76,7 +80,9 @@
    </layout>
   </widget>
  </widget>
- <resources/>
+ <resources>
+  <include location="../creepy/include/creepy_resources.qrc"/>
+ </resources>
  <connections>
   <connection>
    <sender>checkPluginConfigurationButtonBox</sender>

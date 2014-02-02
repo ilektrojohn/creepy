@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file '.\gui\verifyDeleteDialog.ui'
+# Form implementation generated from reading ui file '.\verifyDeleteDialog.ui'
 #
-# Created: Thu Dec 19 21:02:06 2013
+# Created: Fri Jan 31 15:33:01 2014
 #      by: PyQt4 UI code generator 4.9.4
 #
 # WARNING! All changes made in this file will be lost!
@@ -19,6 +19,9 @@ class Ui_verifyDeleteDialog(object):
         verifyDeleteDialog.setObjectName(_fromUtf8("verifyDeleteDialog"))
         verifyDeleteDialog.setWindowModality(QtCore.Qt.NonModal)
         verifyDeleteDialog.resize(407, 216)
+        icon = QtGui.QIcon()
+        icon.addPixmap(QtGui.QPixmap(_fromUtf8(":/creepy/cross-circle")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        verifyDeleteDialog.setWindowIcon(icon)
         verifyDeleteDialog.setModal(True)
         self.buttonBox = QtGui.QDialogButtonBox(verifyDeleteDialog)
         self.buttonBox.setGeometry(QtCore.QRect(50, 170, 341, 32))
@@ -43,8 +46,9 @@ class Ui_verifyDeleteDialog(object):
 
     def retranslateUi(self, verifyDeleteDialog):
         verifyDeleteDialog.setWindowTitle(QtGui.QApplication.translate("verifyDeleteDialog", "Delete Project", None, QtGui.QApplication.UnicodeUTF8))
-        self.label.setText(QtGui.QApplication.translate("verifyDeleteDialog", "<html><head/><body><p><span style=\" font-size:10pt;\">Are you sure you want to </span><span style=\" font-size:10pt; font-weight:600; font-style:italic; color:#ff0000;\">delete</span><span style=\" font-size:10pt;\"> project </span></p><p align=\"center\"><span style=\" font-size:10pt; font-weight:600;\">@project@</span><span style=\" font-size:10pt;\"> ? </span></p></body></html>", None, QtGui.QApplication.UnicodeUTF8))
+        self.label.setText(QtGui.QApplication.translate("verifyDeleteDialog", "<html><head/><body><p align=\"center\"><span style=\" font-size:10pt;\">Are you sure you want to </span><span style=\" font-size:10pt; font-weight:600; font-style:italic; color:#ff0000;\">delete</span><span style=\" font-size:10pt;\"> project </span></p><p align=\"center\"><span style=\" font-size:10pt; font-weight:600;\">@project@</span><span style=\" font-size:10pt;\"> ? </span></p></body></html>", None, QtGui.QApplication.UnicodeUTF8))
 
+import creepy_resources_rc
 
 if __name__ == "__main__":
     import sys

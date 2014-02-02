@@ -4,7 +4,7 @@ import os
 from PyQt4.QtGui import QDialog, QLabel, QLineEdit, QScrollArea, QCheckBox
 from yapsy.PluginManager import PluginManagerSingleton
 from models.InputPlugin import InputPlugin
-from ui.CreepyPluginsConfigurationDialog import Ui_PluginsConfigurationDialog
+from ui.PluginsConfig import Ui_PluginsConfigurationDialog
 from components.PluginConfigurationCheckDialog import PluginConfigurationCheckdialog 
 class PluginsConfigurationDialog(QDialog):
     def __init__(self, parent=None):

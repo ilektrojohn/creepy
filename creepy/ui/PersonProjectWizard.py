@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file '.\gui\personProjectWizard.ui'
+# Form implementation generated from reading ui file '.\personProjectWizard.ui'
 #
-# Created: Thu Dec 19 20:38:35 2013
+# Created: Fri Jan 31 15:30:24 2014
 #      by: PyQt4 UI code generator 4.9.4
 #
 # WARNING! All changes made in this file will be lost!
@@ -19,7 +19,7 @@ class Ui_personProjectWizard(object):
         personProjectWizard.setObjectName(_fromUtf8("personProjectWizard"))
         personProjectWizard.resize(898, 702)
         icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap(_fromUtf8(":/cr/003 User2.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon.addPixmap(QtGui.QPixmap(_fromUtf8(":/creepy/user")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         personProjectWizard.setWindowIcon(icon)
         personProjectWizard.setWizardStyle(QtGui.QWizard.ClassicStyle)
         personProjectWizard.setOptions(QtGui.QWizard.HelpButtonOnRight)
@@ -69,6 +69,8 @@ class Ui_personProjectWizard(object):
         spacerItem1 = QtGui.QSpacerItem(40, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
         self.horizontalLayout.addItem(spacerItem1)
         self.btnAddTarget = QtGui.QPushButton(self.personProjectWizardPage2)
+        self.btnAddTarget.setFocusPolicy(QtCore.Qt.NoFocus)
+        self.btnAddTarget.setStyleSheet(_fromUtf8(""))
         self.btnAddTarget.setObjectName(_fromUtf8("btnAddTarget"))
         self.horizontalLayout.addWidget(self.btnAddTarget)
         self.gridLayout.addLayout(self.horizontalLayout, 5, 3, 1, 1)
@@ -131,7 +133,7 @@ class Ui_personProjectWizard(object):
         self.personProjectAvailablePluginsScrollArea.setWidgetResizable(True)
         self.personProjectAvailablePluginsScrollArea.setObjectName(_fromUtf8("personProjectAvailablePluginsScrollArea"))
         self.scrollAreaWidgetContents = QtGui.QWidget()
-        self.scrollAreaWidgetContents.setGeometry(QtCore.QRect(0, 0, 744, 153))
+        self.scrollAreaWidgetContents.setGeometry(QtCore.QRect(0, 0, 98, 91))
         self.scrollAreaWidgetContents.setObjectName(_fromUtf8("scrollAreaWidgetContents"))
         self.verticalLayout = QtGui.QVBoxLayout(self.scrollAreaWidgetContents)
         self.verticalLayout.setObjectName(_fromUtf8("verticalLayout"))
@@ -161,6 +163,8 @@ class Ui_personProjectWizard(object):
         spacerItem6 = QtGui.QSpacerItem(40, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
         self.horizontalLayout_3.addItem(spacerItem6)
         self.btnRemoveTarget = QtGui.QPushButton(self.personProjectWizardPage2)
+        self.btnRemoveTarget.setFocusPolicy(QtCore.Qt.NoFocus)
+        self.btnRemoveTarget.setStyleSheet(_fromUtf8(""))
         self.btnRemoveTarget.setObjectName(_fromUtf8("btnRemoveTarget"))
         self.horizontalLayout_3.addWidget(self.btnRemoveTarget)
         self.gridLayout.addLayout(self.horizontalLayout_3, 9, 3, 1, 1)
@@ -200,6 +204,7 @@ class Ui_personProjectWizard(object):
         self.personProjectSelectedTargetsLabel.setText(QtGui.QApplication.translate("personProjectWizard", "<html><head/><body><p><span style=\" font-weight:600; color:#ff0000;\">Selected Targets</span></p></body></html>", None, QtGui.QApplication.UnicodeUTF8))
         self.personProjectSearchInLabel.setText(QtGui.QApplication.translate("personProjectWizard", "<html><head/><body><p><span style=\" font-weight:600;\">Search In</span></p></body></html>", None, QtGui.QApplication.UnicodeUTF8))
         self.personProjectSearchForDetailsLabel.setText(QtGui.QApplication.translate("personProjectWizard", "Search by username, mail, full name, id", None, QtGui.QApplication.UnicodeUTF8))
+        self.personProjectSearchButton.setToolTip(QtGui.QApplication.translate("personProjectWizard", "Search for targets in the selected plugins", None, QtGui.QApplication.UnicodeUTF8))
         self.personProjectSearchButton.setText(QtGui.QApplication.translate("personProjectWizard", "Search", None, QtGui.QApplication.UnicodeUTF8))
         self.btnRemoveTarget.setText(QtGui.QApplication.translate("personProjectWizard", "Remove Selected", None, QtGui.QApplication.UnicodeUTF8))
         self.personProjectWizardPage3.setTitle(QtGui.QApplication.translate("personProjectWizard", "Step 3 - Set Parameters", None, QtGui.QApplication.UnicodeUTF8))

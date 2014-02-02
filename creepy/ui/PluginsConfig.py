@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file '.\pluginsConfig.ui'
 #
-# Created: Sun Dec 15 18:10:42 2013
+# Created: Fri Jan 31 15:31:51 2014
 #      by: PyQt4 UI code generator 4.9.4
 #
 # WARNING! All changes made in this file will be lost!
@@ -26,7 +26,7 @@ class Ui_PluginsConfigurationDialog(object):
         PluginsConfigurationDialog.setMinimumSize(QtCore.QSize(810, 640))
         PluginsConfigurationDialog.setMaximumSize(QtCore.QSize(810, 640))
         icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap(_fromUtf8(":/cr/054 Preferences2.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon.addPixmap(QtGui.QPixmap(_fromUtf8(":/creepy/properties")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         PluginsConfigurationDialog.setWindowIcon(icon)
         self.BtnBox = QtGui.QDialogButtonBox(PluginsConfigurationDialog)
         self.BtnBox.setGeometry(QtCore.QRect(430, 600, 341, 32))

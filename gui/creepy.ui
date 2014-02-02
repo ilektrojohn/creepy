@@ -21,7 +21,7 @@
   </property>
   <property name="windowIcon">
    <iconset>
-    <normaloff>../creepy/include/creepy.xpm</normaloff>../creepy/include/creepy.xpm</iconset>
+    <normaloff>../creepy/include/Eye_of_Sauron_by_Blood_Solice.png</normaloff>../creepy/include/Eye_of_Sauron_by_Blood_Solice.png</iconset>
   </property>
   <property name="autoFillBackground">
    <bool>true</bool>
@@ -119,6 +119,7 @@
     </property>
     <addaction name="actionReportProblem"/>
     <addaction name="actionAbout"/>
+    <addaction name="actionCheckUpdates"/>
    </widget>
    <widget class="QMenu" name="menuView">
     <property name="title">
@@ -393,8 +394,8 @@
     <bool>false</bool>
    </property>
    <property name="icon">
-    <iconset>
-     <normaloff>:/cr/020 DocumentKML.png</normaloff>:/cr/020 DocumentKML.png</iconset>
+    <iconset resource="../creepy/include/creepy_resources.qrc">
+     <normaloff>:/creepy/export</normaloff>:/creepy/export</iconset>
    </property>
    <property name="text">
     <string>Export Project Locations as KML</string>
@@ -405,8 +406,8 @@
   </action>
   <action name="actionExportCSV">
    <property name="icon">
-    <iconset>
-     <normaloff>:/cr/020 DocumentCSV.png</normaloff>:/cr/020 DocumentCSV.png</iconset>
+    <iconset resource="../creepy/include/creepy_resources.qrc">
+     <normaloff>:/creepy/export</normaloff>:/creepy/export</iconset>
    </property>
    <property name="text">
     <string>Export Project Locations as CSV</string>
@@ -417,8 +418,8 @@
   </action>
   <action name="actionExit">
    <property name="icon">
-    <iconset>
-     <normaloff>:/cr/059 CircledOff.png</normaloff>:/cr/059 CircledOff.png</iconset>
+    <iconset resource="../creepy/include/creepy_resources.qrc">
+     <normaloff>:/creepy/cross</normaloff>:/creepy/cross</iconset>
    </property>
    <property name="text">
     <string>Exit</string>
@@ -426,8 +427,8 @@
   </action>
   <action name="actionReportProblem">
    <property name="icon">
-    <iconset>
-     <normaloff>:/cr/107 Flag.png</normaloff>:/cr/107 Flag.png</iconset>
+    <iconset resource="../creepy/include/creepy_resources.qrc">
+     <normaloff>:/creepy/exclamation</normaloff>:/creepy/exclamation</iconset>
    </property>
    <property name="text">
     <string>Report a problem / bug</string>
@@ -435,8 +436,8 @@
   </action>
   <action name="actionAbout">
    <property name="icon">
-    <iconset>
-     <normaloff>:/cr/creepy32.png</normaloff>:/cr/creepy32.png</iconset>
+    <iconset resource="../creepy/include/creepy_resources.qrc">
+     <normaloff>:/creepy/creepy</normaloff>:/creepy/creepy</iconset>
    </property>
    <property name="text">
     <string>About</string>
@@ -444,8 +445,8 @@
   </action>
   <action name="actionPluginsConfiguration">
    <property name="icon">
-    <iconset>
-     <normaloff>:/cr/054 Preferences2.png</normaloff>:/cr/054 Preferences2.png</iconset>
+    <iconset resource="../creepy/include/creepy_resources.qrc">
+     <normaloff>:/creepy/properties</normaloff>:/creepy/properties</iconset>
    </property>
    <property name="text">
     <string>Plugins Configuration</string>
@@ -494,8 +495,8 @@
   </action>
   <action name="actionNewPersonProject">
    <property name="icon">
-    <iconset>
-     <normaloff>:/cr/003 User2.png</normaloff>:/cr/003 User2.png</iconset>
+    <iconset resource="../creepy/include/creepy_resources.qrc">
+     <normaloff>:/creepy/user</normaloff>:/creepy/user</iconset>
    </property>
    <property name="text">
     <string>Person Based Project</string>
@@ -508,8 +509,8 @@
   </action>
   <action name="actionAnalyzeCurrentProject">
    <property name="icon">
-    <iconset>
-     <normaloff>:/cr/creepy32.png</normaloff>:/cr/creepy32.png</iconset>
+    <iconset resource="../creepy/include/creepy_resources.qrc">
+     <normaloff>:/creepy/target</normaloff>:/creepy/target</iconset>
    </property>
    <property name="text">
     <string>Analyze Current Project</string>
@@ -520,8 +521,8 @@
   </action>
   <action name="actionDrawCurrentProject">
    <property name="icon">
-    <iconset>
-     <normaloff>:/cr/079 Pin2.png</normaloff>:/cr/079 Pin2.png</iconset>
+    <iconset resource="../creepy/include/creepy_resources.qrc">
+     <normaloff>:/creepy/map</normaloff>:/creepy/map</iconset>
    </property>
    <property name="text">
     <string>Draw Locations for Current Project</string>
@@ -532,8 +533,8 @@
   </action>
   <action name="actionFilterLocationsDate">
    <property name="icon">
-    <iconset>
-     <normaloff>:/cr/005 CalendarDate.png</normaloff>:/cr/005 CalendarDate.png</iconset>
+    <iconset resource="../creepy/include/creepy_resources.qrc">
+     <normaloff>:/creepy/calendar</normaloff>:/creepy/calendar</iconset>
    </property>
    <property name="text">
     <string>Filter Locations by Date</string>
@@ -544,8 +545,8 @@
   </action>
   <action name="actionFilterLocationsPosition">
    <property name="icon">
-    <iconset>
-     <normaloff>:/cr/226 CircledGeo.png</normaloff>:/cr/226 CircledGeo.png</iconset>
+    <iconset resource="../creepy/include/creepy_resources.qrc">
+     <normaloff>:/creepy/marker</normaloff>:/creepy/marker</iconset>
    </property>
    <property name="text">
     <string>Filter Locations by Position</string>
@@ -556,8 +557,8 @@
   </action>
   <action name="actionRemoveFilters">
    <property name="icon">
-    <iconset>
-     <normaloff>:/cr/070 Minus.png</normaloff>:/cr/070 Minus.png</iconset>
+    <iconset resource="../creepy/include/creepy_resources.qrc">
+     <normaloff>:/creepy/minus</normaloff>:/creepy/minus</iconset>
    </property>
    <property name="text">
     <string>Remove Filters</string>
@@ -571,8 +572,8 @@
     <bool>true</bool>
    </property>
    <property name="icon">
-    <iconset>
-     <normaloff>:/cr/107 Flag.png</normaloff>:/cr/107 Flag.png</iconset>
+    <iconset resource="../creepy/include/creepy_resources.qrc">
+     <normaloff>:/creepy/heatmap</normaloff>:/creepy/heatmap</iconset>
    </property>
    <property name="text">
     <string>Show HeatMap</string>
@@ -593,8 +594,8 @@
   </action>
   <action name="actionDeleteCurrentProject">
    <property name="icon">
-    <iconset>
-     <normaloff>:/cr/200 CircledMinus.png</normaloff>:/cr/200 CircledMinus.png</iconset>
+    <iconset resource="../creepy/include/creepy_resources.qrc">
+     <normaloff>:/creepy/minus-circle</normaloff>:/creepy/minus-circle</iconset>
    </property>
    <property name="text">
     <string>Delete Current Project</string>
@@ -605,8 +606,8 @@
   </action>
   <action name="actionExportFilteredKML">
    <property name="icon">
-    <iconset>
-     <normaloff>:/cr/020 DocumentKML.png</normaloff>:/cr/020 DocumentKML.png</iconset>
+    <iconset resource="../creepy/include/creepy_resources.qrc">
+     <normaloff>:/creepy/export</normaloff>:/creepy/export</iconset>
    </property>
    <property name="text">
     <string>Export Filtered Locations as KML</string>
@@ -617,8 +618,8 @@
   </action>
   <action name="actionExportFilteredCSV">
    <property name="icon">
-    <iconset>
-     <normaloff>:/cr/020 DocumentCSV.png</normaloff>:/cr/020 DocumentCSV.png</iconset>
+    <iconset resource="../creepy/include/creepy_resources.qrc">
+     <normaloff>:/creepy/export</normaloff>:/creepy/export</iconset>
    </property>
    <property name="text">
     <string>Export Filtered Locations as CSV</string>
@@ -629,14 +630,23 @@
   </action>
   <action name="actionReanalyzeCurrentProject">
    <property name="icon">
-    <iconset>
-     <normaloff>:/cr/creepy32.png</normaloff>:/cr/creepy32.png</iconset>
+    <iconset resource="../creepy/include/creepy_resources.qrc">
+     <normaloff>:/creepy/target</normaloff>:/creepy/target</iconset>
    </property>
    <property name="text">
     <string>Reanalyze Current Project</string>
    </property>
    <property name="toolTip">
     <string>Reanalyze Current Project</string>
+   </property>
+  </action>
+  <action name="actionCheckUpdates">
+   <property name="icon">
+    <iconset resource="../creepy/include/creepy_resources.qrc">
+     <normaloff>:/creepy/info</normaloff>:/creepy/info</iconset>
+   </property>
+   <property name="text">
+    <string>Check for updates</string>
    </property>
   </action>
  </widget>

@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file '..\gui\aboutDialog.ui'
+# Form implementation generated from reading ui file '.\aboutDialog.ui'
 #
-# Created: Sun Dec 22 18:31:12 2013
+# Created: Fri Jan 31 15:29:04 2014
 #      by: PyQt4 UI code generator 4.9.4
 #
 # WARNING! All changes made in this file will be lost!
@@ -18,8 +18,9 @@ class Ui_aboutDialog(object):
     def setupUi(self, aboutDialog):
         aboutDialog.setObjectName(_fromUtf8("aboutDialog"))
         aboutDialog.resize(394, 338)
+        aboutDialog.setCursor(QtGui.QCursor(QtCore.Qt.ArrowCursor))
         icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap(_fromUtf8(":/cr/creepy32.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon.addPixmap(QtGui.QPixmap(_fromUtf8(":/creepy/creepy")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         aboutDialog.setWindowIcon(icon)
         aboutDialog.setModal(False)
         self.buttonBox = QtGui.QDialogButtonBox(aboutDialog)

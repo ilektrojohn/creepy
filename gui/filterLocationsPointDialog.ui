@@ -15,7 +15,7 @@
   </property>
   <property name="windowIcon">
    <iconset resource="../creepy/include/creepy_resources.qrc">
-    <normaloff>:/cr/226 CircledGeo.png</normaloff>:/cr/226 CircledGeo.png</iconset>
+    <normaloff>:/creepy/marker</normaloff>:/creepy/marker</iconset>
   </property>
   <widget class="QDialogButtonBox" name="buttonBox">
    <property name="geometry">

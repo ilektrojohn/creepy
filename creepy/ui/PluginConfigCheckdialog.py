@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file '.\pluginConfigCheckDialog.ui'
 #
-# Created: Sat Jan 04 16:25:47 2014
+# Created: Fri Jan 31 15:31:13 2014
 #      by: PyQt4 UI code generator 4.9.4
 #
 # WARNING! All changes made in this file will be lost!
@@ -25,6 +25,9 @@ class Ui_checkPluginConfigurationDialog(object):
         checkPluginConfigurationDialog.setSizePolicy(sizePolicy)
         checkPluginConfigurationDialog.setMinimumSize(QtCore.QSize(378, 222))
         checkPluginConfigurationDialog.setMaximumSize(QtCore.QSize(378, 222))
+        icon = QtGui.QIcon()
+        icon.addPixmap(QtGui.QPixmap(_fromUtf8(":/creepy/creepy")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        checkPluginConfigurationDialog.setWindowIcon(icon)
         checkPluginConfigurationDialog.setModal(True)
         self.checkPluginConfigurationButtonBox = QtGui.QDialogButtonBox(checkPluginConfigurationDialog)
         self.checkPluginConfigurationButtonBox.setGeometry(QtCore.QRect(30, 176, 341, 32))
@@ -52,6 +55,7 @@ class Ui_checkPluginConfigurationDialog(object):
         checkPluginConfigurationDialog.setWindowTitle(QtGui.QApplication.translate("checkPluginConfigurationDialog", "Plugin Configuration Test", None, QtGui.QApplication.UnicodeUTF8))
         self.checkPluginConfigurationResultLabel.setText(QtGui.QApplication.translate("checkPluginConfigurationDialog", "TextLabel", None, QtGui.QApplication.UnicodeUTF8))
 
+import creepy_resources_rc
 
 if __name__ == "__main__":
     import sys

@@ -1,44 +1,26 @@
 <RCC>
-  <qresource prefix="cr">
-    <file>143 Attention.png</file>
-    <file>200 CircledMinus.png</file>
-    <file>219 CircledSync.png</file>
-    <file>226 CircledGeo.png</file>
-    <file>020 DocumentCSV.png</file>
-    <file>020 DocumentKML.png</file>
-    <file>021 Document Text.png</file>
-    <file>022 Document Add.png</file>
-    <file>054 Preferences2.png</file>
-    <file>003 User2.png</file>
-    <file>005 CalendarDate.png</file>
-    <file>011 InboxDownload.png</file>
-    <file>013 MagnifyingGlass.png</file>
-    <file>059 CircledOff.png</file>
-    <file>060 Off.png</file>
-    <file>061 Sync.png</file>
-    <file>070 Minus.png</file>
-    <file>077 Location.png</file>
-    <file>078 Pin.png</file>
-    <file>079 Pin2.png</file>
-    <file>084 Photo.png</file>
-    <file>107 Flag.png</file>
-    <file>119 Eye.png</file>
-    <file>144 Forbidden.png</file>
-    <file>165 ExclamationMark.png</file>
-    <file>196 Time.png</file>
-    <file>197 Compass.png</file>
-    <file>project_actionmenu_delete.png</file>
-    <file>heatmap.png</file>
-    <file>project_actionmenu_edit.png</file>
-    <file>analysis.png</file>
-    <file>folder_locations.png</file>
-    <file>project_icon.png</file>
-    <file>analyze.png</file>
-    <file>add.png</file>
-    <file>cvs.png</file>
-    <file>geolocate.png</file>
-    <file>creepy32.png</file>
-    <file>plugins_config.png</file>
-    <file>save.png</file>
+  <qresource prefix="creepy">
+    <file alias="creepy">Eye_of_Sauron_by_Blood_Solice.png</file>
+    <file alias="calendar">../../../../icons/32/calendar-day.png</file>
+    <file alias="cross">../../../../icons/32/cross.png</file>
+    <file alias="cross-circle">../../../../icons/32/cross-circle.png</file>
+    <file alias="exclamation">../../../../icons/32/exclamation.png</file>
+    <file alias="properties">../../../../icons/32/application-sidebar-list.png</file>
+    <file alias="image-instagram">../../../../icons/32/image-instagram.png</file>
+    <file alias="heatmap">../../../../icons/24/fire.png</file>
+    <file alias="info">../../../../icons/32/information.png</file>
+    <file alias="lock">../../../../icons/32/lock.png</file>
+    <file alias="minus">../../../../icons/32/minus.png</file>
+    <file alias="map">../../../../icons/32/map.png</file>
+    <file alias="minus-circle">../../../../icons/32/minus-circle.png</file>
+    <file alias="export">../../../../icons/24/blue-document-export.png</file>
+    <file alias="globe">../../../../icons/24/globe.png</file>
+    <file alias="marker">../../../../icons/24/marker.png</file>
+    <file alias="target">../../../../icons/24/target.png</file>
+    <file alias="user">../../../../icons/24/user.png</file>
+    <file alias="add">../../../../icons/32/plus-circle.png</file>
+    <file alias="folder">../../../../icons/32/blue-folder-horizontal.png</file>
+    <file alias="bookmark">../../../../icons/32/bookmark.png</file>
+    <file alias="tick">../../../../icons/32/tick.png</file>
   </qresource>
 </RCC>

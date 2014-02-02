@@ -33,7 +33,7 @@
   </property>
   <property name="windowIcon">
    <iconset resource="../creepy/include/creepy_resources.qrc">
-    <normaloff>:/cr/054 Preferences2.png</normaloff>:/cr/054 Preferences2.png</iconset>
+    <normaloff>:/creepy/properties</normaloff>:/creepy/properties</iconset>
   </property>
   <widget class="QDialogButtonBox" name="BtnBox">
    <property name="geometry">

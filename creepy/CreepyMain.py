@@ -7,9 +7,12 @@ import logging
 import shelve
 import functools
 import csv
+import urllib2
+from distutils.version import StrictVersion
+from configobj import ConfigObj
 from PyQt4.QtCore import QString, QThread, SIGNAL, QUrl, QDateTime, QDate, QRect, Qt
-from PyQt4.QtGui import QMainWindow, QApplication, QMessageBox, QFileDialog, QWidget, QScrollArea, QVBoxLayout
-from PyQt4.QtGui import QHBoxLayout, QLabel, QLineEdit, QCheckBox, QPushButton, QStackedWidget,QGridLayout, QMenu
+from PyQt4.QtGui import QMainWindow, QApplication, QMessageBox, QFileDialog, QWidget, QScrollArea, QVBoxLayout, QIcon, QPixmap
+from PyQt4.QtGui import QHBoxLayout, QLabel, QLineEdit, QCheckBox, QPushButton, QStackedWidget,QGridLayout, QMenu, QTableWidgetItem
 from PyQt4.QtWebKit import QWebPage
 from ui.CreepyUI import Ui_CreepyMainWindow
 from yapsy.PluginManager import PluginManagerSingleton
@@ -27,6 +30,7 @@ from components.FilterLocationsDateDialog import FilterLocationsDateDialog
 from components.FilterLocationsPointDialog import FilterLocationsPointDialog
 from components.AboutDialog import AboutDialog
 from components.VerifyDeleteDialog import VerifyDeleteDialog
+from components.UpdateCheckDialog import UpdateCheckDialog
 from utilities import GeneralUtilities
 # set up logging
 logger = logging.getLogger(__name__)
@@ -86,6 +90,7 @@ class MainWindow(QMainWindow):
             self.emit(SIGNAL('locations(PyQt_PyObject)'), self.project)
 
     def __init__(self, parent=None):
+        self.version = "1.1"
         QWidget.__init__(self, parent)
         self.ui = Ui_CreepyMainWindow()
         self.ui.setupUi(self)
@@ -118,8 +123,42 @@ class MainWindow(QMainWindow):
         self.ui.actionShowHeatMap.toggled.connect(self.toggleHeatMap)
         self.ui.actionReportProblem.triggered.connect(GeneralUtilities.reportProblem)
         self.ui.actionAbout.triggered.connect(self.showAboutDialog)
+        self.ui.actionCheckUpdates.triggered.connect(self.checkForUpdatedVersion)
         self.ui.actionExit.triggered.connect(self.close)
         self.loadProjectsFromStorage()
+        #If option enabled check for updated version
+
+    def checkForUpdatedVersion(self):
+        '''
+        Checks www.geocreepy.com for an updated version and returns a tuple with the 
+        result and the latest version number
+        
+        '''
+        
+        try:
+            latestVersion = urllib2.urlopen("http://www.geocreepy.com/version.html").read().rstrip()
+            
+            updateCheckDialog = UpdateCheckDialog()
+            updateCheckDialog.ui.versionsTableWidget.setHorizontalHeaderLabels(('','Component','Status','Installed','Available'))
+            updateCheckDialog.ui.versionsTableWidget.setItem(0,1,QTableWidgetItem('Creepy'))
+            if StrictVersion(latestVersion) > StrictVersion(self.version):
+                updateCheckDialog.ui.versionsTableWidget.setItem(0,0,QTableWidgetItem(QIcon(QPixmap(':/creepy/exclamation')), ''))
+                updateCheckDialog.ui.versionsTableWidget.setItem(0,2,QTableWidgetItem('Outdated'))
+                updateCheckDialog.ui.dlNewVersionLabel.setText('<html><head/><body><p>Download the latest version from <a href="http://www.geocreepy.com"><span style=" text-decoration: underline; color:#0000ff;">geocreepy.com</span></a></p></body></html>')
+            else:
+                updateCheckDialog.ui.versionsTableWidget.setItem(0,0,QTableWidgetItem(QIcon(QPixmap(':/creepy/tick')), ''))
+                updateCheckDialog.ui.versionsTableWidget.setItem(0,2,QTableWidgetItem('Up To Date'))
+                updateCheckDialog.ui.dlNewVersionLabel.setText('<html><head/><body><p>You are already using the latest version of creepy. </p></body></html>')
+            updateCheckDialog.ui.versionsTableWidget.setItem(0,3,QTableWidgetItem(self.version))
+            updateCheckDialog.ui.versionsTableWidget.setItem(0,4,QTableWidgetItem(latestVersion))
+            updateCheckDialog.show()
+            updateCheckDialog.exec_()
+        except Exception,err:
+            if type(err) == 'string':
+                mes = err
+            else:
+                mess = err.message
+            self.showWarning(self.trUtf8('Error checking for updates'), mess)
         
     def showFilterLocationsPointDialog(self):
         filterLocationsPointDialog = FilterLocationsPointDialog()

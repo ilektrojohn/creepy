@@ -7,7 +7,7 @@ from models.PluginConfigurationListModel import PluginConfigurationListModel
 from models.ProjectWizardPossibleTargetsTable import ProjectWizardPossibleTargetsTable
 from models.InputPlugin import InputPlugin
 from yapsy.PluginManager import PluginManagerSingleton
-from ui.CreepyPersonProjectWizard import Ui_personProjectWizard
+from ui.PersonProjectWizard import Ui_personProjectWizard
 
 try:
     _fromUtf8 = QString.fromUtf8
