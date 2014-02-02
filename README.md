@@ -1,7 +1,7 @@
 # creepy
 
 ### Current Version 
-1.0.1
+1.1
 
 ### Author 
 Yiannis Kakavas <jkakavas__AT__gmail__dot__com>
