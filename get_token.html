@@ -31,7 +31,8 @@
         
         <h3>Your Token value is :</h3>
         <section id="downloads">
-          <script> parsetoken("code");</script>
+        <p id="tokenPlaceholder"></p>
+          <script> document.getElementById("tokenPlaceholder").innerHTML = parsetoken("code");</script>
         </section>
       </div>
     </header>
