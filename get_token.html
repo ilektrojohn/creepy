@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print" />
+
+    <title>Creepy by ilektrojohn</title>
+    <script>
+    function parsetoken(val) {
+      var result = "Not found",
+      tmp = [];
+      location.search.substr(1).split("&")
+        .forEach(function (item) {
+          tmp = item.split("=");
+          if (tmp[0] === val) result = decodeURIComponent(tmp[1]);
+        });
+      return result;
+    }
+    </script>
+  </head>
+
+  <body>
+
+    <header>
+      <div class="container">
+        <h1>Creepy</h1>
+        
+        <h3>Your Token value is :</h3>
+        <section id="downloads">
+          <script> parsetoken("code");</script>
+        </section>
+      </div>
+    </header>
+
+<h3>Contact</h3>
+<p><a href="https://www.facebook.com/geocreepy"> Creepy on Facebook </a></p>
+<p><a href="https://twitter.com/cree_py"> Creepy on Twitter </a></p>
+
+<p>You can find me on Twitter <a href="https://twitter.com/ilektrojohn">@ilektrojohn</a></p>
+<p>Send me a mail at jkakavas AT gmail DOT com</p>
+      </section>
+    </div>
+
+  <!-- Start of StatCounter Code for Default Guide -->
+<script type="text/javascript">
+var sc_project=9518644; 
+var sc_invisible=1; 
+var sc_security="364a76fa"; 
+var scJsHost = (("https:" == document.location.protocol) ?
+"https://secure." : "http://www.");
+document.write("<sc"+"ript type='text/javascript' src='" +
+scJsHost+
+"statcounter.com/counter/counter.js'></"+"script>");
+</script>
+<noscript><div class="statcounter"><a title="free hit
+counters" href="http://statcounter.com/"
+target="_blank"><img class="statcounter"
+src="http://c.statcounter.com/9518644/0/364a76fa/1/"
+alt="free hit counters"></a></div></noscript>
+<!-- End of StatCounter Code for Default Guide -->  
+  </body>
+</html>
