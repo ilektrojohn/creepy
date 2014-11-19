@@ -58,7 +58,7 @@ class MainWindow(QMainWindow):
         def run(self):
             pluginManager = PluginManagerSingleton.get()
             pluginManager.setCategoriesFilter({ 'Input': InputPlugin})
-            pluginManager.setPluginPlaces([os.path.join(os.getcwd(), 'plugins')])
+            pluginManager.setPluginPlaces(GeneralUtilities.getPluginDirs())
             pluginManager.locatePlugins()
             pluginManager.loadPlugins()
             locationsList = []

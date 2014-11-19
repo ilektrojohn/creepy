@@ -6,6 +6,7 @@ from PyQt4.QtCore import QString
 from models.PluginConfigurationListModel import PluginConfigurationListModel
 from models.ProjectWizardPossibleTargetsTable import ProjectWizardPossibleTargetsTable
 from models.InputPlugin import InputPlugin
+from utilities import GeneralUtilities
 from yapsy.PluginManager import PluginManagerSingleton
 from ui.PersonProjectWizard import Ui_personProjectWizard
 
@@ -102,7 +103,7 @@ class PersonProjectWizard(QWizard):
         '''
         self.PluginManager = PluginManagerSingleton.get()
         self.PluginManager.setCategoriesFilter({ 'Input': InputPlugin})
-        self.PluginManager.setPluginPlaces([os.path.join(os.getcwdu(), 'plugins')])
+        self.PluginManager.setPluginPlaces(GeneralUtilities.getPluginDirs())
         self.PluginManager.locatePlugins()
         self.PluginManager.loadPlugins()
         pluginList = sorted(self.PluginManager.getAllPlugins(), key=lambda x: x.name)

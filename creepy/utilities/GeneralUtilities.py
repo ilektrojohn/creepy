@@ -11,6 +11,9 @@ def getUserHome():
 def reportProblem():
     webbrowser.open_new_tab('https://github.com/ilektrojohn/creepy/issues')
     
+def getPluginDirs():
+    return ["/usr/share/creepy/plugins", os.path.join(os.getcwd(), 'plugins')]
+
 def calcDistance(lat1, lng1, lat2, lng2):
     """
     Calculate the great circle distance between two points 

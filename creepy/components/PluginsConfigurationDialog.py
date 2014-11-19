@@ -6,13 +6,14 @@ from yapsy.PluginManager import PluginManagerSingleton
 from models.InputPlugin import InputPlugin
 from ui.PluginsConfig import Ui_PluginsConfigurationDialog
 from components.PluginConfigurationCheckDialog import PluginConfigurationCheckdialog 
+from utilities import GeneralUtilities
 class PluginsConfigurationDialog(QDialog):
     def __init__(self, parent=None):
         
         # Load the installed plugins and read their metadata
         self.PluginManager = PluginManagerSingleton.get()
         self.PluginManager.setCategoriesFilter({'Input': InputPlugin})
-        self.PluginManager.setPluginPlaces([os.path.join(os.getcwdu(), 'plugins')])
+        self.PluginManager.setPluginPlaces(GeneralUtilities.getPluginDirs())
         self.PluginManager.locatePlugins()
         self.PluginManager.loadPlugins()
         
