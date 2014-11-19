@@ -39,10 +39,15 @@ class InputPlugin(IPlugin):
     
     def returnPersonalInformation(self, search_params):
         pass
+
+    def getPluginDir(self):
+        """FIXME Figure out way to always set it to the directory where the plugin code was found"""
+        return os.path.join('/usr/share/creepy/plugins', self.name)
+        
     def getConfigObj(self, config_filename = None):
         if config_filename is None:
             config_filename = self.name+".conf"
-        config_file = os.path.join(os.getcwdu(), 'plugins', config_filename)
+        config_file = os.path.join(self.getPluginDir(), config_filename)
         config = ConfigObj(infile=config_file)
         config.create_empty=False
         return config
