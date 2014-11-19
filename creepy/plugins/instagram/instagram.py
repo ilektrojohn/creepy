@@ -24,10 +24,7 @@ class Instagram(InputPlugin):
     
     def __init__(self):
         #Try and read the labels file
-        labels_filename = self.name+".labels"
-        labels_file = os.path.join(os.getcwdu(),'plugins', self.name, labels_filename)
-        labels_config = ConfigObj(infile=labels_file)
-        labels_config.create_empty=False
+        labels_config = self.getConfigObj(self.name+".labels")
         try:
             logger.debug("Trying to load the labels file for the  "+self.name+" plugin .")
             self.labels = labels_config['labels']

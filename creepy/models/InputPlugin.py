@@ -39,17 +39,16 @@ class InputPlugin(IPlugin):
     
     def returnPersonalInformation(self, search_params):
         pass
-    def getConfigObj(self):    
-        config_filename = self.name+".conf"
-        config_file = os.path.join(os.getcwdu(),'plugins', self.name, config_filename)
+    def getConfigObj(self, config_filename = None):
+        if config_filename is None:
+            config_filename = self.name+".conf"
+        config_file = os.path.join(os.getcwdu(), 'plugins', config_filename)
         config = ConfigObj(infile=config_file)
         config.create_empty=False
-    
+        return config
+
     def readConfiguration(self, category):
-        config_filename = self.name+'.conf'
-        config_file = os.path.join(os.getcwdu(),'plugins', self.name, config_filename)
-        config = ConfigObj(infile=config_file)
-        config.create_empty=False
+        config = self.getConfigObj()
         try:
             options = config[category]
         except Exception,err:
@@ -59,10 +58,7 @@ class InputPlugin(IPlugin):
         return config,options
 
     def saveConfiguration(self, new_config):
-        config_filename = self.name+'.conf'
-        config_file = os.path.join(os.getcwdu(),'plugins',self.name, config_filename)
-        config = ConfigObj(infile=config_file)
-        config.create_empty=False
+        config = self.getConfigObj()
         try:
             config['string_options'] = new_config['string_options']
             config['boolean_options'] = new_config['boolean_options']
@@ -72,10 +68,7 @@ class InputPlugin(IPlugin):
             logger.exception(err)
 
     def loadSearchConfigurationParameters(self):
-        config_filename = self.name+'.conf'
-        config_file = os.path.join(os.getcwdu(),  'plugins', self.name, config_filename)
-        config = ConfigObj(infile=config_file)
-        config.create_empty = False
+        config = self.getConfigObj()
         try:
             params = config['search_options']
         except Exception, err:
