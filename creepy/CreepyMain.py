@@ -35,14 +35,14 @@ from utilities import GeneralUtilities
 # set up logging
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
-fh = logging.FileHandler(os.path.join(os.getcwd(),'creepy_main.log'))
+fh = logging.FileHandler(os.path.join(GeneralUtilities.getLogDir(),'creepy_main.log'))
 fh.setLevel(logging.DEBUG)
 formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 fh.setFormatter(formatter)
 logger.addHandler(fh)
 #Capture stderr and stdout to a file
-sys.stdout = open(os.path.join(os.getcwd(),'creepy_stdout.log'), 'w')
-sys.stderr = open(os.path.join(os.getcwd(),'creepy_stderr.log'), 'w')
+sys.stdout = open(os.path.join(GeneralUtilities.getLogDir(),'creepy_stdout.log'), 'w')
+sys.stderr = open(os.path.join(GeneralUtilities.getLogDir(),'creepy_stderr.log'), 'w')
 try:
     _fromUtf8 = QString.fromUtf8
 except AttributeError:

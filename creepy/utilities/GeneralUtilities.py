@@ -1,12 +1,22 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 from os.path import expanduser
+import os
+import errno
 import webbrowser
 from math import radians, cos, sin, asin, sqrt
 
     
 def getUserHome():
     return expanduser("~")
+
+def getLogDir():
+    logdir = expanduser("~/.creepy")
+    try: os.makedirs(logdir)
+    except OSError as e:
+        if e.errno == errno.EEXIST and os.path.isdir(logdir): pass
+        else: raise
+    return logdir
 
 def reportProblem():
     webbrowser.open_new_tab('https://github.com/ilektrojohn/creepy/issues')

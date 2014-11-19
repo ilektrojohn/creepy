@@ -1,6 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 from models.InputPlugin import InputPlugin
+from utilities import GeneralUtilities
 import flickrapi
 import datetime
 import logging
@@ -11,7 +12,7 @@ from flickrapi.exceptions import FlickrError
 #set up logging
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
-fh = logging.FileHandler(os.path.join(os.getcwdu(),'creepy_main.log'))
+fh = logging.FileHandler(os.path.join(GeneralUtilities.getLogDir(),'creepy_main.log'))
 fh.setLevel(logging.DEBUG)
 formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 fh.setFormatter(formatter)
