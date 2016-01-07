@@ -1,26 +1,39 @@
 <RCC>
   <qresource prefix="creepy">
+    <file>marker_inaccurate.png</file>
+    <file>globe-green.png</file>
+    <file>map.html</file>
     <file alias="creepy">Eye_of_Sauron_by_Blood_Solice.png</file>
-    <file alias="calendar">../../../../icons/32/calendar-day.png</file>
-    <file alias="cross">../../../../icons/32/cross.png</file>
-    <file alias="cross-circle">../../../../icons/32/cross-circle.png</file>
-    <file alias="exclamation">../../../../icons/32/exclamation.png</file>
-    <file alias="properties">../../../../icons/32/application-sidebar-list.png</file>
-    <file alias="image-instagram">../../../../icons/32/image-instagram.png</file>
-    <file alias="heatmap">../../../../icons/24/fire.png</file>
-    <file alias="info">../../../../icons/32/information.png</file>
-    <file alias="lock">../../../../icons/32/lock.png</file>
-    <file alias="minus">../../../../icons/32/minus.png</file>
-    <file alias="map">../../../../icons/32/map.png</file>
-    <file alias="minus-circle">../../../../icons/32/minus-circle.png</file>
-    <file alias="export">../../../../icons/24/blue-document-export.png</file>
-    <file alias="globe">../../../../icons/24/globe.png</file>
-    <file alias="marker">../../../../icons/24/marker.png</file>
-    <file alias="target">../../../../icons/24/target.png</file>
-    <file alias="user">../../../../icons/24/user.png</file>
-    <file alias="add">../../../../icons/32/plus-circle.png</file>
-    <file alias="folder">../../../../icons/32/blue-folder-horizontal.png</file>
-    <file alias="bookmark">../../../../icons/32/bookmark.png</file>
-    <file alias="tick">../../../../icons/32/tick.png</file>
+    <file>generic_plugin.png</file>
+    <file>globe.png</file>
+    <file>image-instagram.png</file>
+    <file>creepy32.png</file>
+    <file>receipt-text.png</file>
+    <file>tick.png</file>
+    <file>cross-circle.png</file>
+    <file>creepy.png</file>
+    <file>map.png</file>
+    <file>blue-document-export.png</file>
+    <file>marker.png</file>
+    <file>lock.png</file>
+    <file>cross.png</file>
+    <file>generic_user.png</file>
+    <file>application-sidebar-list.png</file>
+    <file>blue-folder-horizontal.png</file>
+    <file>Eye_of_Sauron_by_Blood_Solice.png</file>
+    <file>minus.png</file>
+    <file>counter.png</file>
+    <file>exclamation.png</file>
+    <file>bookmark.png</file>
+    <file>user.png</file>
+    <file>plus-circle.png</file>
+    <file>target.png</file>
+    <file>calendar-day.png</file>
+    <file>creepy255.png</file>
+    <file>fire.png</file>
+    <file>minus-circle.png</file>
+    <file>creepy64.png</file>
+    <file>creepy16.png</file>
+    <file>globe-green.png</file>
   </qresource>
 </RCC>

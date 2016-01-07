@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>575</width>
+    <width>928</width>
     <height>403</height>
    </rect>
   </property>
@@ -14,7 +14,7 @@
    <string>Filter Locations By Date</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="../creepy/include/creepy_resources.qrc">
+   <iconset>
     <normaloff>:/creepy/calendar</normaloff>:/creepy/calendar</iconset>
   </property>
   <property name="modal">
@@ -32,7 +32,7 @@
         </sizepolicy>
        </property>
        <property name="text">
-        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:9pt;&quot;&gt;Select the start and end dates and times&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:9pt;&quot;&gt;Select the start and end dates and times ( &lt;/span&gt;&lt;span style=&quot; font-size:9pt; color:#ff0000;&quot;&gt;Note&lt;/span&gt;&lt;span style=&quot; font-size:9pt;&quot;&gt; that the selected dates are &lt;/span&gt;&lt;span style=&quot; font-size:9pt; font-weight:600;&quot;&gt;UTC&lt;/span&gt;&lt;span style=&quot; font-size:9pt;&quot;&gt; ! )&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
        </property>
       </widget>
      </item>

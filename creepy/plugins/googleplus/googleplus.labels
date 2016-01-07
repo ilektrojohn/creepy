@@ -1,0 +1,6 @@
+[labels]
+hidden_credentials = Credentials
+
+hidden_application_key = Consumer Key
+hidden_application_secret = Consumer Secret
+infowindow_html = HTML for Infowindow on map

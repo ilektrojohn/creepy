@@ -2,7 +2,10 @@
 # -*- coding: utf-8 -*-
 from PyQt4.QtCore import QVariant, QAbstractListModel, Qt
 from PyQt4.Qt import QPixmap, QFileSystemModel, QIcon
+from utilities import GeneralUtilities
 import os
+from utilities import GeneralUtilities
+
 
 class ProjectWizardPluginListModel(QAbstractListModel):
     def __init__(self, plugins, parent=None):
@@ -24,7 +27,7 @@ class ProjectWizardPluginListModel(QAbstractListModel):
                     pixmap = QPixmap(picturePath)
                     return QIcon(pixmap.scaled(30, 30, Qt.IgnoreAspectRatio, Qt.FastTransformation))
                 else:
-                    pixmap = QPixmap(os.path.join(os.getcwdu(), 'include', 'generic_plugin.png'))
+                    pixmap = QPixmap(os.path.join(os.path.join(GeneralUtilities.getIncludeDir(), 'generic_plugin.png')))
                     pixmap.scaled(30, 30, Qt.IgnoreAspectRatio)
                     return QIcon(pixmap)
             if role == Qt.CheckStateRole:

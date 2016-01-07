@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file '.\filterLocationsDateDialog.ui'
+# Form implementation generated from reading ui file 'Development/python/creepy/gui/filterLocationsDateDialog.ui'
 #
-# Created: Fri Jan 31 15:33:14 2014
-#      by: PyQt4 UI code generator 4.9.4
+# Created: Wed Oct 15 21:58:33 2014
+#      by: PyQt4 UI code generator 4.10.4
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -12,12 +12,21 @@ from PyQt4 import QtCore, QtGui
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
 except AttributeError:
-    _fromUtf8 = lambda s: s
+    def _fromUtf8(s):
+        return s
+
+try:
+    _encoding = QtGui.QApplication.UnicodeUTF8
+    def _translate(context, text, disambig):
+        return QtGui.QApplication.translate(context, text, disambig, _encoding)
+except AttributeError:
+    def _translate(context, text, disambig):
+        return QtGui.QApplication.translate(context, text, disambig)
 
 class Ui_FilterLocationsDateDialog(object):
     def setupUi(self, FilterLocationsDateDialog):
         FilterLocationsDateDialog.setObjectName(_fromUtf8("FilterLocationsDateDialog"))
-        FilterLocationsDateDialog.resize(575, 403)
+        FilterLocationsDateDialog.resize(928, 403)
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap(_fromUtf8(":/creepy/calendar")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         FilterLocationsDateDialog.setWindowIcon(icon)
@@ -78,20 +87,10 @@ class Ui_FilterLocationsDateDialog(object):
         QtCore.QMetaObject.connectSlotsByName(FilterLocationsDateDialog)
 
     def retranslateUi(self, FilterLocationsDateDialog):
-        FilterLocationsDateDialog.setWindowTitle(QtGui.QApplication.translate("FilterLocationsDateDialog", "Filter Locations By Date", None, QtGui.QApplication.UnicodeUTF8))
-        self.titleLabel.setText(QtGui.QApplication.translate("FilterLocationsDateDialog", "<html><head/><body><p><span style=\" font-size:9pt;\">Select the start and end dates and times</span></p></body></html>", None, QtGui.QApplication.UnicodeUTF8))
-        self.startDateLabel.setText(QtGui.QApplication.translate("FilterLocationsDateDialog", "<b>Start Date</b>", None, QtGui.QApplication.UnicodeUTF8))
-        self.endDateLabel.setText(QtGui.QApplication.translate("FilterLocationsDateDialog", "<b>End Date</b>", None, QtGui.QApplication.UnicodeUTF8))
-        self.startDateTimeEdit.setDisplayFormat(QtGui.QApplication.translate("FilterLocationsDateDialog", "hh:mm:ss AP", None, QtGui.QApplication.UnicodeUTF8))
+        FilterLocationsDateDialog.setWindowTitle(_translate("FilterLocationsDateDialog", "Filter Locations By Date", None))
+        self.titleLabel.setText(_translate("FilterLocationsDateDialog", "<html><head/><body><p><span style=\" font-size:9pt;\">Select the start and end dates and times ( </span><span style=\" font-size:9pt; color:#ff0000;\">Note</span><span style=\" font-size:9pt;\"> that the selected dates are </span><span style=\" font-size:9pt; font-weight:600;\">UTC</span><span style=\" font-size:9pt;\"> ! )</span></p></body></html>", None))
+        self.startDateLabel.setText(_translate("FilterLocationsDateDialog", "<b>Start Date</b>", None))
+        self.endDateLabel.setText(_translate("FilterLocationsDateDialog", "<b>End Date</b>", None))
+        self.startDateTimeEdit.setDisplayFormat(_translate("FilterLocationsDateDialog", "hh:mm:ss AP", None))
 
 import creepy_resources_rc
-
-if __name__ == "__main__":
-    import sys
-    app = QtGui.QApplication(sys.argv)
-    FilterLocationsDateDialog = QtGui.QDialog()
-    ui = Ui_FilterLocationsDateDialog()
-    ui.setupUi(FilterLocationsDateDialog)
-    FilterLocationsDateDialog.show()
-    sys.exit(app.exec_())
-
