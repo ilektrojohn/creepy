@@ -3,6 +3,7 @@
 from PyQt4.QtCore import QVariant, QAbstractTableModel, Qt
 from PyQt4.Qt import QPixmap, QIcon, QMimeData, QByteArray, QDataStream, QIODevice
 import os
+from utilities import GeneralUtilities
 class ProjectWizardPossibleTargetsTable(QAbstractTableModel):
     def __init__(self, targets, parents=None):
         super(ProjectWizardPossibleTargetsTable, self).__init__()
@@ -41,7 +42,8 @@ class ProjectWizardPossibleTargetsTable(QAbstractTableModel):
             column = index.column()
             if role == Qt.DecorationRole:
                 if column == 1:
-                    picturePath = os.path.join(os.getcwdu(), 'temp', target['targetPicture'])
+                    picturePath = os.path.join(GeneralUtilities.getTempDir(),
+                                               target['targetPicture'])
                     if picturePath and os.path.exists(picturePath):
                         pixmap = QPixmap(picturePath)
                         return QIcon(pixmap.scaled(30, 30, Qt.IgnoreAspectRatio, Qt.FastTransformation))

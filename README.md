@@ -1,7 +1,7 @@
 # creepy
 
 ### Current Version 
-1.1
+1.4.1
 
 ### Author 
 Yiannis Kakavas <jkakavas__AT__gmail__dot__com>
@@ -12,21 +12,29 @@ http://www.geocreepy.com
 ### Installation Instructions 
 See http://www.geocreepy.com
 
+### Configuration
+See http://www.geocreepy.com/plugin_configuration.html
+
 ### Description 
 Geolocation OSINT tool.
 
 Creepy is a geolocation OSINT tool. Gathers geolocation related information from online sources, and allows for presentation on map, search filtering based on exact location and/or date, export in csv format or kml for further analysis in Google Maps.
 
+### Screenshots
+![Place based project around central Athens](https://github.com/jkakavas/creepy/blob/gh-pages/Place_based_project.png)
+![Expansion of multiple markers on the same spot](https://github.com/jkakavas/creepy/blob/gh-pages/multiple_markers.png)
+![Instagram plugin configuration wizard](https://github.com/jkakavas/creepy/blob/gh-pages/7.png)
+![Twitter plugin configuration wizard](https://github.com/jkakavas/creepy/blob/gh-pages/16.png)
+
+
 ### Special Thanks 
 
 Creepy icon : © "eye of sauron" image by blood-solice on deviantart ( http://blood-solice.deviantart.com )
 
-[@dstergiou] (https://www.twitter.com/dstergiou "@dstergiou") for helping with OSX packaging
-
-[@epsilon77] (https://www.twitter.com/epsilon77 "@epsilon77") , the maintainer of the debian package
+To Penny for creating the new plugin specific markers 
 
 ### Attribution 
-Icons in version 1.1 are selected icons from the icon set 
+Icons in versions >= 1.3 are selected icons from the icon set 
 
 Fugue Icons
 

@@ -4,8 +4,8 @@ Module = instagram
 
 [Documentation]
 Author = Ioannis Kakavas
-Version = 0.1
-Website = https://www.geocreepy.net
+Version = 1.0
+Website = https://www.geocreepy.com
 Description = Retrieves geo-locations from a user's instagram photo stream
 
 

@@ -5,6 +5,7 @@ from PyQt4.QtCore import QModelIndex
 from PyQt4.QtCore import Qt
 from PyQt4.QtGui import QIcon,QPixmap
 from PyQt4.QtCore import QVariant
+from components import creepy_resources_compiled
 
 class ProjectTreeModel(QAbstractItemModel):
     def __init__(self, root, parent=None):
@@ -29,11 +30,11 @@ class ProjectTreeModel(QAbstractItemModel):
                 return QVariant(node.name())
             if role == Qt.DecorationRole:
                 if node.nodeType() == 'PROJECT':
-                    return QIcon(QPixmap(':/creepy/folder'))
+                    return QIcon(QPixmap(':/creepy/blue-folder-horizontal.png'))
                 if node.nodeType() == "LOCATIONS":
-                    return QIcon(QPixmap(':/creepy/marker'))
+                    return QIcon(QPixmap(':/creepy/marker.png'))
                 if node.nodeType() == 'ANALYSIS':
-                    return QIcon(QPixmap(':/cr/analysis.png'))
+                    return QIcon(QPixmap(':/creepy/receipt-text.png'))
         else:
             return QVariant()
     
@@ -71,9 +72,7 @@ class ProjectTreeModel(QAbstractItemModel):
         
         return self._rootNode
     
-    
     def insertRows(self, position, rows, parent=QModelIndex()):
-        
         parentNode = self.getNode(parent)
         self.beginInsertRows(parent, position, position+rows-1)
         for row in range(rows):
@@ -99,7 +98,8 @@ class ProjectTreeModel(QAbstractItemModel):
             success = parentNode.removeChild(position)
         self.endRemoveRows()
         return success
-    
+
+
 class ProjectTreeNode(object):
     
     def __init__(self, name, parent=None):
@@ -124,8 +124,7 @@ class ProjectTreeNode(object):
             return True
         else:
             return False
-        
-        
+
     def removeChild(self, position):
         if 0 < position < len(self._children):
             child = self._children.pop(position)
@@ -149,26 +148,27 @@ class ProjectTreeNode(object):
         else:
             return 0
         
-        
     def nodeType(self):
         return self._type
-    
+
+
 class ProjectNode(ProjectTreeNode):
     def __init__(self, name, project, parent=None):
         super(ProjectNode, self).__init__(name, parent)
         self._type = 'PROJECT'
         self.project = project 
-        
+
+
 class LocationsNode(ProjectTreeNode):
     def __init__(self, name, parent=None):
         super(LocationsNode, self).__init__(name, parent)
         self._type = 'LOCATIONS'
         self.locations = []
 
+
 class AnalysisNode(ProjectTreeNode):
     def __init__(self, name, parent=None):
         super(AnalysisNode, self).__init__(name, parent)
         self._type = 'ANALYSIS'
         self.analysis = ""
-        
 

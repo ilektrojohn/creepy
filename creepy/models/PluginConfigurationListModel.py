@@ -12,7 +12,7 @@ class PluginConfigurationListModel(QAbstractListModel):
     
     def checkPluginConfiguration(self):
         for plugin in self.pluginList:
-            self.plugins.append((plugin,True))
+            self.plugins.append((plugin, True))
             '''
             if plugin.plugin_object.isConfigured()[0]:
                 self.plugins.append((plugin,True))
@@ -20,10 +20,10 @@ class PluginConfigurationListModel(QAbstractListModel):
                 self.plugins.append((plugin,False))
             '''
         
-    def rowCount(self,index):
+    def rowCount(self, index):
         return len(self.plugins)
     
-    def data(self,index,role):
+    def data(self, index, role):
         pluginListItem= self.plugins[index.row()]
         if index.isValid():
             if role == Qt.DisplayRole:
