@@ -1,0 +1,9 @@
+[Core]
+Name = GooglePlus Plugin
+Module = googleplus
+
+[Documentation]
+Author = Ioannis Kakavas
+Version = 1.0
+Website = https://www.geocreepy.com
+Description = Retrieves geo-locations from a user's Google+ posts

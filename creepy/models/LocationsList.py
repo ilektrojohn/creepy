@@ -3,24 +3,23 @@
 from PyQt4.QtCore import QAbstractTableModel
 from PyQt4.QtCore import Qt, QVariant
 
+
 class LocationsTableModel(QAbstractTableModel):
-    def __init__(self, locations, parent=None):
+    def __init__(self, locations):
         self.locations = locations
-        super(LocationsTableModel,self).__init__()
-        
+        super(LocationsTableModel, self).__init__()
         
     def rowCount(self, index):
         return len(self.locations)
     
     def columnCount(self, index):
         return 2
-    
-        
+
     def headerData(self, section, orientation, role=Qt.DisplayRole):
         if role == Qt.TextAlignmentRole:
             if orientation == Qt.Horizontal:
-                return QVariant(int(Qt.AlignLeft|Qt.AlignVCenter))
-            return QVariant(int(Qt.AlignRight|Qt.AlignVCenter))
+                return QVariant(int(Qt.AlignLeft | Qt.AlignVCenter))
+            return QVariant(int(Qt.AlignRight | Qt.AlignVCenter))
         if role != Qt.DisplayRole:
             return QVariant()
         if orientation == Qt.Horizontal:

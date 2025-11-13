@@ -11,46 +11,52 @@
       src="http://maps.googleapis.com/maps/api/js?key=AIzaSyCcUbHMTn2FZlsn7kaljhVKSy0L5IfZKxs&sensor=true&libraries=visualization">
     </script>
     <script type="text/javascript">
-        var map = null;
-        var marker = null;
-        var infowindow = new google.maps.InfoWindow({ 
+        var map;
+        var marker;
+        var geocoder;
+        var infowindow = new google.maps.InfoWindow({
             size: new google.maps.Size(150,50)
         });
-        
+
+        function searchForAddress(address) {
+            geocoder.geocode( { 'address': address}, function(results, status) {
+              if (status == google.maps.GeocoderStatus.OK) {
+                map.setCenter(results[0].geometry.location);
+                map.setZoom(14);
+              } else {
+                alert("Geocode was not successful for the following reason: " + status);
+              }
+            });
+        }
 		function centerMap(lat, lng) {
  			var myLatLng = new google.maps.LatLng(lat, lng);
  			map.setCenter(myLatLng);
  		}
+
  		function setZoom(level){
  		    map.setZoom(level);
  		}
-		// A function to create the marker and set up the event window function 
+
+		// A function to create the marker and set up the event window function
 		function createMarker(latlng, name, html) {
-		    myPyObj.setLatLng(latlng.toString());   
+		    myPyObj.setLatLng(latlng.toString());
 		    var contentString = html;
 		    var marker = new google.maps.Marker({
 		        position: latlng,
 		        map: map,
 		        zIndex: Math.round(latlng.lat()*-100000)<<5
 		        });
-		
+
 		    google.maps.event.addListener(marker, 'click', function() {
-		        infowindow.setContent(contentString); 
+		        infowindow.setContent(contentString);
 		        infowindow.open(map,marker);
 		        });
 		    google.maps.event.trigger(marker, 'click');
-		    
-		   
-		    return marker;
+            return marker;
 		}
-  		  
-  		function createCircle(point,radius){
-  		
-  		
-  		
-  		}  
-  		  
+
       function initialize() {
+        geocoder = new google.maps.Geocoder();
         var mapOptions = {
           center: new google.maps.LatLng(38.448244914157165, 24.004483222961426),
           zoom: 2,
@@ -58,23 +64,19 @@
         };
         map = new google.maps.Map(document.getElementById("map_canvas"),
             mapOptions);
-            
-            
         google.maps.event.addListener(map, 'click', function() {
-        infowindow.close();
+            infowindow.close();
         });
-
   		google.maps.event.addListener(map, 'click', function(event) {
-		//call function to create marker
-        if (marker) {
-            marker.setMap(null);
-            marker = null;
-         }
-	 	marker = createMarker(event.latLng, "name", "<b>Location</b><br>"+event.latLng);
-	 	
+            //call function to create marker
+            if (marker) {
+                marker.setMap(null);
+                marker = null;
+             }
+            marker = createMarker(event.latLng, "name", "<b>Selected location target</b><br>"+event.latLng);
         });
       }
-      
+
     </script>
   </head>
   <body onload="initialize()">

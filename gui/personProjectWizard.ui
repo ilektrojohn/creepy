@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>personProjectWizard</class>
- <widget class="QWizard" name="personProjectWizard">
+ <class>placeProjectWizard</class>
+ <widget class="QWizard" name="placeProjectWizard">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -14,7 +14,7 @@
    <string>New Person Project</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="../creepy/include/creepy_resources.qrc">
+   <iconset>
     <normaloff>:/creepy/user</normaloff>:/creepy/user</iconset>
   </property>
   <property name="wizardStyle">
@@ -293,8 +293,8 @@
         <rect>
          <x>0</x>
          <y>0</y>
-         <width>98</width>
-         <height>91</height>
+         <width>99</width>
+         <height>99</height>
         </rect>
        </property>
        <layout class="QVBoxLayout" name="verticalLayout">

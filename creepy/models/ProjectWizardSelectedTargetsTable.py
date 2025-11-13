@@ -8,18 +8,18 @@ class ProjectWizardSelectedTargetsTable(QAbstractTableModel):
     def __init__(self, targets, parents=None):
         super(ProjectWizardSelectedTargetsTable, self).__init__()
         self.targets = targets
-        
-    def rowCount(self,index):
+
+    def rowCount(self, index):
         return len(self.targets)
-    
-    def columnCount(self,index):
+
+    def columnCount(self, index):
         return 5
-    
+
     def headerData(self, section, orientation, role=Qt.DisplayRole):
         if role == Qt.TextAlignmentRole:
             if orientation == Qt.Horizontal:
-                return QVariant(int(Qt.AlignLeft|Qt.AlignVCenter))
-            return QVariant(int(Qt.AlignRight|Qt.AlignVCenter))
+                return QVariant(int(Qt.AlignLeft | Qt.AlignVCenter))
+            return QVariant(int(Qt.AlignRight | Qt.AlignVCenter))
         if role != Qt.DisplayRole:
             return QVariant()
         if orientation == Qt.Horizontal:
@@ -35,10 +35,9 @@ class ProjectWizardSelectedTargetsTable(QAbstractTableModel):
                 return QVariant('User Id')
         return QVariant(int(section + 1))
 
-    
     def data(self, index, role):
         target = self.targets[index.row()]
-        
+
         if index.isValid() and target:
             column = index.column()
             if role == Qt.DecorationRole:
@@ -56,9 +55,7 @@ class ProjectWizardSelectedTargetsTable(QAbstractTableModel):
                     return QVariant(target['targetFullname'])
                 elif column == 4:
                     return QVariant(target['targetUserid'])
-                
-                
-            else: 
+            else:
                 return QVariant()
 
     def removeRows(self, rows, count, parent=QModelIndex()):
@@ -67,7 +64,7 @@ class ProjectWizardSelectedTargetsTable(QAbstractTableModel):
                 self.targets.remove(row)
                 self.beginRemoveRows(parent, len(self.targets), len(self.targets))
                 self.endRemoveRows()
-    
+
     def insertRow(self, row, parent=QModelIndex()):
         self.insertRows(row, 1, parent)
 
@@ -76,16 +73,14 @@ class ProjectWizardSelectedTargetsTable(QAbstractTableModel):
             self.targets.append(row)
             self.beginInsertRows(parent, len(self.targets), len(self.targets))
             self.endInsertRows()
-        
-        
         return True
-    
+
     def flags(self, index):
-        return Qt.ItemFlags(QAbstractTableModel.flags(self, index)|Qt.ItemIsDropEnabled)
-        
+        return Qt.ItemFlags(QAbstractTableModel.flags(self, index) | Qt.ItemIsDropEnabled)
+
     def mimeTypes(self):
-        return [ 'application/target.tableitem.creepy' ] 
-        
+        return ['application/target.tableitem.creepy']
+
     def dropMimeData(self, data, action, row, column, parent):
         if data.hasFormat('application/target.tableitem.creepy'):
             encodedData = data.data('application/target.tableitem.creepy')
@@ -94,17 +89,18 @@ class ProjectWizardSelectedTargetsTable(QAbstractTableModel):
             qVariant = QVariant()
             while not stream.atEnd():
                 stream >> qVariant
-                columnsList.append(qVariant.toPyObject()) 
-            draggedRows = [columnsList[x:x+5] for x in range(0,len(columnsList),5)]
+                columnsList.append(qVariant.toPyObject())
+            draggedRows = [columnsList[x:x + 5] for x in range(0, len(columnsList), 5)]
             droppedRows = []
             for row in draggedRows:
-                #Ensure we are not putting duplicates in the target list
+                # Ensure we are not putting duplicates in the target list
                 existed = False
                 for target in self.targets:
                     if row[2] == target['targetUsername'] and row[0] == target['pluginName']:
                         existed = True
-                if not existed:        
-                    droppedRows.append({'targetUsername':row[2], 'targetFullname':row[3], 'targetPicture':row[1], 'targetUserid':row[4], 'pluginName':row[0]})
+                if not existed:
+                    droppedRows.append({'targetUsername': row[2], 'targetFullname': row[3], 'targetPicture': row[1],
+                                        'targetUserid': row[4], 'pluginName': row[0]})
             self.insertRows(droppedRows, len(droppedRows), parent)
-                
-        return True 
+
+        return True
