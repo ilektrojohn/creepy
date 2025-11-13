@@ -1,0 +1,85 @@
+import requests
+from bs4 import BeautifulSoup
+import folium
+from geopy.geocoders import Nominatim
+import json
+import re
+from urllib.parse import urljoin
+
+# Настройки
+USERNAME = "marina.mars.33"  # Её FB-username
+FB_BASE_URL = f"https://www.facebook.com/{USERNAME}"
+HEADERS = {
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+}
+
+def get_fb_page_content(url):
+    """Парсит публичную страницу FB (посты, чекины)."""
+    try:
+        response = requests.get(url, headers=HEADERS)
+        if response.status_code != 200:
+            print(f"Ошибка доступа: {response.status_code} (приватка или блок)")
+            return None
+        soup = BeautifulSoup(response.text, 'html.parser')
+        return soup
+    except Exception as e:
+        print(f"Ошибка: {e}")
+        return None
+
+def extract_checkins_and_posts(soup):
+    """Извлекает чекины (гео) и посты из HTML."""
+    data = []
+    # Ищи посты (div с class ~ 'userContent' или 'story_body')
+    posts = soup.find_all('div', class_=re.compile(r'(story_body|userContent)'))
+    for post in posts[:10]:  # Лимит 10 постов
+        text = post.get_text(strip=True)[:200]  # Короткий текст
+        # Ищи гео (типа 'in Cardiff' или координаты в JS)
+        geocode_match = re.search(r'(in\s+([A-Za-z\s]+))|(\d+\.\d+,\s*-?\d+\.\d+)', text)
+        if geocode_match:
+            location = geocode_match.group(2) or geocode_match.group(3)
+            data.append({
+                'post_text': text,
+                'location': location,
+                'url': urljoin(FB_BASE_URL, post.find('a')['href'] if post.find('a') else '')
+            })
+    return data
+
+def geocode_locations(locations):
+    """Конвертит адреса в координаты (широта/долгота)."""
+    geolocator = Nominatim(user_agent="osint_creepy")
+    coords = []
+    for loc in locations:
+        try:
+            geo = geolocator.geocode(loc)
+            if geo:
+                coords.append((geo.latitude, geo.longitude, loc))
+        except:
+            pass
+    return coords
+
+def create_map(coords):
+    """Строит карту с маркерами (folium)."""
+    if not coords:
+        print("Нет гео-данных для карты.")
+        return
+    m = folium.Map(location=coords[0][:2], zoom_start=10)
+    for lat, lon, loc in coords:
+        folium.Marker([lat, lon], popup=loc).add_to(m)
+    m.save('creepy_map.html')
+    print("Карта сохранена в creepy_map.html — открой в браузере!")
+
+# Основной запуск
+print(f"Запуск OSINT для FB: {USERNAME}")
+soup = get_fb_page_content(FB_BASE_URL)
+if soup:
+    posts_data = extract_checkins_and_posts(soup)
+    print(f"Найдено {len(posts_data)} постов/чекинов:")
+    for item in posts_data:
+        print(f"- Пост: {item['post_text'][:50]}... | Гео: {item['location']}")
+    
+    # Гео-карта
+    locations = [item['location'] for item in posts_data if item['location']]
+    coords = geocode_locations(locations)
+    create_map(coords)
+else:
+    print("Нет доступа — профиль приватный. Попробуй VPN или другой метод.")
