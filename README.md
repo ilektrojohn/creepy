@@ -17,6 +17,20 @@ Geolocation OSINT tool.
 
 Creepy is a geolocation OSINT tool. Gathers geolocation related information from online sources, and allows for presentation on map, search filtering based on exact location and/or date, export in csv format or kml for further analysis in Google Maps.
 
+### Flask advocacy page
+
+The repository also includes a standalone educational page about government
+surveillance and civil liberties. It runs separately from the Creepy desktop
+application.
+
+```sh
+python3 -m pip install -r requirements.txt
+python3 app.py
+```
+
+Open [http://127.0.0.1:5000/](http://127.0.0.1:5000/) in a browser. The
+development server binds to localhost and has debug mode disabled by default.
+
 ### Special Thanks 
 
 Creepy icon : © "eye of sauron" image by blood-solice on deviantart ( http://blood-solice.deviantart.com )
